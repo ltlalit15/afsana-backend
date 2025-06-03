@@ -1,0 +1,6 @@
+id,name,email,subject,message,date,status
+1,Rahul Sharma,rahul@example.com,Visa Query,What are the documents required for visa?,2025-04-07,unread
+2,Neha Verma,neha@example.com,Offer Letter Delay,"Submitted documents, no response yet.",2025-04-06,read
+3,Aman Gupta,aman@example.com,Application Fee Doubt,Can I pay after deadline?,2025-04-05,unread
+4,Tina Mehra,tina@example.com,Admission Status,Still waiting for status update.,2025-04-04,read
+5,Ravi Mehra,ravi@example.com,IELTS Required?,Is IELTS compulsory for UK program?,2025-04-03,read
