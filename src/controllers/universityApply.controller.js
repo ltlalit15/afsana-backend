@@ -1,7 +1,8 @@
 import db from '../config/db.js';
 import { studentNameById } from '../models/student.model.js';
 import { universityNameById } from '../models/universities.model.js';
-export const createAply = async (req, res) => {
+
+export const createApply = async (req, res) => {
     const data = req.body;
     const files = req.files;
   
@@ -51,7 +52,6 @@ export const createAply = async (req, res) => {
     }
   };
   
-
   export const getAllApplications = async (req, res) => {
     try {
         const query = `SELECT * FROM StudentApplicationProcess`;
@@ -208,7 +208,6 @@ export const getAllApplicationsById = async (req, res) => {
     }
 };
 
-
 export const getAplicationBYStudentID = async (req, res) => {
     console.log("req ", req.params);
     const studentId = req.params.studentId;
@@ -363,8 +362,7 @@ export const getApplicationByStudentAndUniversity = async (req, res) => {
     }
 };
 
-
-export const updateAply = async (req, res) => {
+export const updateApply = async (req, res) => {
     const { id } = req.params;
     const data = req.body;
     const files = req.files;
@@ -424,7 +422,7 @@ export const updateAply = async (req, res) => {
     }
   };
 
-export const deleteAply = async (req, res) => {
+export const deleteApply = async (req, res) => {
     const { id } = req.params;
    console.log("req.partam :",id);
     try {
@@ -441,7 +439,6 @@ export const deleteAply = async (req, res) => {
         res.status(500).json({ message: 'Error deleting record', error: error.message });
     }
 };
-
 
 export const updateStatus = async (req, res) => {
     const { id } = req.params;
