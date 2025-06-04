@@ -14,7 +14,7 @@ export const createFollowUp = async (req, res) => {
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [name, title, follow_up_date, status, urgency_level, department, user_id]
       );
-  
+
       res.status(201).json({
         message: "Follow-up added successfully",
         followUpId: result.insertId
@@ -71,7 +71,6 @@ export const createFollowUp = async (req, res) => {
       res.status(500).json({ message: "Internal server error", error: err.message });
     }
   };
-
 
   export const deleteFollowUp = async (req, res) => {
     const { id } = req.params;
