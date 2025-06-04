@@ -51,7 +51,6 @@ export const overview = async (req, res) => {
     }
 };
 
-
 export const  CounselorPerformance = async (req, res) =>{
     try {
         const query = `
@@ -95,7 +94,6 @@ export const  CounselorPerformance = async (req, res) =>{
         res.status(500).json({ error: "Internal Server Error", details: error.message });
     }
 }
-
 
 export const applicationPipline = async (req, res) => {
     try {
