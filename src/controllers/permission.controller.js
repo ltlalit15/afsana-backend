@@ -22,8 +22,6 @@ export const createPermission = async (req, res) => {
     }
   };
 
-
-
 export const getPermissions = async (req, res) => {
     const {role_name} = req.query;
   try {
@@ -78,7 +76,6 @@ export const deletePermission = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
 
 
 export const updatePermissionStatus =  async (req, res) => {
