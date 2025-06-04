@@ -29,7 +29,6 @@ export const createStudentFee = async (req, res) => {
   }
 };
 
-
 // GET All Fee Records
 export const getStudentFees = async (req, res) => {
   try {
@@ -47,7 +46,6 @@ export const getStudentFees = async (req, res) => {
   }
 };
 
-
 // GET Fee by ID
 export const getStudentFeeById = async (req, res) => {
   const { id } = req.params;
@@ -64,7 +62,6 @@ export const getStudentFeeById = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
 
 // UPDATE Fee Record
 export const updateStudentFee = async (req, res) => {
@@ -91,7 +88,6 @@ export const updateStudentFee = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
 
 // DELETE Fee Record
 export const deleteStudentFee = async (req, res) => {
