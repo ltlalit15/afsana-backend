@@ -54,7 +54,6 @@ export const createPayment = async (req, res) => {
     }
 };
 
-
 export const getPayments = async (req, res) => {
     try {
         const query = `
@@ -150,7 +149,6 @@ export const getPaymentsByid = async (req, res) => {
     }
 };
 
-
 export const getPaymentByEmail = async (req, res) => {
     const { email } = req.params;
 
@@ -191,7 +189,6 @@ export const getPaymentByEmail = async (req, res) => {
         res.status(500).json({ error: "Internal Server Error", details: error.message });
     }
 }
-
 
 export const deletePayment = async (req, res) => {
     const { id } = req.params;
