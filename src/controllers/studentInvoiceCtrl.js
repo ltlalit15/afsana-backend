@@ -28,7 +28,6 @@ export const createstudentinvoice = async (req, res) => {
   }
 };
 
-
 // // GET All Fee Records
 export const getallstudent = async (req, res) => {
   try {
