@@ -1,4 +1,3 @@
-
 import mysql from 'mysql2';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -10,7 +9,6 @@ const pool = mysql.createPool({
   password: "HAEtdjQHMHeKsWfCkURaWJkHPmqoFfxD",  // Your database password
   database: "railway",            // Your database name
   port: 21971,                    // Updated port
-  protocol: "TCP",                // Protocol if required
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
