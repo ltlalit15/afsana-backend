@@ -47,8 +47,6 @@ export const createInquiry = async (req, res) => {
   }
 };
 
-
-
 export const getInquiryById = async (req, res) => {
     const { id } = req.params;
   
