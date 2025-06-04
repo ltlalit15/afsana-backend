@@ -9,7 +9,6 @@ export const getDashboardData = async (req, res) => {
         const [totalFollowUps] = await db.query('SELECT COUNT(*) AS totalFollowUps FROM follow_ups');
         const [totalTasks] = await db.query('SELECT COUNT(*) AS totalTasks FROM tasks WHERE counselor_id =?',[counselor_id]);
         const [totalInquiries] = await db.query('SELECT COUNT(*) AS totalInquiries FROM inquiries WHERE counselor_id =?',[counselor_id]);
-
         res.status(200).json({
             totalleads: totalLeads[0].totalleads,
             totalstudents: totalStudents[0].totalstudents,
@@ -23,7 +22,6 @@ export const getDashboardData = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
-
 export const getDashboardDataAdmin = async (req, res) => {
     
     try {
