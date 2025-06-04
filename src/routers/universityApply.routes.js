@@ -1,5 +1,5 @@
 import express from 'express';
-import { createAply, deleteAply, getAllApplications, getAllApplicationsById, getAplicationBYStudentID, getApplicationByStudentAndUniversity, updateAply, updateStatus } from '../controllers/universityApply.controller.js';
+import { createApply, deleteApply, getAllApplications, getAllApplicationsById, getAplicationBYStudentID, getApplicationByStudentAndUniversity, updateApply, updateStatus } from '../controllers/universityApply.controller.js';
 import { upload } from '../middlewares/upload.js';
 const router = express.Router();
 
@@ -28,7 +28,7 @@ router.post('/application', upload.fields([
     { name: 'travel_insurance' },
     { name: 'european_photo' },
     { name: 'health_insurance' }
-]), createAply);
+]), createApply);
 
 router.get('/application',getAllApplications);
 router.get('/application/:id', getAllApplicationsById);
@@ -59,8 +59,8 @@ router.put('/application/:id', upload.fields([
     { name: 'travel_insurance' },
     { name: 'european_photo' },
     { name: 'health_insurance' }
-  ]), updateAply);
+  ]), updateApply);
 
-  router.delete('/application/:id', deleteAply);
+  router.delete('/application/:id', deleteApply);
   router.patch('/application/:id', updateStatus);
 export default router;
