@@ -6,5 +6,5 @@ router.post('/inquiries', createInquiry);
 router.get('/inquiries/:id', getInquiryById);
 router.put('/inquiries/:id', updateInquiry);
 router.delete('/inquiries/:id',authenticate, deleteInquiry); 
-router.get('/inquiries', getAllInquiries);
+router.get('/inquiries',authenticate, getAllInquiries);
 export default router;
