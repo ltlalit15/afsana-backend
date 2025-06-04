@@ -31,7 +31,6 @@ export const createReminder = async (req, res) => {
   }
 };
 
-
 export const getReminders = async (req, res) => {
   try {
     const [reminders] = await db.query('SELECT * FROM remainder');
@@ -100,7 +99,6 @@ export const getReminders = async (req, res) => {
     res.status(500).json({ message: 'Internal server error', error: error.message });
   }
 };
-
 
 // GET Reminder by ID
 export const getReminderById = async (req, res) => {
