@@ -27,7 +27,6 @@ export const createAdmissionDecision = async (req, res) => {
     }
   };
  
- 
   // UPDATE
 export const updateAdmissionDecision = async (req, res) => {
     const { id } = req.params;
@@ -51,7 +50,6 @@ export const updateAdmissionDecision = async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   };
- 
  
   export const getAllAdmissionDecisions = async (req, res) => {
     try {
@@ -100,9 +98,6 @@ export const updateAdmissionDecision = async (req, res) => {
     }
   };
   
-
- 
- 
   export const getAdmissionDecisionById = async (req, res) => {
     const { id } = req.params;
     try {
@@ -141,8 +136,6 @@ export const updateAdmissionDecision = async (req, res) => {
     }
   };
   
- 
- 
   export const updateAdmissionStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
