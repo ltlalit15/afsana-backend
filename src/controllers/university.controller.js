@@ -49,7 +49,6 @@ export const createUniversity = async (req, res) => {
   }
 };
 
-
   export const getAllUniversities = async (req, res) => {
     try {
       const [rows] = await db.query('SELECT * FROM universities');
@@ -68,7 +67,6 @@ export const createUniversity = async (req, res) => {
     }
   };
   
-
   export const getUniversityById = async (req, res) => {
     try {
       const { id } = req.params;
@@ -92,7 +90,6 @@ export const createUniversity = async (req, res) => {
     }
   };
   
-
  export const updateUniversity = async (req, res) => {
     try {
       const { id } = req.params;
@@ -142,7 +139,6 @@ export const createUniversity = async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   };
-
 
   export const deleteUniversity = async (req, res) => {
     try {
