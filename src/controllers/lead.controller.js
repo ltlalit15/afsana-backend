@@ -34,7 +34,6 @@ export const createLead = async (req, res) => {
      }
 }
 
-
 export const getLeads = async (req, res) => {
     try {
         const query = 'SELECT * FROM leads';
@@ -87,8 +86,6 @@ export const getLeadById = async (req, res) => {
     res.status(500).json({ message: 'internal server error' });
   }
 };
-
-
 
 export const updateLead = async (req, res) => {
     const { id } = req.params;
