@@ -3,9 +3,6 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import { universityNameById } from '../models/universities.model.js';
 dotenv.config();
- 
- 
- 
   // export const createCounselor = async (req, res) => {
   //   const {
   //     user_id,
@@ -31,7 +28,6 @@ dotenv.config();
   //     res.status(500).json({ message: 'Internal server error', error: err.message });
   //   }
   // };
- 
 
   export const createCounselor = async (req, res) => {
     console.log("req.body : ", req.body);
@@ -93,7 +89,7 @@ dotenv.config();
     }
   };
   
- 
+
   export const getCounselorById = async (req, res) => {
     const { id } = req.params;
   
@@ -135,8 +131,6 @@ dotenv.config();
     }
   };
   
- 
- 
   export const updateCounselor = async (req, res) => {
     const { id } = req.params;
     const {
@@ -172,7 +166,6 @@ dotenv.config();
     }
   };
  
- 
   export const deleteCounselor = async (req, res) => {
     const { id } = req.params;
  
@@ -191,8 +184,7 @@ dotenv.config();
     }
   };
  
- 
-    export const getAllCounselor = async (_, res) => {
+   export const getAllCounselor = async (_, res) => {
       try {
         const [rows] = await db.query(
           `
