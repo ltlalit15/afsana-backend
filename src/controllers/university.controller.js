@@ -12,7 +12,6 @@ export const createUniversity = async (req, res) => {
       contact_phone,
       contact_email,
     } = req.body;
-
     // Extract uploaded logo file
     const logoFile = req.file;
     console.log("logofile : ",logoFile);
@@ -144,11 +143,10 @@ export const createUniversity = async (req, res) => {
     try {
       const { id } = req.params;
       const [result] = await db.query('DELETE FROM universities WHERE id = ?', [id]);
-  
+
       if (result.affectedRows === 0) {
         return res.status(404).json({ message: 'University not found' });
       }
-  
       res.status(200).json({ message: 'University deleted successfully' });
     } catch (error) {
       console.error('Error deleting university:', error);
