@@ -8,7 +8,6 @@ const pool = mysql.createPool({
   password: 'PnsJerAIpWJjumuDSoGtHgwQGqYUDuhu', // Your database password
   database: 'railway',                  // Your database name
   port: 38975,                          // Updated port
-  protocol: 'TCP',                      // Ensure to use TCP protocol as specified
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
