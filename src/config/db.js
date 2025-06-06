@@ -2,30 +2,29 @@ import mysql from 'mysql2';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Create MySQL connection pool with your details
 const pool = mysql.createPool({
-  host: "maglev.proxy.rlwy.net",  // Updated host
-  user: "root",                   // Your database username
-  password: "HAEtdjQHMHeKsWfCkURaWJkHPmqoFfxD",  // Your database password
-  database: "railway",            // Your database name
-  port: 21971,                    // Updated port
+  host: 'switchback.proxy.rlwy.net',    // Updated host
+  user: 'root',                         // Your database user
+  password: 'PnsJerAIpWJjumuDSoGtHgwQGqYUDuhu', // Your database password
+  database: 'railway',                  // Your database name
+  port: 38975,                          // Updated port
+  protocol: 'TCP',                      // Ensure to use TCP protocol as specified
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
 });
 
-// Get a connection and handle connection success/error
+// Test the connection
 pool.getConnection((err, connection) => {
   if (err) {
     console.error('❌ MySQL connection failed:', err.message);
   } else {
     console.log('✅ MySQL connected successfully!');
-    connection.release(); // Release the connection back to the pool
+    connection.release();
   }
 });
 
-// Use .promise() to work with async/await
+// Use .promise() here to enable promise-based API
 const db = pool.promise();
 
-// Export the db object for use in other parts of the app
 export default db;
