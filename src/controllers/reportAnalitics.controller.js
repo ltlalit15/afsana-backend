@@ -9,7 +9,6 @@ export const overview = async (req, res) => {
                 (SELECT COUNT(*) FROM StudentApplicationProcess WHERE Application_stage = true AND Visa_process = false) AS total_Active_Applications,
                 (SELECT COUNT(*) FROM StudentApplicationProcess WHERE Application_stage = true AND Visa_process = true ) AS total_fulfill_Applications
         `;
-
         const queryTotal = `SELECT COUNT(*) AS total FROM follow_ups`;
         const queryInProgress = `SELECT COUNT(*) AS inProgress FROM follow_ups WHERE status = 'In Progress'`;
 
