@@ -59,16 +59,9 @@ export const getPayments = async (req, res) => {
         const query = `
             SELECT * FROM payments
         `;
-
         const [payments] = await db.query(query);
-
-
-
-
         const data = await Promise.all(
             payments.map(async (task) => {
-
-
                 const university_id = task.university;
                 const branch = task.branch;
                 const student_id = task.name
@@ -90,13 +83,10 @@ export const getPayments = async (req, res) => {
                     additional_notes: data[0]?.additional_notes,
                     isInvoiceView: data[0]?.isInvoiceView,
                     payment_date: data[0]?.payment_date,
-
-
                 };
             })
         );
         res.status(200).json(data);
-
     } catch (error) {
         console.error("Error in getPayments: ", error);
         res.status(500).json({ error: "Internal Server Error", details: error.message });
@@ -108,14 +98,8 @@ export const getPaymentsByid = async (req, res) => {
         const { student_id } = req.params;
         const query = `SELECT * FROM payments WHERE name = ?`;
         const [payments] = await db.query(query, [student_id]);
-        
-       
-
-
         const data = await Promise.all(
             payments.map(async (task) => {
-
-
                 const university_id = task.university;
                 const branch = task.branch;
                 const student_id = task.name
@@ -137,7 +121,6 @@ export const getPaymentsByid = async (req, res) => {
                     additional_notes: data[0].additional_notes,
                     isInvoiceView: data[0].isInvoiceView,
                     payment_date: data[0].payment_date,
-
                 };
             })
         );
