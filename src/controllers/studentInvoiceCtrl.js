@@ -7,9 +7,9 @@ export const createstudentinvoice = async (req, res) => {
   const { payment_amount, tax, additional_notes, total, student_id , payment_date} = req.body;
 
   try {
-    if (!payment_amount || !tax || !additional_notes || !total || !student_id || !payment_date) {
-      return res.status(400).json({ message: 'All fields are required' });
-    }
+    // if (!payment_amount || !tax || !additional_notes || !total || !student_id || !payment_date) {
+    //   return res.status(400).json({ message: 'All fields are required' });
+    // }
 
     const query = `
       INSERT INTO student_invoice (payment_amount, tax, additional_notes, total, student_id,payment_date)
