@@ -2,7 +2,7 @@ import db from '../config/db.js';
 import { studentNameById } from '../models/student.model.js';
 import { universityNameById } from '../models/universities.model.js';
 
-export const createAply = async (req, res) => {
+export const createApply = async (req, res) => {
     const data = req.body;
     const files = req.files;
   
@@ -362,7 +362,7 @@ export const getApplicationByStudentAndUniversity = async (req, res) => {
     }
 };
 
-export const updateAply = async (req, res) => {
+export const updateApply = async (req, res) => {
     const { id } = req.params;
     const data = req.body;
     const files = req.files;
@@ -422,7 +422,7 @@ export const updateAply = async (req, res) => {
     }
   };
 
-export const deleteAply = async (req, res) => {
+export const deleteApply = async (req, res) => {
     const { id } = req.params;
    console.log("req.partam :",id);
     try {
