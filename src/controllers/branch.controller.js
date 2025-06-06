@@ -50,7 +50,6 @@ export const createBranch = async (req, res) => {
     }
   };
   
-
   export const getBranches = async (req, res) => {
     try {
       const [branches] = await db.query("SELECT * FROM branches");
