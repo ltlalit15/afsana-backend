@@ -1,27 +1,22 @@
 import db from '../config/db.js';
 import dotenv from 'dotenv';
 dotenv.config();
-
 // CREATE Fee Record
-export const createStudentFee = async (req, res) => {
+export const createStudentFee = async (req, res) => { 
   const { student_name, description, amount, status, fee_date } = req.body;
   console.log("req.body", req.body);
-
   try {
     if (!student_name || !description || !amount || !status || !fee_date) {
       return res.status(400).json({ message: 'All fields are required' });
     }
-
     const query = `
       INSERT INTO student_fees (student_name, description, amount, status, fee_date)
       VALUES (?, ?, ?, ?, ?)`;
-
     const result = await db.query(query, [student_name, description, amount, status, fee_date]);
 
     if (result.affectedRows === 0) {
       return res.status(500).json({ message: "Failed to create fee record" });
     }
-
     return res.status(200).json({ message: 'Student fee record created successfully', id: result.insertId });
   } catch (error) {
     console.log(`Internal server error: ${error}`);
