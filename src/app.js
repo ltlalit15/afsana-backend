@@ -7,9 +7,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 dotenv.config();
-
 const app = express();
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 // Middlewares
@@ -20,13 +18,10 @@ app.use(cors({
    ));
 app.use(helmet());
 app.use(morgan('dev'));
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/public', express.static(path.join(__dirname, '..', 'public')));
 app.use('/uploads', express.static(path.join(__dirname, '..','uploads')));
-
-
 // Routes
 import { responsePage } from './utils/testingPage.js';
 import authRoutes from './routers/auth.routes.js';
@@ -47,6 +42,8 @@ import dashboardRoutes from './routers/dashboard.routes.js';
 import chatRoutes from './routers/chat.routes.js';
 import reportAnaliticsroutes from './routers/reportAnalitics.route.js';
 import studentInvoiceRouter from "./routers/studentInvoiceRouter.js"
+import invoiceByCounselor from "./routers/invoiceByCounselor.route.js";
+import studentinvoiceByCounselors from "./routers/studentinvoiceByCounselor.router.js";
 
 app.get('/', (_, res) =>{ res.send(responsePage)});
 app.use('/api/auth', authRoutes);
@@ -67,6 +64,7 @@ app.use('/api',dashboardRoutes);
 app.use('/api', chatRoutes);
 app.use('/api',reportAnaliticsroutes);
 app.use('/api',studentInvoiceRouter);
-export default app;
+app.use('/api',invoiceByCounselor);
+app.use('/api',studentinvoiceByCounselors);
 
-
+export default app; 
