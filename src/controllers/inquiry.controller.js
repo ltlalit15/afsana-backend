@@ -2,7 +2,6 @@ import db from '../config/db.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-
 export const createInquiry = async (req, res) => {
   const { 
     counselor_id, inquiry_type, source, branch, full_name, phone_number, email, 
@@ -146,6 +145,50 @@ export const getAllInquiries = async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   };
+
+// controllers/inquiry.controller.js
+// Update Inquiry and Assign Counselor
+// export const assignInquiry = async (req, res) => {
+//   const { inquiry_id, counselor_id } = req.body;
+//   if (!inquiry_id || !counselor_id) {
+//     return res.status(400).json({ message: 'inquiry_id and counselor_id are required' });
+//   }
+//   try {
+//     const [result] = await db.query(
+//       `UPDATE inquiries SET counselor_id = ? WHERE id = ?`,
+//       [counselor_id, inquiry_id]
+//     );
+//     if (result.affectedRows === 0) {
+//       return res.status(404).json({ message: 'Inquiry not found' });
+//     }
+//     res.status(200).json({ message: 'Inquiry assigned successfully' });
+//   } catch (error) {
+//     console.error('Error assigning inquiry:', error);
+//     res.status(500).json({ message: 'Internal server error' });
+//   }
+// };
+
+
+export const assignInquiry = async (req, res) => {
+  const { inquiry_id, counselor_id } = req.body;
+  if (!inquiry_id || !counselor_id) {
+    return res.status(400).json({ message: 'inquiry_id and counselor_id are required' });
+  }
+  try {
+    const [result] = await db.query(
+      `UPDATE inquiries SET counselor_id = ?, status = 1 WHERE id = ?`,
+      [counselor_id, inquiry_id]
+    );
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Inquiry not found' });
+    }
+    res.status(200).json({ message: 'Inquiry assigned successfully and status updated to 1' });
+  } catch (error) {
+    console.error('Error assigning inquiry:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 
   
   
