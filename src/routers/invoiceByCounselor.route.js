@@ -7,6 +7,7 @@ import {
     getStudentFeeByIdYcounselor,
     updateStudentFeeYcounselor,
     deleteStudentFeeYcounselor,
+    getStudentFeesByUser
   
 } from '../controllers/counselorInvoice.controller.js';
 const router = express.Router();
@@ -15,5 +16,6 @@ router.get('/getStudentFeesYcounselor', getStudentFeesYcounselor);
 router.get('/getStudentFeeByIdYcounselor/:id', getStudentFeeByIdYcounselor);
 router.put('/updateStudentFeeYcounselo/:id', updateStudentFeeYcounselor);
 router.delete('/deleteStudentFeeYcounselor/:id', deleteStudentFeeYcounselor);
+router.get('/getStudentFeesByUser/:user_id', getStudentFeesByUser);
 
 export default router;
