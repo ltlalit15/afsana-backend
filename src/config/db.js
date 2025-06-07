@@ -3,11 +3,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const pool = mysql.createPool({
-  host: 'switchback.proxy.rlwy.net',    // Updated host
-  user: 'root',                         // Your database user
-  password: 'PnsJerAIpWJjumuDSoGtHgwQGqYUDuhu', // Your database password
-  database: 'railway',                  // Your database name
-  port: 38975,                          // Updated port
+  host: 'mainline.proxy.rlwy.net',         // Updated host from CLI
+  user: 'root',                             // Same as CLI
+  password: 'ohKmevKnUNALhzxrJvhUBtMmPiYzcHpL', // Updated password from CLI
+  database: 'railway',                      // Same as CLI
+  port: 28526,                              // Updated port from CLI
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
@@ -23,7 +23,6 @@ pool.getConnection((err, connection) => {
   }
 });
 
-// Use .promise() here to enable promise-based API
 const db = pool.promise();
 
 export default db;
