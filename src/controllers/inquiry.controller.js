@@ -2,7 +2,7 @@ import db from '../config/db.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-export const createInquiry = async (req, res) => {
+xport const createInquiry = async (req, res) => {
   const { 
     counselor_id, inquiry_type, source, branch, full_name, phone_number, email, 
     course_name, country, city, date_of_inquiry, address, present_address, 
@@ -29,8 +29,8 @@ export const createInquiry = async (req, res) => {
         (counselor_id, inquiry_type, source, branch, full_name, phone_number, email, 
          course_name, country, city, date_of_inquiry, address, present_address, 
          education_background, english_proficiency, company_name, job_title, 
-         job_duration, preferred_countries)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+         job_duration, preferred_countries, lead_status,payment_status, assignment_description)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0);`,
       [
         formattedCounselorId, inquiry_type, source, branch, full_name, phone_number, email,
         course_name, country, city, date_of_inquiry, address, present_address,
