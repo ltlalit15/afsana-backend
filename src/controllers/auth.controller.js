@@ -337,25 +337,27 @@ export const getuserById = async (req, res) => {
 export const createStudent = async (req, res) => {
   console.log("req.body : ", req.body);
   console.log("req.files : ", req.files);
+
   try {
     const {
-      user_id = '',
-      father_name = '',
-      admission_no = '',
-      id_no = '',
-      mobile_number = '',
-      university_id = '',
-      date_of_birth = '',
-      gender = '',
-      category = '',
-      address = '',
+      user_id,
+      father_name,
+      admission_no,
+      id_no,
+      mobile_number,
+      university_id,
+      date_of_birth,
+      gender,
+      category,
+      address,
       full_name,
-      role = 'student',  // default role
       password,
       email
     } = req.body;
 
-    // ✅ Auto-generate public URLs for uploaded files
+    const role = 'student'; // fixed role
+
+    // Handle uploaded files
     const photo = req.files?.photo?.[0]
       ? `/uploads/${req.files.photo[0].filename}`
       : '';
@@ -364,21 +366,16 @@ export const createStudent = async (req, res) => {
       ? `/uploads/${req.files.documents[0].filename}`
       : '';
 
-    // ✅ Only check required fields
-    if (!full_name || !password || !email) {
-      return res.status(400).json({ message: 'Full name, email, and password are required' });
-    }
-
-    // ✅ Check if user already exists
+    // Check for duplicate email
     const [existing] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
     if (existing.length > 0) {
       return res.status(409).json({ message: 'User already exists' });
     }
 
-    // ✅ Hash password
+    // Hash the password
     const hashed = await bcrypt.hash(password, 10);
 
-    // ✅ Insert student data
+    // Insert student data (without full_name)
     const [studentResult] = await db.query(
       `INSERT INTO students 
         (user_id, father_name, admission_no, id_no, mobile_number, university_id, date_of_birth, gender, category, address, photo, documents) 
@@ -405,24 +402,24 @@ export const createStudent = async (req, res) => {
 
     const studentId = studentResult.insertId;
 
-    // ✅ Insert into users
+    // Create user record with full_name and role
     const [userResult] = await db.query(
-      `INSERT INTO users (email, password, full_name, role, user_id, student_id)
-       VALUES (?, ?, ?, ?, ?, ?)`,
+      'INSERT INTO users (email, password, full_name, role, user_id, student_id) VALUES (?, ?, ?, ?, ?, ?)',
       [email, hashed, full_name, role, user_id, studentId]
     );
 
-    const insertedUserId = userResult.insertId;
-    if (!insertedUserId) {
+    if (!userResult.insertId) {
       return res.status(400).json({ message: 'User creation failed' });
     }
 
     res.status(201).json({ message: 'Student created successfully' });
+
   } catch (error) {
     console.error('Error creating student:', error);
     res.status(500).json({ message: 'Internal server error', error });
   }
 };
+
 
 export const getAllStudents = async (req, res) => {
   try {
