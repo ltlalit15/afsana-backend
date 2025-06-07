@@ -30,18 +30,18 @@ dotenv.config();
 // };
 
 export const createStudentFeeBYcounselor = async (req, res) => { 
-  const { student_name, description, amount, fee_date, inquiry_id } = req.body;
+  const { student_name, description, amount, fee_date, inquiry_id, user_id } = req.body;
 
   console.log("req.body", req.body);
 
   try {
     // Insert fee record
     const query = `
-     INSERT INTO student_fees_by_counselor (student_name, description, amount, fee_date, inquiry_id)
-VALUES (?, ?, ?, ?, ?)
+     INSERT INTO student_fees_by_counselor (student_name, description, amount, fee_date, inquiry_id, user_id)
+VALUES (?, ?, ?, ?, ?, ?)
 
     `;
-    const [result] = await db.query(query, [student_name, description, amount, fee_date, inquiry_id]);
+    const [result] = await db.query(query, [student_name, description, amount, fee_date, inquiry_id, user_id]);
 
     if (result.affectedRows === 0) {
       return res.status(500).json({ message: "Failed to create fee record" });
@@ -137,6 +137,35 @@ export const deleteStudentFeeYcounselor = async (req, res) => {
   } catch (error) {
     console.log(`Internal server error: ${error}`);
     res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+export const getStudentFeesByUser = async (req, res) => {
+  const { user_id } = req.params;
+
+  try {
+    // Query to get the student fees by user_id
+    const query = `
+      SELECT * FROM student_fees_by_counselor WHERE user_id = ?
+    `;
+
+    const [result] = await db.query(query, [user_id]);
+
+    // If no records found
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No fee records found for this user.' });
+    }
+
+    // Return the result
+    return res.status(200).json({
+      message: 'Student fee records fetched successfully',
+      data: result
+    });
+    
+  } catch (error) {
+    console.error('Error fetching student fees:', error);
+    return res.status(500).json({ message: 'Internal server error', error: error.message });
   }
 };
 
