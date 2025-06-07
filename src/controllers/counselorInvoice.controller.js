@@ -30,21 +30,18 @@ dotenv.config();
 // };
 
 export const createStudentFeeBYcounselor = async (req, res) => { 
-  const { student_name, description, amount, status, fee_date, tax, inquiry_id } = req.body;
+  const { student_name, description, amount, fee_date, inquiry_id } = req.body;
 
   console.log("req.body", req.body);
-
-  // if (!student_name || !description || !amount || !status || !fee_date || !inquiry_id) {
-  //   return res.status(400).json({ message: 'All fields are required including inquiry_id' });
-  // }
 
   try {
     // Insert fee record
     const query = `
-      INSERT INTO student_fees_by_counselor (student_name, description, amount, status, fee_date)
-      VALUES (?, ?, ?, ?, ?)
+     INSERT INTO student_fees_by_counselor (student_name, description, amount, fee_date, inquiry_id)
+VALUES (?, ?, ?, ?, ?)
+
     `;
-    const [result] = await db.query(query, [student_name, description, amount, status, fee_date]);
+    const [result] = await db.query(query, [student_name, description, amount, fee_date, inquiry_id]);
 
     if (result.affectedRows === 0) {
       return res.status(500).json({ message: "Failed to create fee record" });
