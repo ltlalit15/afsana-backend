@@ -335,12 +335,11 @@ export const getuserById = async (req, res) => {
 
 
 export const createStudent = async (req, res) => {
-  console.log("req.body : ", req.body);
-  console.log("req.files : ", req.files);
+  console.log("req.body:", req.body);
+  console.log("req.files:", req.files);
 
   try {
     const {
-      user_id,
       father_name,
       admission_no,
       id_no,
@@ -355,9 +354,14 @@ export const createStudent = async (req, res) => {
       email
     } = req.body;
 
-    const role = 'student'; // fixed role
+    // ✅ Check for required fields
+    if (!full_name || !email || !password) {
+      return res.status(400).json({ message: 'full_name, email, and password are required' });
+    }
 
-    // Handle uploaded files
+    const role = 'student';
+
+    // ✅ Handle optional file uploads
     const photo = req.files?.photo?.[0]
       ? `/uploads/${req.files.photo[0].filename}`
       : '';
@@ -366,51 +370,54 @@ export const createStudent = async (req, res) => {
       ? `/uploads/${req.files.documents[0].filename}`
       : '';
 
-    // Check for duplicate email
+    // ✅ Email uniqueness check
     const [existing] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
     if (existing.length > 0) {
       return res.status(409).json({ message: 'User already exists' });
     }
 
-    // Hash the password
+    // ✅ Password hashing
     const hashed = await bcrypt.hash(password, 10);
 
-    // Insert student data (without full_name)
+    // ✅ Handle optional fields with null values for optional fields
+    const parsedUniversityId =
+      university_id && !isNaN(university_id) ? Number(university_id) : null;
+
+    // ✅ Insert into users table first (since user_id is created there)
+    const [userResult] = await db.query(
+      'INSERT INTO users (email, password, full_name, user_id, role) VALUES (?, ?, ?, ?, ?)',
+      [email, hashed, full_name,0, role]
+    );
+
+    const userId = userResult.insertId;
+
+    // ✅ Insert into students table with the `user_id` created in the `users` table
     const [studentResult] = await db.query(
       `INSERT INTO students 
-        (user_id, father_name, admission_no, id_no, mobile_number, university_id, date_of_birth, gender, category, address, photo, documents) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        (user_id, father_name, admission_no, id_no, mobile_number, university_id, date_of_birth, gender, category, address, full_name, role, photo, documents) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        user_id,
-        father_name,
-        admission_no,
-        id_no,
-        mobile_number,
-        university_id,
-        date_of_birth,
-        gender,
-        category,
-        address,
+        userId,
+        father_name || '',
+        admission_no || '',
+        id_no || '',
+        mobile_number || '',
+        parsedUniversityId,
+        date_of_birth || null,
+        gender || '',
+        category || '',
+        address || '',
+        full_name,
+        role,
         photo,
         documents
       ]
     );
 
-    if (!studentResult.affectedRows) {
-      return res.status(400).json({ message: 'Student not added properly' });
-    }
-
     const studentId = studentResult.insertId;
 
-    // Create user record with full_name and role
-    const [userResult] = await db.query(
-      'INSERT INTO users (email, password, full_name, role, user_id, student_id) VALUES (?, ?, ?, ?, ?, ?)',
-      [email, hashed, full_name, role, user_id, studentId]
-    );
-
-    if (!userResult.insertId) {
-      return res.status(400).json({ message: 'User creation failed' });
-    }
+    // ✅ After inserting the student, update `users` table with the `student_id`
+    await db.query('UPDATE users SET student_id = ? WHERE id = ?', [studentId, userId]);
 
     res.status(201).json({ message: 'Student created successfully' });
 
