@@ -3,11 +3,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const pool = mysql.createPool({
-  host: 'mainline.proxy.rlwy.net',         // Updated host from CLI
+  host: 'hopper.proxy.rlwy.net',         // Updated host from CLI
   user: 'root',                             // Same as CLI
-  password: 'ohKmevKnUNALhzxrJvhUBtMmPiYzcHpL', // Updated password from CLI
+  password: 'BHOxQQqKzSpdiuGqXjleyvTllOGsFghr', // Updated password from CLI
   database: 'railway',                      // Same as CLI
-  port: 28526,                              // Updated port from CLI
+  port: 22178,                              // Updated port from CLI
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
