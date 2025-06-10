@@ -190,5 +190,50 @@ export const assignInquiry = async (req, res) => {
 };
 
 
+export const getAllConvertedLeads = async (req, res) => {
+  try {
+    const query = "SELECT * FROM inquiries WHERE lead_status = 'Converted'";
+    const [result] = await db.query(query);
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No converted leads found' });
+    }
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error fetching converted leads:", error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+
+export const getCounselorWisePerformance = async (req, res) => {
+  try {
+    const [data] = await db.query(`
+      SELECT 
+        counselor_id,
+        COUNT(*) AS total_leads,
+        SUM(lead_status = 'Converted') AS converted_leads,
+        MAX(status) AS status
+      FROM inquiries
+      GROUP BY counselor_id
+    `);
+
+    // Optional: Map counselor_id to actual counselor names if needed
+    const formatted = data.map((row) => ({
+      counselor_id: row.counselor_id,
+      counselor_name: `Counselor ${row.counselor_id}`, // replace with JOIN if names exist
+      total_leads: row.total_leads,
+      converted_leads: row.converted_leads,
+      status: row.status === 1 ? 'Active' : 'Inactive',
+    }));
+
+    res.status(200).json(formatted);
+  } catch (error) {
+    console.error('Error fetching counselor performance:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+
+
   
   
