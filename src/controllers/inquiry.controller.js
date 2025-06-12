@@ -208,9 +208,43 @@ export const getAllConvertedLeads = async (req, res) => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const getAllleadsstatus = async (req, res) => {
   try {
     const query = "SELECT * FROM inquiries WHERE lead_status != '0'";
+    //  const query = `
+    //   SELECT 
+    //     inquiries.*, 
+    //     users.full_name AS counselor_name
+    //   FROM inquiries
+    //   LEFT JOIN counselors ON inquiries.counselor_id = counselors.id
+    //   LEFT JOIN users ON users.counselor_id = counselors.id
+    //   WHERE inquiries.lead_status != '0'
+    // `;
     const [result] = await db.query(query);
     if (result.length === 0) {
       return res.status(404).json({ message: 'No leads found (excluding status 0)' });

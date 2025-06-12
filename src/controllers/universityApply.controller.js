@@ -42,7 +42,7 @@ export const createApply = async (req, res) => {
     });
   
     try {
-      const query = `INSERT INTO StudentApplicationProcess SET ?`;
+      const query = `INSERT INTO studentapplicationprocess SET ?`;
       const [result] = await db.query(query, data);
   
       res.status(201).json({ message: 'Record created successfully', id: result.insertId });
@@ -54,7 +54,7 @@ export const createApply = async (req, res) => {
   
   export const getAllApplications = async (req, res) => {
     try {
-        const query = `SELECT * FROM StudentApplicationProcess`;
+        const query = `SELECT * FROM studentapplicationprocess`;
         const [applications] = await db.query(query);
 
         if (applications.length === 0) {
@@ -136,7 +136,7 @@ export const getAllApplicationsById = async (req, res) => {
     }
 
     try {
-        const query = `SELECT * FROM StudentApplicationProcess WHERE id = ?`;
+        const query = `SELECT * FROM studentapplicationprocess WHERE id = ?`;
         const [applications] = await db.query(query, [id]);
 
         if (applications.length === 0) {
@@ -212,7 +212,7 @@ export const getAplicationBYStudentID = async (req, res) => {
     console.log("req ", req.params);
     const studentId = req.params.studentId;
     try {
-        const query = `SELECT * FROM StudentApplicationProcess WHERE student_id = ?`;
+        const query = `SELECT * FROM studentapplicationprocess WHERE student_id = ?`;
         const [applications] = await db.query(query, [studentId]);
 
         if (applications.length === 0) {
@@ -288,7 +288,7 @@ export const getApplicationByStudentAndUniversity = async (req, res) => {
     const { studentId, universityId } = req.params;
 
     try {
-        const query = `SELECT * FROM StudentApplicationProcess WHERE student_id = ? AND university_id = ?`;
+        const query = `SELECT * FROM studentapplicationprocess WHERE student_id = ? AND university_id = ?`;
         const [applications] = await db.query(query, [studentId, universityId]);
 
         if (applications.length === 0) {
@@ -406,7 +406,7 @@ export const updateApply = async (req, res) => {
       const fieldsToUpdate = Object.keys(data).map((key) => `${key} = ?`).join(', ');
       const values = Object.values(data);
   
-      const query = `UPDATE StudentApplicationProcess SET ${fieldsToUpdate} WHERE id = ?`;
+      const query = `UPDATE studentapplicationprocess SET ${fieldsToUpdate} WHERE id = ?`;
       values.push(id);
   
       const [result] = await db.query(query, values);
@@ -426,7 +426,7 @@ export const deleteApply = async (req, res) => {
     const { id } = req.params;
    console.log("req.partam :",id);
     try {
-        const query = `DELETE FROM StudentApplicationProcess WHERE id = ?`;
+        const query = `DELETE FROM studentapplicationprocess WHERE id = ?`;
         const [result] = await db.query(query, [id]);
 
         if (result.affectedRows === 0) {
@@ -445,7 +445,7 @@ export const updateStatus = async (req, res) => {
     const { status } = req.body;
 
     try {
-        const query = `UPDATE StudentApplicationProcess SET status = ? WHERE id = ?`;
+        const query = `UPDATE studentapplicationprocess SET status = ? WHERE id = ?`;
         const [result] = await db.query(query, [status, id]);
 
         if (result.affectedRows === 0) {
