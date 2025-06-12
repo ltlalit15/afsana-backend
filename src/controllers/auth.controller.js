@@ -117,13 +117,10 @@ export const login = async (req, res) => {
           full_name: user.full_name,
           role: user.role,
           counselor_id: user.counselor_id,
-
-
         },
         permissions: permission
       });
     }
-
     res.json({
       token,
       user: {
@@ -161,9 +158,7 @@ export const getuserById = async (req, res) => {
       if (studentDetails.length === 0) {
         return res.status(404).json({ message: 'Student not found' });
       }
-
       const student = studentDetails[0];
-
       return res.json({
         user: {
           id: user.id,
@@ -337,7 +332,6 @@ export const getuserById = async (req, res) => {
 export const createStudent = async (req, res) => {
   console.log("req.body:", req.body);
   console.log("req.files:", req.files);
-
   try {
     const {
       father_name,
@@ -353,44 +347,34 @@ export const createStudent = async (req, res) => {
       password,
       email
     } = req.body;
-
     // ✅ Check for required fields
     if (!full_name || !email || !password) {
       return res.status(400).json({ message: 'full_name, email, and password are required' });
     }
-
     const role = 'student';
-
     // ✅ Handle optional file uploads
     const photo = req.files?.photo?.[0]
       ? `/uploads/${req.files.photo[0].filename}`
       : '';
-
     const documents = req.files?.documents?.[0]
       ? `/uploads/${req.files.documents[0].filename}`
       : '';
-
     // ✅ Email uniqueness check
     const [existing] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
     if (existing.length > 0) {
       return res.status(409).json({ message: 'User already exists' });
     }
-
     // ✅ Password hashing
     const hashed = await bcrypt.hash(password, 10);
-
     // ✅ Handle optional fields with null values for optional fields
     const parsedUniversityId =
       university_id && !isNaN(university_id) ? Number(university_id) : null;
-
     // ✅ Insert into users table first (since user_id is created there)
     const [userResult] = await db.query(
       'INSERT INTO users (email, password, full_name, user_id, role) VALUES (?, ?, ?, ?, ?)',
       [email, hashed, full_name,0, role]
     );
-
     const userId = userResult.insertId;
-
     // ✅ Insert into students table with the `user_id` created in the `users` table
     const [studentResult] = await db.query(
       `INSERT INTO students 
@@ -413,9 +397,7 @@ export const createStudent = async (req, res) => {
         documents
       ]
     );
-
     const studentId = studentResult.insertId;
-
     // ✅ After inserting the student, update `users` table with the `student_id`
     await db.query('UPDATE users SET student_id = ? WHERE id = ?', [studentId, userId]);
 
@@ -516,7 +498,7 @@ export const updateUser = async (req, res) => {
   const documents = req.files?.documents?.[0] ? `/uploads/${req.files.documents[0].filename}` : null;
 
   try {
-    const [data] = await db.query('SELECT * FROM users WHERE id = ?', [id]);
+    const [data ] = await db.query('SELECT * FROM users WHERE id = ?', [id]);
     if (data.length === 0) {
       return res.status(404).json({ message: 'User not found' });
     }

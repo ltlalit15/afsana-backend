@@ -5,21 +5,20 @@ dotenv.config();
 export const createInquiry = async (req, res) => {
   const { 
     counselor_id, inquiry_type, source, branch, full_name, phone_number, email, 
-    course_name, country, city, date_of_inquiry, address, present_address, 
-    education_background, english_proficiency, company_name, job_title, 
-    job_duration, preferred_countries 
+    course_name, country, city,  date_of_birth, gender , medium,  study_level, study_field,
+    intake, budget, consent, highest_level, ssc, hsc ,bachelor ,university , test_type,  overall_score, reading_score, writing_score, speaking_score, listening_score, date_of_inquiry, address, present_address, additionalNotes, 
+    study_gap, visa_refused, refusal_reason, education_background, english_proficiency, company_name, job_title,
+    job_duration, preferred_countries  
   } = req.body;
-
   console.log("req.body ", req.body);
-
   try {
-    if (!inquiry_type || !source || !branch || !full_name || !phone_number || !email ||
-      !course_name || !country || !city || !date_of_inquiry || !address || !present_address ||
-      !education_background || !english_proficiency || !company_name || !job_title ||
-      !job_duration || !preferred_countries
-    ) {
-      return res.status(400).json({ message: "All fields are required." });
-    }
+    // if (!inquiry_type || !source || !branch || !full_name || !phone_number || !email ||
+    //   !course_name || !country || !city || !date_of_inquiry || !address || !present_address ||
+    //   !education_background  || !company_name || !job_title ||
+    //   !job_duration || !preferred_countries
+    // ) {
+    //   return res.status(400).json({ message: "All fields are required." });
+    // }
 
     // Handle 'undefined' and undefined counselor_id
     const formattedCounselorId = (counselor_id === "undefined" || counselor_id === undefined) ? null : counselor_id;
@@ -27,15 +26,17 @@ export const createInquiry = async (req, res) => {
     const [result] = await db.query(
       `INSERT INTO inquiries 
         (counselor_id, inquiry_type, source, branch, full_name, phone_number, email, 
-         course_name, country, city, date_of_inquiry, address, present_address, 
-         education_background, english_proficiency, company_name, job_title, 
+         course_name, country, city, date_of_birth, gender, medium, study_level, study_field,
+    intake, budget, consent,  highest_level, ssc, hsc ,bachelor ,university , test_type, overall_score, reading_score, writing_score, speaking_score, listening_score,   date_of_inquiry, address, present_address, additionalNotes ,
+        study_gap, visa_refused, refusal_reason, education_background, english_proficiency, company_name, job_title, 
          job_duration, preferred_countries, lead_status,payment_status, assignment_description)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0);`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0);`,
       [
         formattedCounselorId, inquiry_type, source, branch, full_name, phone_number, email,
-        course_name, country, city, date_of_inquiry, address, present_address,
+        course_name, country, city, date_of_birth, gender, medium , study_level, study_field,
+    intake, budget, consent,  highest_level, ssc, hsc ,bachelor ,university, test_type, overall_score, reading_score, writing_score, speaking_score, listening_score,  date_of_inquiry, address, present_address, additionalNotes, study_gap, visa_refused, refusal_reason,
         JSON.stringify(education_background), JSON.stringify(english_proficiency),
-        company_name, job_title, job_duration, JSON.stringify(preferred_countries)
+        company_name, job_title, job_duration,  JSON.stringify(preferred_countries)
       ]
     );
 
@@ -192,7 +193,7 @@ export const assignInquiry = async (req, res) => {
 
 export const getAllConvertedLeads = async (req, res) => {
   try {
-    const query = "SELECT * FROM inquiries WHERE lead_status = 'Converted'";
+    const query = "SELECT * FROM inquiries WHERE lead_status = 'Converted to Lead'";
     const [result] = await db.query(query);
     if (result.length === 0) {
       return res.status(404).json({ message: 'No converted leads found' });
@@ -200,6 +201,23 @@ export const getAllConvertedLeads = async (req, res) => {
     res.status(200).json(result);
   } catch (error) {
     console.error("Error fetching converted leads:", error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+
+
+
+export const getAllleadsstatus = async (req, res) => {
+  try {
+    const query = "SELECT * FROM inquiries WHERE lead_status != '0'";
+    const [result] = await db.query(query);
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No leads found (excluding status 0)' });
+    }
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error fetching leads:", error);
     res.status(500).json({ message: 'Server error', error });
   }
 };
@@ -234,6 +252,4 @@ export const getCounselorWisePerformance = async (req, res) => {
 };
 
 
-
-  
   
