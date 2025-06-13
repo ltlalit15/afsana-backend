@@ -74,8 +74,9 @@ const dbConfig = {
   database: "railway",               // Database name from the connection string
   charset: "utf8mb4",                // Default charset
   multipleStatements: false,         // If you plan to run multiple queries
-  timezone: "Z",                     // Default timezone
-  protocol: "TCP",                   // Specify TCP protocol explicitly (optional)
+  waitForConnections: true,                   // Default timezone
+  connectionLimit: 10, 
+  queueLimit: 0 // Specify TCP protocol explicitly (optional)
 };
 
 
