@@ -72,6 +72,55 @@ export const getInquiryById = async (req, res) => {
     }
 };
 
+export const getCheckEligiblity = async (req, res) => {
+    const { id } = req.params;
+    try {
+      const [results] = await db.query('SELECT * FROM inquiries WHERE id = ?', [id]);
+  
+      if (results.length === 0) {
+        return res.status(404).json({ message: 'Inquiry not found' });
+      }
+  
+      // Parse JSON fields
+      const inquiry = {
+        ...results[0],
+        education_background: JSON.parse(results[0].education_background),
+        english_proficiency: JSON.parse(results[0].english_proficiency),
+        preferred_countries: JSON.parse(results[0].preferred_countries),
+      };
+  
+      res.json(inquiry);
+    } catch (err) {
+      console.error('Get Inquiry error:', err);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+export const updateEligibilityStatus = async (req, res) => {
+  const { id } = req.params;
+  const { eligibility_status } = req.body;
+
+  // Validate input: allow only 0 or 1
+  if (![0,1,2,3].includes(Number(eligibility_status))) {
+    return res.status(400).json({ message: "eligibility_status must be 0 1, 2 or 3" });
+  }
+
+  try {
+    const query = "UPDATE inquiries SET eligibility_status = ? WHERE id = ?";
+    const [result] = await db.query(query, [eligibility_status, id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Inquiry not found" });
+    }
+
+    res.status(200).json({ message: "Eligibility status updated successfully" });
+  } catch (error) {
+    console.error("Error updating eligibility status:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 export const updateInquiry = async (req, res) => {
     const { id } = req.params;
     const { 
@@ -128,24 +177,63 @@ export const deleteInquiry = async (req, res) => {
     }
   };
 
-export const getAllInquiries = async (req, res) => {
-    try {
-      const [results] = await db.query('SELECT * FROM inquiries');
+// export const getAllInquiries = async (req, res) => {
+//     try {
+//       // const [results] = await db.query('SELECT * FROM inquiries');
 
-      // Parse JSON fields for each inquiry
-      const inquiries = results.map(inquiry => ({
-        ...inquiry,
-        education_background: JSON.parse(inquiry.education_background),
-        english_proficiency: JSON.parse(inquiry.english_proficiency),
-        preferred_countries: JSON.parse(inquiry.preferred_countries),
-      }));
 
-      res.json(inquiries);
-    } catch (err) {
-      console.error('Get All Inquiries error:', err);
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  };
+//        const [results] = await db.query(`
+//       SELECT 
+//         i.*, 
+//         u.full_name AS counselor_name
+//       FROM 
+//         inquiries i
+//       LEFT JOIN 
+//         users u ON i.counselor_id = u.counselor_id
+//     `);
+
+//       // Parse JSON fields for each inquiry
+//       const inquiries = results.map(inquiry => ({
+//         ...inquiry,
+//         education_background: JSON.parse(inquiry.education_background),
+//         english_proficiency: JSON.parse(inquiry.english_proficiency),
+//         preferred_countries: JSON.parse(inquiry.preferred_countries),
+//       }));
+
+//       res.json(inquiries);
+//     } catch (err) {
+//       console.error('Get All Inquiries error:', err);
+//       res.status(500).json({ message: 'Internal server error' });
+//     }
+//   };
+
+  export const getAllInquiries = async (req, res) => {
+  try {
+    const [results] = await db.query(`
+      SELECT 
+        i.*, 
+        u.full_name AS counselor_name
+      FROM 
+        inquiries i
+      LEFT JOIN 
+        users u ON i.counselor_id = u.counselor_id
+    `);
+
+    // Parse JSON fields for each inquiry
+    const inquiries = results.map(inquiry => ({
+      ...inquiry,
+      education_background: JSON.parse(inquiry.education_background || '{}'),
+      english_proficiency: JSON.parse(inquiry.english_proficiency || '{}'),
+      preferred_countries: JSON.parse(inquiry.preferred_countries || '{}'),
+    }));
+
+    res.json(inquiries);
+  } catch (err) {
+    console.error('Get All Inquiries error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 
 // controllers/inquiry.controller.js
 // Update Inquiry and Assign Counselor
@@ -169,26 +257,62 @@ export const getAllInquiries = async (req, res) => {
 //   }
 // };
 
+// export const assignInquiry = async (req, res) => {
+//   const { inquiry_id, counselor_id } = req.body;
+//   if (!inquiry_id || !counselor_id) {
+//     return res.status(400).json({ message: 'inquiry_id and counselor_id are required' });
+//   }
+//   try {
+//     const [result] = await db.query(
+//       `UPDATE inquiries SET counselor_id = ?, status = 1 WHERE id = ?`,
+//       [counselor_id, inquiry_id]
+//     );
+//     if (result.affectedRows === 0) {
+//       return res.status(404).json({ message: 'Inquiry not found' });
+//     }
+//     res.status(200).json({ message: 'Inquiry assigned successfully and status updated to 1' });
+//   } catch (error) {
+//     console.error('Error assigning inquiry:', error);
+//     res.status(500).json({ message: 'Internal server error' });
+//   }
+// };
+
+
+
+
+
 
 export const assignInquiry = async (req, res) => {
-  const { inquiry_id, counselor_id } = req.body;
+  const { inquiry_id, counselor_id, follow_up_date, notes } = req.body;
+
+  // Validation
   if (!inquiry_id || !counselor_id) {
     return res.status(400).json({ message: 'inquiry_id and counselor_id are required' });
   }
   try {
     const [result] = await db.query(
-      `UPDATE inquiries SET counselor_id = ?, status = 1 WHERE id = ?`,
-      [counselor_id, inquiry_id]
+      `UPDATE inquiries
+       SET counselor_id = ?, 
+           status = 1, 
+           follow_up_date = ?, 
+           notes = ? 
+       WHERE id = ?`,
+      [counselor_id, follow_up_date || null, notes || null, inquiry_id]
     );
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Inquiry not found' });
     }
-    res.status(200).json({ message: 'Inquiry assigned successfully and status updated to 1' });
+    res.status(200).json({ message: 'Inquiry assigned successfully, status updated, and follow-up info saved' });
   } catch (error) {
     console.error('Error assigning inquiry:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+
+
+
+
 
 
 export const getAllConvertedLeads = async (req, res) => {
@@ -204,33 +328,6 @@ export const getAllConvertedLeads = async (req, res) => {
     res.status(500).json({ message: 'Server error', error });
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 export const getAllleadsstatus = async (req, res) => {
@@ -255,7 +352,6 @@ export const getAllleadsstatus = async (req, res) => {
     res.status(500).json({ message: 'Server error', error });
   }
 };
-
 
 export const getCounselorWisePerformance = async (req, res) => {
   try {
