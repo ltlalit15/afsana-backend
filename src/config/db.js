@@ -79,7 +79,7 @@ const dbConfig = {
   queueLimit: 0 // Specify TCP protocol explicitly (optional)
 };
 
-
+const pool = mysql.createPool(dbConfig);
 pool.getConnection((err, connection) => {
   if (err) {
     console.error('❌ MySQL connection failed:', err.message);
