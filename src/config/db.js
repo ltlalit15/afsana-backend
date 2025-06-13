@@ -61,17 +61,23 @@
 // export default db;
 
 
-
+// live db
 import mysql from 'mysql2';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-});
+const dbConfig = {
+  host: "yamabiko.proxy.rlwy.net",  // Host from the connection string
+  port: 40977,                       // Port from the connection string
+  user: "root",                      // User from the connection string
+  password: "ePOFTgxzdoSIgBChZSBpDwnskRtXrqBW",  // Password from the connection string
+  database: "railway",               // Database name from the connection string
+  charset: "utf8mb4",                // Default charset
+  multipleStatements: false,         // If you plan to run multiple queries
+  timezone: "Z",                     // Default timezone
+  protocol: "TCP",                   // Specify TCP protocol explicitly (optional)
+};
+
 
 pool.getConnection((err, connection) => {
   if (err) {
