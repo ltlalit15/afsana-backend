@@ -177,35 +177,6 @@ export const deleteInquiry = async (req, res) => {
     }
   };
 
-// export const getAllInquiries = async (req, res) => {
-//     try {
-//       // const [results] = await db.query('SELECT * FROM inquiries');
-
-
-//        const [results] = await db.query(`
-//       SELECT 
-//         i.*, 
-//         u.full_name AS counselor_name
-//       FROM 
-//         inquiries i
-//       LEFT JOIN 
-//         users u ON i.counselor_id = u.counselor_id
-//     `);
-
-//       // Parse JSON fields for each inquiry
-//       const inquiries = results.map(inquiry => ({
-//         ...inquiry,
-//         education_background: JSON.parse(inquiry.education_background),
-//         english_proficiency: JSON.parse(inquiry.english_proficiency),
-//         preferred_countries: JSON.parse(inquiry.preferred_countries),
-//       }));
-
-//       res.json(inquiries);
-//     } catch (err) {
-//       console.error('Get All Inquiries error:', err);
-//       res.status(500).json({ message: 'Internal server error' });
-//     }
-//   };
 
   export const getAllInquiries = async (req, res) => {
   try {
@@ -233,53 +204,6 @@ export const deleteInquiry = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
-
-// controllers/inquiry.controller.js
-// Update Inquiry and Assign Counselor
-// export const assignInquiry = async (req, res) => {
-//   const { inquiry_id, counselor_id } = req.body;
-//   if (!inquiry_id || !counselor_id) {
-//     return res.status(400).json({ message: 'inquiry_id and counselor_id are required' });
-//   }
-//   try {
-//     const [result] = await db.query(
-//       `UPDATE inquiries SET counselor_id = ? WHERE id = ?`,
-//       [counselor_id, inquiry_id]
-//     );
-//     if (result.affectedRows === 0) {
-//       return res.status(404).json({ message: 'Inquiry not found' });
-//     }
-//     res.status(200).json({ message: 'Inquiry assigned successfully' });
-//   } catch (error) {
-//     console.error('Error assigning inquiry:', error);
-//     res.status(500).json({ message: 'Internal server error' });
-//   }
-// };
-
-// export const assignInquiry = async (req, res) => {
-//   const { inquiry_id, counselor_id } = req.body;
-//   if (!inquiry_id || !counselor_id) {
-//     return res.status(400).json({ message: 'inquiry_id and counselor_id are required' });
-//   }
-//   try {
-//     const [result] = await db.query(
-//       `UPDATE inquiries SET counselor_id = ?, status = 1 WHERE id = ?`,
-//       [counselor_id, inquiry_id]
-//     );
-//     if (result.affectedRows === 0) {
-//       return res.status(404).json({ message: 'Inquiry not found' });
-//     }
-//     res.status(200).json({ message: 'Inquiry assigned successfully and status updated to 1' });
-//   } catch (error) {
-//     console.error('Error assigning inquiry:', error);
-//     res.status(500).json({ message: 'Internal server error' });
-//   }
-// };
-
-
-
-
 
 
 export const assignInquiry = async (req, res) => {
@@ -310,25 +234,129 @@ export const assignInquiry = async (req, res) => {
 };
 
 
-
+// export const getAllConvertedLeads = async (req, res) => {
+//   try {
+//     const query = "SELECT * FROM inquiries WHERE lead_status = 'Converted to Lead'";
+//     const [result] = await db.query(query);
+//     if (result.length === 0) {
+//       return res.status(404).json({ message: 'No converted leads found' });
+//     }
+//     res.status(200).json(result);
+//   } catch (error) {
+//     console.error("Error fetching converted leads:", error);
+//     res.status(500).json({ message: 'Server error', error });
+//   }
+// };
 
 
 
 
 export const getAllConvertedLeads = async (req, res) => {
   try {
-    const query = "SELECT * FROM inquiries WHERE lead_status = 'Converted to Lead'";
-    const [result] = await db.query(query);
+    const allowedNewLeads = [
+      "New Lead",
+      "Contacted",
+      "Follow-Up Needed",
+      "Visited Office",
+      "Not Interested",
+      "Next Intake Interested",
+      "Registered",
+      "Dropped"
+    ];
+    const placeholders = allowedNewLeads.map(() => '?').join(', ');
+    // const query = `
+    //   SELECT * FROM inquiries
+    //   WHERE lead_status = 'Converted to Lead'
+    //   OR new_leads IN (${placeholders})
+    // `;
+
+      const query =` SELECT 
+        i.*, 
+        u.full_name AS counselor_name
+      FROM 
+        inquiries i
+      LEFT JOIN 
+        users u ON i.counselor_id = u.counselor_id
+      WHERE 
+        i.lead_status = 'Converted to Lead'
+        OR i.new_leads IN (${placeholders})
+    `;
+    const [result] = await db.query(query, allowedNewLeads);
     if (result.length === 0) {
-      return res.status(404).json({ message: 'No converted leads found' });
+      return res.status(404).json({ message: 'No converted or new leads found' });
     }
     res.status(200).json(result);
   } catch (error) {
-    console.error("Error fetching converted leads:", error);
+    console.error("Error fetching leads:", error);
     res.status(500).json({ message: 'Server error', error });
   }
 };
 
+// export const getAllConvertedLeads = async (req, res) => {
+//   try {
+//     const query = `
+//       SELECT *,
+//         CASE 
+//           WHEN lead_status = 'Converted to Lead' THEN 'new'
+//           ELSE ''
+//         END AS new_leads_status
+//       FROM inquiries
+//       WHERE lead_status = 'Converted to Lead'
+//     `;
+    
+//     const [result] = await db.query(query);
+
+//     if (result.length === 0) {
+//       return res.status(404).json({ message: 'No converted leads found' });
+//     }
+
+//     // Optionally you can replace the new_leads column directly like this:
+//     const modifiedResult = result.map(item => ({
+//       ...item,
+//       new_leads: 'new'
+//     }));
+
+//     res.status(200).json(modifiedResult);
+
+//   } catch (error) {
+//     console.error("Error fetching converted leads:", error);
+//     res.status(500).json({ message: 'Server error', error });
+//   }
+// };
+
+export const updateLeadStatus = async (req, res) => {
+  const { inquiry_id, new_leads } = req.body;
+  const allowedStatuses = [
+    "New Lead",
+    "Contacted",
+    "Follow-Up Needed",
+    "Visited Office",
+    "Not Interested",
+    "Next Intake Interested",
+    "Registered",
+    "Dropped"
+  ];
+  if (!inquiry_id || !new_leads) {
+    return res.status(400).json({ message: 'inquiry_id and new_leads are required' });
+  }
+  if (!allowedStatuses.includes(new_leads)) {
+    return res.status(400).json({ message: 'Invalid new_leads value' });
+  }
+  try {
+    const [inquiry] = await db.query("SELECT id FROM inquiries WHERE id = ?", [inquiry_id]);
+    if (!inquiry.length) {
+      return res.status(404).json({ message: 'Inquiry not found' });
+    }
+
+    await db.query("UPDATE inquiries SET new_leads = ? WHERE id = ?", [new_leads, inquiry_id]);
+
+    res.status(200).json({ message: `Lead status updated to '${new_leads}'` });
+
+  } catch (error) {
+    console.error("Error updating lead status:", error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
 
 export const getAllleadsstatus = async (req, res) => {
   try {
@@ -352,7 +380,7 @@ export const getAllleadsstatus = async (req, res) => {
     res.status(500).json({ message: 'Server error', error });
   }
 };
-
+  
 export const getCounselorWisePerformance = async (req, res) => {
   try {
     const [data] = await db.query(`
