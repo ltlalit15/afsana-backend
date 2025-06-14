@@ -62,21 +62,53 @@
 
 
 // live db
+// import mysql from 'mysql2';
+// import dotenv from 'dotenv';
+// dotenv.config();
+
+// const dbConfig = {
+//   host: "yamabiko.proxy.rlwy.net",  // Host from the connection string
+//   port: 40977,                       // Port from the connection string
+//   user: "root",                      // User from the connection string
+//   password: "ePOFTgxzdoSIgBChZSBpDwnskRtXrqBW",  // Password from the connection string
+//   database: "railway",               // Database name from the connection string
+//   charset: "utf8mb4",                // Default charset
+//   multipleStatements: false,         // If you plan to run multiple queries
+//   waitForConnections: true,                   // Default timezone
+//   connectionLimit: 10, 
+//   queueLimit: 0 // Specify TCP protocol explicitly (optional)
+// };
+
+// const pool = mysql.createPool(dbConfig);
+// pool.getConnection((err, connection) => {
+//   if (err) {
+//     console.error('❌ MySQL connection failed:', err.message);
+//   } else {
+//     console.log('✅ MySQL connected successfully!');
+//     connection.release();
+//   }
+// });
+// // Use .promise() here
+// const db = pool.promise();
+// export default db;
+
+
+
 import mysql from 'mysql2';
 import dotenv from 'dotenv';
 dotenv.config();
 
 const dbConfig = {
   host: "yamabiko.proxy.rlwy.net",  // Host from the connection string
-  port: 40977,                       // Port from the connection string
-  user: "root",                      // User from the connection string
-  password: "ePOFTgxzdoSIgBChZSBpDwnskRtXrqBW",  // Password from the connection string
-  database: "railway",               // Database name from the connection string
-  charset: "utf8mb4",                // Default charset
-  multipleStatements: false,         // If you plan to run multiple queries
-  waitForConnections: true,                   // Default timezone
+  port: 46328,                       // Correct port
+  user: "root",                      // Correct user
+  password: "qfkPVAOcUTueYMiYYmKXDyKKUbMtKSCZ",  // Correct password
+  database: "railway",               // Correct DB
+  charset: "utf8mb4",                
+  multipleStatements: false,         
+  waitForConnections: true,         
   connectionLimit: 10, 
-  queueLimit: 0 // Specify TCP protocol explicitly (optional)
+  queueLimit: 0 
 };
 
 const pool = mysql.createPool(dbConfig);
@@ -88,6 +120,7 @@ pool.getConnection((err, connection) => {
     connection.release();
   }
 });
-// Use .promise() here
+
 const db = pool.promise();
 export default db;
+
