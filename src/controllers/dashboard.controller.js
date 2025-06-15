@@ -48,6 +48,40 @@ export const getDashboardDataAdmin = async (req, res) => {
     }
 };
 
+// export const getDashboardDataAdmin = async (req, res) => {
+//     try {
+//         const { startDate, endDate } = req.query;
+
+//         // Default: No date filter
+//         let dateFilter = '';
+//         if (startDate && endDate) {
+//             dateFilter = `WHERE created_at BETWEEN '${startDate}' AND '${endDate}'`;
+//         }
+
+//         const [totalLeads] = await db.query(`SELECT COUNT(*) AS totalleads FROM leads ${dateFilter}`);
+//         const [totalStudents] = await db.query(`SELECT COUNT(*) AS totalstudents FROM students ${dateFilter}`);
+//         const [totalCounselors] = await db.query(`SELECT COUNT(*) AS totalcounselors FROM counselors ${dateFilter}`);
+//         const [totalFollowUps] = await db.query(`SELECT COUNT(*) AS totalFollowUps FROM follow_ups ${dateFilter}`);
+//         const [totalTasks] = await db.query(`SELECT COUNT(*) AS totalTasks FROM tasks ${dateFilter}`);
+//         const [totalInquiries] = await db.query(`SELECT COUNT(*) AS totalInquiries FROM inquiries ${dateFilter}`);
+//         const [totalUniversities] = await db.query(`SELECT COUNT(*) AS totalUniversities FROM universities ${dateFilter}`);
+
+//         res.status(200).json({
+//             totalleads: totalLeads[0].totalleads,
+//             totalstudents: totalStudents[0].totalstudents,
+//             totalcounselors: totalCounselors[0].totalcounselors,
+//             totalFollowUps: totalFollowUps[0].totalFollowUps,
+//             totalTasks: totalTasks[0].totalTasks,
+//             totalInquiries: totalInquiries[0].totalInquiries,
+//             totalUniversities: totalUniversities[0].totalUniversities,
+//         });
+//     } catch (error) {
+//         console.error('Error fetching dashboard data:', error);
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// };
+
+
 
 export const getDashboardDataUniversity = async (req, res) => {
     const { university_id, studentId } = req.params;
