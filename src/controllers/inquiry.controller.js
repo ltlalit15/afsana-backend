@@ -286,6 +286,7 @@ export const getAllConvertedLeads = async (req, res) => {
       return res.status(404).json({ message: 'No converted or new leads found' });
     }
     res.status(200).json(result);
+    
   } catch (error) {
     console.error("Error fetching leads:", error);
     res.status(500).json({ message: 'Server error', error });
