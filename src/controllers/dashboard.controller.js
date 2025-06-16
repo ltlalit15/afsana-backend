@@ -149,6 +149,15 @@ export const getDashboardInfo = async (req, res) => {
 
     const growthRate = thisMonthRate - lastMonthRate;
 
+// const [weeklyInquiries] = await db.query(`
+//   SELECT 
+//     DAYNAME(created_at) AS day,
+//     COUNT(*) AS total_inquiries
+//   FROM inquiries
+//   WHERE YEARWEEK(created_at, 1) = YEARWEEK(CURDATE(), 1)
+//   GROUP BY DAYNAME(created_at)
+//   ORDER BY FIELD(DAYNAME(created_at), 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+// `);
 
 
 
@@ -191,7 +200,9 @@ export const getDashboardInfo = async (req, res) => {
         inquiries: inquiries[0].totalleads,
         application: application[0].application,
         studentCount: studentCount[0].totalleads
-      }
+      },
+        // weekly_inquiries_by_day: weeklyInquiries 
+
 
     });
 
