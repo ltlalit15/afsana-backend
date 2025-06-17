@@ -149,17 +149,25 @@ export const getDashboardInfo = async (req, res) => {
 
     const growthRate = thisMonthRate - lastMonthRate;
 
-// const [weeklyInquiries] = await db.query(`
-//   SELECT 
-//     DAYNAME(created_at) AS day,
-//     COUNT(*) AS total_inquiries
-//   FROM inquiries
-//   WHERE YEARWEEK(created_at, 1) = YEARWEEK(CURDATE(), 1)
-//   GROUP BY DAYNAME(created_at)
-//   ORDER BY FIELD(DAYNAME(created_at), 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
-// `);
+    const [weeklyInquiries] = await db.query(`
+  SELECT 
+  d.day,
+  COUNT(i.id) AS total_inquiries
+FROM (
+  SELECT 'Monday' AS day UNION
+  SELECT 'Tuesday' UNION
+  SELECT 'Wednesday' UNION
+  SELECT 'Thursday' UNION
+  SELECT 'Friday' UNION
+  SELECT 'Saturday' UNION
+  SELECT 'Sunday'
+) AS d
+LEFT JOIN inquiries i ON DAYNAME(i.created_at) = d.day 
+  AND YEARWEEK(i.created_at, 1) = YEARWEEK(CURDATE(), 1)
+GROUP BY d.day
+ORDER BY FIELD(d.day, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
 
-
+`);
 
     const [topCounselors] = await db.query(`
   SELECT
@@ -201,7 +209,7 @@ export const getDashboardInfo = async (req, res) => {
         application: application[0].application,
         studentCount: studentCount[0].totalleads
       },
-        // weekly_inquiries_by_day: weeklyInquiries 
+      weekly_inquiries_by_day: weeklyInquiries
 
 
     });
