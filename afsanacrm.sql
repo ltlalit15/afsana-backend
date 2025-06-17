@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 14, 2025 at 01:16 PM
+-- Generation Time: Jun 17, 2025 at 10:17 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `afsanas`
+-- Database: `afsanacrm`
 --
 
 -- --------------------------------------------------------
@@ -193,12 +193,13 @@ CREATE TABLE `inquiries` (
 --
 
 INSERT INTO `inquiries` (`id`, `counselor_id`, `inquiry_type`, `source`, `branch`, `full_name`, `phone_number`, `email`, `course_name`, `country`, `status`, `is_view`, `lead_status`, `payment_status`, `city`, `date_of_birth`, `gender`, `medium`, `study_level`, `study_field`, `intake`, `budget`, `consent`, `highest_level`, `ssc`, `hsc`, `bachelor`, `university`, `test_type`, `overall_score`, `reading_score`, `writing_score`, `speaking_score`, `listening_score`, `date_of_inquiry`, `address`, `present_address`, `additionalNotes`, `study_gap`, `visa_refused`, `refusal_reason`, `education_background`, `english_proficiency`, `company_name`, `job_title`, `job_duration`, `preferred_countries`, `eligibility_status`, `created_at`, `updated_at`, `assignment_description`, `follow_up_date`, `notes`, `new_leads`) VALUES
-(23, 8, 'studentVisa', 'Whatsapp', 'dhaka', 'md miah', '01757587455', 'jubeddeutschland@gmail.com', 'mba', 'Bangladesh', '1', '0', 'Converted to Lead', 'paid', 'Hobiganj', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-05-10', 'Takbaz khany, Adarsha Bazar', '3 ESQ', NULL, NULL, NULL, NULL, '[\"Bachelor\"]', '[\"Writing\"]', 'Studyfirstinfo', 'no', 'no', '[\"Germany\"]', '2', '2025-05-09 18:33:34', '2025-06-14 10:46:15', '', '2025-06-19', 'demo', 'Registered'),
-(31, 1, 'touristVisa', 'Facebook', 'Dhaka', 'muskan', '67676767', 'muskan@gmail.com', 'Maths', 'India', '0', '0', 'Converted to Lead', 'paid', 'indore', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-06-17', 'Indore', 'Gopal gram', NULL, NULL, NULL, NULL, '[\"SSC\",\"HSC\"]', '[\"Reading\",\"Writing\"]', 'kiaan', 'sdsd', '120-minut', '[\"Germany\"]', '3', '2025-06-05 12:31:09', '2025-06-14 11:15:06', '', '2025-06-20', 'demol', '0'),
-(33, 1, 'touristVisa', 'Facebook', 'Dhaka', 'krishna', '07302161400', 'krishnarajputkiaan@gmail.com', 'Maths', 'India', '0', '0', '0', '0', 'indore', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-06-10', 'Indore', 'Gopal gram', NULL, NULL, NULL, NULL, '[\"SSC\"]', '[\"Reading\"]', 'kiaan', 'sdsd', 'sdsdsd', '[\"Germany\"]', '3', '2025-06-07 12:59:48', '2025-06-14 11:05:17', '0', '2025-06-20', 'demio', '0'),
-(34, 1, 'touristVisa', 'Facebook', 'Sylhet', 'newstudent01', '7878787', 'newstudent01@gmail.com', 'Maths', 'India', '0', '0', 'Converted to Lead', 'paid', 'indore', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-06-10', 'Indore', 'Gopal gram', NULL, NULL, NULL, NULL, '[\"SSC\"]', '[\"Reading\"]', 'kiaan', 'sdsd', 'sdsdsd', '[\"Germany\"]', '1', '2025-06-07 13:01:14', '2025-06-14 11:15:20', '0', '2025-07-03', NULL, '0'),
-(37, 1, 'visit_visa', 'youtube', 'Dhaka', 'demo demo', '7865065089', 'test@gmail.com', 'de', 'usa', '0', '0', '0', '0', 'indore', '2025-06-23', 'male', 'english', 'diploma', 'de', 'february', '', 1, 'ssc', NULL, NULL, NULL, 'dfd', 'ielts', '4', '4', '4', '4', '4', '2025-06-12', 'usa', 'usa', NULL, 'ha', 'yes', 'ha', '[{\"level\":\"ssc\",\"gpa\":\"34\",\"year\":\"34343\"}]', NULL, 'demo', 'demo', '6', '[\"Lithuania\",\"Hungary\"]', '2', '2025-06-12 09:39:20', '2025-06-14 11:04:20', '0', '2025-07-02', 'dd', '0'),
-(42, 1, 'student_visa', 'facebook', 'Dhaka', 'Sandip Dodiya', '07302161400', 'krishnarajputkiaan@gmail.com', 'deo', 'India', '0', '0', '0', '0', 'Ujjain', '2025-06-25', 'male', 'english', 'diploma', 'demo', '', '5000', 1, 'ssc', NULL, NULL, NULL, 'govt', 'ielts', '6', '6', '6', '6', '6', '2025-06-13', 'Gopal gram - chirola,Chirola,Ujjain Madhya Pradesh - 456313', 'Gopal gram', NULL, 'yes', 'yes', 'demo', '[]', NULL, 'demo', 'demo', 'jan-2020', '[\"Hungary\",\"Lithuania\",\"Latvia\",\"UK\"]', '0', '2025-06-13 08:19:15', '2025-06-14 11:04:18', '0', NULL, NULL, '0');
+(31, 16, 'touristVisa', 'Facebook', 'Dhaka', 'muskan', '67676767', 'muskan@gmail.com', 'Maths', 'India', '1', '0', 'Converted to Lead', 'paid', 'indore', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-06-17', 'Indore', 'Gopal gram', NULL, NULL, NULL, NULL, '[\"SSC\",\"HSC\"]', '[\"Reading\",\"Writing\"]', 'kiaan', 'sdsd', '120-minut', '[\"Germany\"]', '3', '2025-06-05 18:01:09', '2025-06-16 11:47:32', '0', '2025-06-10', 'demo', 'Registered'),
+(33, 16, 'touristVisa', 'Facebook', 'Dhaka', 'krishna', '07302161400', 'krishnarajputkiaan@gmail.com', 'Maths', 'India', '1', '0', 'Converted to Lead', '0', 'indore', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-06-10', 'Indore', 'Gopal gram', NULL, NULL, NULL, NULL, '[\"SSC\"]', '[\"Reading\"]', 'kiaan', 'sdsd', 'sdsdsd', '[\"Germany\"]', '3', '2025-06-07 18:29:48', '2025-06-16 14:05:56', '0', '2025-06-10', 'demo', 'Registered'),
+(34, 1, 'touristVisa', 'Facebook', 'Sylhet', 'newstudent01', '7878787', 'newstudent01@gmail.com', 'Maths', 'India', '0', '0', 'Not Interested', 'paid', 'indore', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-06-10', 'Indore', 'Gopal gram', NULL, NULL, NULL, NULL, '[\"SSC\"]', '[\"Reading\"]', 'kiaan', 'sdsd', 'sdsdsd', '[\"Germany\"]', '1', '2025-06-17 18:31:14', '2025-06-17 05:19:25', '0', '2025-07-03', NULL, '0'),
+(37, 1, 'visit_visa', 'youtube', 'Dhaka', 'demo demo', '7865065089', 'test@gmail.com', 'de', 'usa', '0', '0', 'In Review', '0', 'indore', '2025-06-23', 'male', 'english', 'diploma', 'de', 'february', NULL, 1, 'ssc', NULL, NULL, NULL, 'dfd', 'ielts', '4', '4', '4', '4', '4', '2025-06-12', 'usa', 'usa', NULL, 'ha', 'yes', 'ha', '[{\"level\":\"ssc\",\"gpa\":\"34\",\"year\":\"34343\"}]', NULL, 'demo', 'demo', '6', '[\"Lithuania\",\"Hungary\"]', '2', '2025-06-12 15:09:20', '2025-06-16 10:00:06', '0', '2025-07-02', 'dd', '0'),
+(42, 1, 'student_visa', 'facebook', 'Dhaka', 'Sandip Dodiya', '07302161400', 'krishnarajputkiaan@gmail.com', 'deo', 'India', '0', '0', '0', '0', 'Ujjain', '2025-06-25', 'male', 'english', 'diploma', 'demo', NULL, '5000', 1, 'ssc', NULL, NULL, NULL, 'govt', 'ielts', '6', '6', '6', '6', '6', '2025-06-13', 'Gopal gram - chirola,Chirola,Ujjain Madhya Pradesh - 456313', 'Gopal gram', NULL, 'yes', 'yes', 'demo', '[]', NULL, 'demo', 'demo', 'jan-2020', '[\"Hungary\",\"Lithuania\",\"Latvia\",\"UK\"]', '0', '2025-06-16 13:49:15', '2025-06-17 05:19:01', '0', NULL, NULL, '0'),
+(44, 1, 'german_course', 'facebook', 'Dhaka', 'krishna', '07302161400', 'krishnarajputkiaan@gmail.com', 'deo', 'UK', '0', '0', 'In Review', '0', 'indore', '2025-06-17', 'male', 'bangla', 'diploma', 'demo', 'february', '5000', 1, 'ssc', NULL, NULL, NULL, 'govt', 'ielts', '7.6', '7.7', '77', '7.7', '7.7', '2025-06-16', 'Indore', 'Gopal gram', NULL, 'demo', 'yes', '', '[{\"level\":\"ssc\",\"gpa\":\"44\",\"year\":\"2025\"}]', NULL, 'kiaan', 'demo', 'jan-2020', '[\"Hungary\",\"UK\",\"Canada\"]', '0', '2025-05-16 07:55:05', '2025-06-17 05:39:09', '0', NULL, NULL, 'new'),
+(46, 1, 'work_visa', 'referral', 'Dhaka', 'kunal', '76768787878', 'kunal@gmail.com', 'deo', 'UK', '0', '0', '0', '0', 'indore', '2025-06-03', 'male', 'bangla', 'diploma', 'demo', 'february', '5000', 1, 'hsc', NULL, NULL, NULL, 'govt', 'duolingo', '7.6', '7.7', '77', '7.7', '7.7', NULL, 'Indore', 'Gopal gram', NULL, 'demo', 'yes', 'demo', '[{\"level\":\"hsc\",\"gpa\":\"55\",\"year\":\"2025\"}]', '[]', 'kiaan', 'Sales', 'jan-2020', '[\"Hungary\",\"UK\",\"Cyprus\"]', '0', '2025-06-17 05:55:15', '2025-06-17 05:55:15', '0', NULL, NULL, 'new');
 
 -- --------------------------------------------------------
 
@@ -519,8 +520,8 @@ CREATE TABLE `student_fees_by_counselor` (
   `description` text NOT NULL,
   `amount` decimal(10,2) NOT NULL,
   `fee_date` date NOT NULL,
-  `inquiry_id` int(255) NOT NULL,
-  `user_id` int(255) NOT NULL,
+  `inquiry_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -868,7 +869,7 @@ ALTER TABLE `follow_ups`
 -- AUTO_INCREMENT for table `inquiries`
 --
 ALTER TABLE `inquiries`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `inquiry_images`

@@ -130,7 +130,6 @@
 import mysql from 'mysql2';
 import dotenv from 'dotenv';
 dotenv.config();
-
 const dbConfig = {
   host: "yamabiko.proxy.rlwy.net",  // Host from the connection string
   port: 46328,                       // Correct port
@@ -143,7 +142,6 @@ const dbConfig = {
   connectionLimit: 10, 
   queueLimit: 0 
 };
-
 const pool = mysql.createPool(dbConfig);
 pool.getConnection((err, connection) => {
   if (err) {
@@ -153,7 +151,7 @@ pool.getConnection((err, connection) => {
     connection.release();
   }
 });
-
 const db = pool.promise();
 export default db;
 
+ 
