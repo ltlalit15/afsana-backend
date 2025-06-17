@@ -276,6 +276,7 @@ export const updateLeadStatus = async (req, res) => {
   }
 
   try {
+    // Step 1: Update the lead status
     const [result] = await db.query(
       `UPDATE inquiries SET lead_status = ?, updated_at = NOW() WHERE id = ?`,
       [lead_status, id]
@@ -285,12 +286,27 @@ export const updateLeadStatus = async (req, res) => {
       return res.status(404).json({ message: 'Inquiry not found' });
     }
 
+    // Step 2: Check if lead status is now "Converted to Lead"
+    const [newData] = await db.query(
+      "SELECT lead_status FROM inquiries WHERE id = ? AND lead_status = 'Converted to Lead'",
+      [id]
+    );
+
+    // Step 3: If it's converted, update `new_leads` column to "new"
+    if (newData.length > 0) {
+      await db.query(
+        "UPDATE inquiries SET new_leads = 'new' WHERE id = ?",
+        [id]
+      );
+    }
+
     res.json({ message: 'Lead status updated successfully' });
   } catch (error) {
     console.error('Error updating lead_status:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 
 
 

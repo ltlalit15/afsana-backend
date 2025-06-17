@@ -67,6 +67,7 @@ export const getDashboardDataAdmin = async (req, res) => {
     if (startDate && endDate) {
       leadFilters.push(getDateFilter());
       inquiryFilters.push(getDateFilter());
+      counselorsFilter.push(getDateFilter());
       commonFilters.push(getDateFilter());
     }
 
