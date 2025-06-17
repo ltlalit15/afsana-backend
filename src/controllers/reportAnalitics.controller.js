@@ -6,8 +6,8 @@ export const overview = async (req, res) => {
         const query = `
             SELECT 
                 (SELECT COUNT(*) FROM inquiries) AS total_inquiries,
-                (SELECT COUNT(*) FROM StudentApplicationProcess WHERE Application_stage = true AND Visa_process = false) AS total_Active_Applications,
-                (SELECT COUNT(*) FROM StudentApplicationProcess WHERE Application_stage = true AND Visa_process = true ) AS total_fulfill_Applications
+                (SELECT COUNT(*) FROM studentapplicationprocess WHERE Application_stage = true AND Visa_process = false) AS total_Active_Applications,
+                (SELECT COUNT(*) FROM studentapplicationprocess WHERE Application_stage = true AND Visa_process = true ) AS total_fulfill_Applications
         `;
         const queryTotal = `SELECT COUNT(*) AS total FROM follow_ups`;
         const queryInProgress = `SELECT COUNT(*) AS inProgress FROM follow_ups WHERE status = 'In Progress'`;
@@ -97,7 +97,7 @@ export const  CounselorPerformance = async (req, res) =>{
 export const applicationPipline = async (req, res) => {
     try {
         const queryTotal = `SELECT COUNT(*) AS total FROM inquiries`;
-        const queryInAppProgress = `SELECT COUNT(*) AS total FROM StudentApplicationProcess`;
+        const queryInAppProgress = `SELECT COUNT(*) AS total FROM studentapplicationprocess`;
         const queryInAdmissionDecision = `SELECT COUNT(*) AS total FROM admission_decisions WHERE status = 'accepted'`;
         const queryInTask = `SELECT COUNT(*) AS total FROM tasks WHERE status = 'Completed'`;
 
