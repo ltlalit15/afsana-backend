@@ -1,9 +1,7 @@
 // import mysql from 'mysql2';
 // import dotenv from 'dotenv';
-
 // // Load environment variables
 // dotenv.config();
-
 // // Create a MySQL connection pool
 // const pool = mysql.createPool({
 //   host: "maglev.proxy.rlwy.net",      // Host from your connection string
@@ -15,7 +13,6 @@
 //   connectionLimit: 10,
 //   queueLimit: 0
 // });
-
 // // Test connection to the database
 // pool.getConnection((err, connection) => {
 //   if (err) {
@@ -25,45 +22,39 @@
 //     connection.release(); // Release the connection back to the pool
 //   }
 // });
-
 // // Use promise API for working with queries
 // const db = pool.promise();
-
 // // Export the pool for use elsewhere
 // export default db;
 
 
-// import mysql from 'mysql2';
-// import dotenv from 'dotenv';
-
-// // Load environment variables from .env file
-// dotenv.config();
-
-// // Create a MySQL connection pool using .env values
-// const pool = mysql.createPool({
-//   host: process.env.DB_HOST,         // localhost
-//   user: process.env.DB_USER,         // root
-//   password: process.env.DB_PASS,     // (empty)
-//   database: process.env.DB_NAME,     // afsanas
-//   port: 3306,                         // Default MySQL port
-//   waitForConnections: true,
-//   connectionLimit: 10,
-//   queueLimit: 0
-// });
-
-// // Test the connection
-// pool.getConnection((err, connection) => {
-//   if (err) {
-//     console.error('❌ MySQL connection failed:', err.message);
-//   } else {
-//     console.log('✅ MySQL connected successfully!');
-//     connection.release();
-//   }
-// });
-
-// // Export promise-based pool
-// const db = pool.promise();
-// export default db;
+import mysql from 'mysql2';
+import dotenv from 'dotenv';
+// Load environment variables from .env file
+dotenv.config();
+// Create a MySQL connection pool using .env values
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,         // localhost
+  user: process.env.DB_USER,         // root
+  password: process.env.DB_PASS,     // (empty)
+  database: process.env.DB_NAME,     // afsanas
+  port: 3306,                         // Default MySQL port
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+// Test the connection
+pool.getConnection((err, connection) => {
+  if (err) {
+    console.error('❌ MySQL connection failed:', err.message);
+  } else {
+    console.log('✅ MySQL connected successfully!');
+    connection.release();
+  }
+});
+// Export promise-based pool
+const db = pool.promise();
+export default db;
 
 
 
@@ -127,31 +118,31 @@
 
 
 
-import mysql from 'mysql2';
-import dotenv from 'dotenv';
-dotenv.config();
-const dbConfig = {
-  host: "yamabiko.proxy.rlwy.net",  // Host from the connection string
-  port: 46328,                       // Correct port
-  user: "root",                      // Correct user
-  password: "qfkPVAOcUTueYMiYYmKXDyKKUbMtKSCZ",  // Correct password
-  database: "railway",               // Correct DB
-  charset: "utf8mb4",                
-  multipleStatements: false,         
-  waitForConnections: true,         
-  connectionLimit: 10, 
-  queueLimit: 0 
-};
-const pool = mysql.createPool(dbConfig);
-pool.getConnection((err, connection) => {
-  if (err) {
-    console.error('❌ MySQL connection failed:', err.message);
-  } else {
-    console.log('✅ MySQL connected successfully!');
-    connection.release();
-  }
-});
-const db = pool.promise();
-export default db;
+// import mysql from 'mysql2';
+// import dotenv from 'dotenv';
+// dotenv.config();
+// const dbConfig = {
+//   host: "yamabiko.proxy.rlwy.net",  // Host from the connection string
+//   port: 46328,                       // Correct port
+//   user: "root",                      // Correct user
+//   password: "qfkPVAOcUTueYMiYYmKXDyKKUbMtKSCZ",  // Correct password
+//   database: "railway",               // Correct DB
+//   charset: "utf8mb4",                
+//   multipleStatements: false,         
+//   waitForConnections: true,         
+//   connectionLimit: 10, 
+//   queueLimit: 0 
+// };
+// const pool = mysql.createPool(dbConfig);
+// pool.getConnection((err, connection) => {
+//   if (err) {
+//     console.error('❌ MySQL connection failed:', err.message);
+//   } else {
+//     console.log('✅ MySQL connected successfully!');
+//     connection.release();
+//   }
+// });
+// const db = pool.promise();
+// export default db;
 
  

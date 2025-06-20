@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 17, 2025 at 10:17 AM
+-- Generation Time: Jun 20, 2025 at 01:53 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -91,14 +91,10 @@ CREATE TABLE `counselors` (
 
 INSERT INTO `counselors` (`id`, `user_id`, `phone`, `university_id`, `status`, `created_at`, `updated_at`) VALUES
 (1, 1, '+1234567890', 12, 'active', '2025-05-05 18:45:31', '2025-05-06 12:03:33'),
-(7, 1, '123456', 11, 'active', '2025-05-06 11:32:56', '2025-05-06 11:32:56'),
-(8, 1, '07302161400', 12, 'active', '2025-05-06 11:45:19', '2025-06-12 18:16:42'),
-(12, 1, '325677888675', 12, 'active', '2025-05-08 06:53:23', '2025-05-12 05:53:57'),
-(13, 1, '01757587455', 12, 'active', '2025-05-10 02:59:35', '2025-05-10 02:59:35'),
+(13, 1, '01757587455', 18, 'active', '2025-05-10 02:59:35', '2025-06-20 15:39:16'),
 (14, 1, '+880 1886-144256', 20, 'active', '2025-05-11 06:03:13', '2025-05-11 06:03:13'),
-(16, 1, '9876543', 12, 'active', '2025-05-12 11:30:47', '2025-05-12 13:44:59'),
-(17, 1, '12345567', 23, 'active', '2025-05-22 00:56:00', '2025-05-22 00:56:00'),
-(18, 1, '123', 23, 'active', '2025-06-10 16:33:12', '2025-06-10 16:33:12');
+(16, 1, '9876543', 20, 'active', '2025-05-12 11:30:47', '2025-06-20 15:38:53'),
+(17, 1, '12345567', 23, 'active', '2025-05-22 00:56:00', '2025-05-22 00:56:00');
 
 -- --------------------------------------------------------
 
@@ -445,9 +441,19 @@ CREATE TABLE `studentapplicationprocess` (
 --
 
 INSERT INTO `studentapplicationprocess` (`id`, `student_id`, `registration_fee_payment`, `registration_date`, `application_submission_date`, `application_fee_payment`, `fee_confirmation_document`, `university_interview_date`, `university_interview_outcome`, `conditional_offer_letter`, `invoice_with_conditional_offer`, `tuition_fee_transfer_proof`, `final_university_offer_letter`, `offer_letter_service_charge_paid`, `university_offer_letter_received`, `appendix_form_completed`, `passport_copy_prepared`, `email_sent_for_documentation`, `appointment_date`, `financial_support_declaration`, `final_offer_letter`, `proof_of_relationship`, `english_language_proof`, `visa_interview_date`, `residence_permit_form`, `proof_of_income`, `airplane_ticket_booking`, `police_clearance_certificate`, `europass_cv`, `birth_certificate`, `bank_statement`, `accommodation_proof`, `motivation_letter`, `previous_studies_certificates`, `travel_insurance`, `european_photo`, `health_insurance`, `visa_decision`, `visa_service_charge_paid`, `flight_booking_confirmed`, `online_enrollment_completed`, `accommodation_confirmation`, `arrival_country`, `university_id`, `Application_stage`, `Interview`, `Visa_process`, `status`) VALUES
-(44, 35, 'Paid', '2025-05-23', '2025-05-23', 'Paid', '/uploads/1747901696596-166403185-Profile (1).png', '2025-05-23', 'Accepted', '/uploads/1747904926081-845585830-vedic-maths-lesson1 (3).pdf', '/uploads/1747904926081-174898966-vedic-maths-lesson1 (2).pdf', '/uploads/1747904926081-519375138-Phonics Assessment.pdf', '/uploads/1747904969109-742039206-Create_New_Payment_Form.pdf', 'Paid', '2025-05-23', '/uploads/1747905419340-777807865-Create_New_Payment_Form.pdf', '/uploads/1747905419341-88135770-Create_New_Payment_Form.pdf', '2025-05-23', '2025-05-23', '/uploads/1747905419341-339449230-Create_New_Payment_Form.pdf', '/uploads/1747905419418-747487545-SAMA Paper Pattern 2025.pdf', '/uploads/1747905420333-385419434-SAMA Paper Pattern 2025.pdf', '/uploads/1747905420498-773092520-worksheet (1).pdf', '2025-05-23', '/uploads/1747905420498-978648468-Create_New_Payment_Form.pdf', '/uploads/1747905420498-316009931-Create_New_Payment_Form.pdf', '/uploads/1747905420498-460501060-worksheet.pdf', '/uploads/1747905420499-916418649-Courses.pdf', '/uploads/1747905420515-366294713-Create_New_Payment_Form.pdf', '/uploads/1747905420515-802744803-Screenshot 2025-05-16 123950.png', '/uploads/1747905420677-477131489-Create_New_Payment_Form.pdf', '/uploads/1747905420516-347004507-1000048151 (1).jpg', '/uploads/1747905420534-236084063-1000048151.jpg', '/uploads/1747905420549-854200571-1000048151 (1).jpg', '/uploads/1747905420663-36291472-Courses.pdf', '/uploads/1747905420674-740318472-smart-life-academy-logo.jpg', '/uploads/1747905420673-756894716-BODY-1249021@1x (2).png', 'Approved', 'Pending', 1, 1, 1, 'india', 17, 1, 1, 1, 0),
-(45, 35, 'Paid', '2025-05-14', '2025-05-15', 'Paid', '/uploads/1747995016613-499990235-Rituu.exp.pdf', '2025-05-24', 'Accepted', '/uploads/1747995106034-758753662-Rituu.exp.pdf', '/uploads/1747995106531-248863519-Rituu.exp.pdf', '/uploads/1747995106697-921297203-Rituu.exp.pdf', '/uploads/1747995106711-758695494-Rituu.exp.pdf', 'Paid', '2025-05-28', 'null', '/uploads/1747995106862-974163510-WhatsApp Image 2025-05-22 at 4.40.56 PM.jpeg', '2025-05-24', '2025-05-24', '/uploads/1747995107062-703775830-Rituu.exp.pdf', 'null', 'null', 'null', NULL, 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 0, 0, 0, 'null', 12, 1, 1, 0, 0),
-(47, 0, 'Paid', '2025-06-12', '2025-06-11', 'Paid', '/uploads/1749558132093-91623538-Invoice_ritika_1749556870618.pdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, NULL, 12, 1, 0, 0, 0);
+(48, 35, 'Paid', '2025-06-21', '2025-06-21', 'Paid', '/uploads/1750401874285-640815656-Invoice_29 (2).pdf', '2025-06-21', 'Foundation', '/uploads/1750401956298-989180318-Invoice_29 (2).pdf', '/uploads/1750401956337-697549572-Invoice_29 (2).pdf', '/uploads/1750401956337-243314915-Invoice_29 (2).pdf', '/uploads/1750401956337-317577465-Invoice_29 (2).pdf', 'null', NULL, 'null', 'null', 'null', NULL, 'null', 'null', 'null', 'null', NULL, 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 0, 0, 0, 'null', 24, 1, 1, 0, 0),
+(50, 35, 'Paid', '2025-06-21', '2025-06-21', 'Paid', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750404110/gd8gj4gic6mki3xv7prr.pdf', '2025-06-21', 'Foundation', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750404790/xesk5jdpdt77urxjq3nm.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750404792/wbrydvu1mdpznsazmo0n.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750404794/ofrmn6uaq5bmhgj6mq6c.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750404795/rdfixe5w9cjrgurnbrro.pdf', 'null', NULL, 'null', 'null', 'null', NULL, 'null', 'null', 'null', 'null', NULL, 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 'null', 0, 0, 0, 'null', 20, 1, 1, 0, 1),
+(51, 0, 'Pending', '2025-06-12', '2025-06-21', 'Paid', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750415355/jxiusxkpgm17ybyfb73e.pdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, NULL, 18, 1, 0, 0, 0),
+(52, 56, 'Paid', '2025-06-21', '2025-06-21', 'Paid', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750416706/ou7gfady0396xjxzpstq.pdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, NULL, 18, 1, 0, 0, 0),
+(53, 56, 'Paid', '2025-06-21', '2025-06-21', 'Paid', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750417156/o2estxrnt4g7cu826urm.pdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, NULL, 20, 1, 0, 0, 0),
+(54, 56, 'Paid', '2025-06-21', '2025-06-28', 'Paid', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750417266/jnlfms870tqqt9h1hku8.pdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, NULL, 21, 1, 0, 0, 0),
+(55, 56, 'Paid', '2025-06-21', '2025-06-21', 'Paid', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418326/vfes02l6zykd6gvuq85k.pdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, NULL, 22, 1, 0, 0, 0),
+(56, 56, 'Paid', '2025-06-21', '2025-06-21', 'Paid', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418491/desh9gz270roa8lm3dtv.pdf', '2025-06-21', 'Accepted', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418492/zbjpsusxojmknpujosvc.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418494/hx64qcyv5buvlrmljwau.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418495/ojoz4alowqdhh1kvng05.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418496/vipszi4vebck5ykjoxwa.pdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, NULL, 22, 1, 0, 0, 0),
+(57, 56, 'Paid', '2025-06-21', '2025-06-21', 'Paid', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418959/fz0v3zttsyobk1umdbgf.pdf', '2025-06-21', 'Accepted', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418961/jsxbeqflyubehgnualnb.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418962/fkbqf71swrny7mxv1h7k.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418964/dcglpptt6yxfoaxbok0c.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418965/w86ue42bfakavxhgapyd.pdf', 'Paid', '2025-06-21', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418967/wgcybkocdcsffmefzhpi.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418968/cgesipvgnnglb3uuesm7.pdf', '2025-06-21', '2025-06-21', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418969/ruhelubdut5ngfdgxosl.pdf', NULL, 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418971/odwnrrk1f66yuetyezeh.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418972/itd7cb7g3nqmjgzgmijm.pdf', '2025-06-28', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418973/olctgifpshmanc1euw7v.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418974/jlryyc4dcbme0ejmzm1f.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418976/ywrn1cmqszxauspobzad.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418977/njli5s3d6lc353qhgsug.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418978/idp7hvsihgkg62ptrley.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418980/wbnxm7jkn8w0ywwr0e6w.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418988/peddinw6lwznfmxhjke4.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418981/dspusyugtjblogmuqcvb.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418982/pecggqy0cqi2m5mfvjf5.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418983/bzrzu7xui5zddpvrgknc.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418984/tdraxwhfozw94t1t1wkn.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418987/vvlssml1s0ljnmrjie12.jpg', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750418985/vdshlyltubnnjrkvafiw.pdf', 'Rejected', 'Paid', 1, 1, 1, 'India', 22, 1, 0, 0, 0),
+(58, 56, 'Paid', '2025-06-21', '2025-06-21', 'Paid', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419029/pjawfcs69mpfbwiwbs80.pdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, NULL, 23, 1, 0, 0, 0),
+(59, 56, 'Paid', '2025-06-21', '2025-06-21', 'Paid', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419199/n93nnjpygz9eqlgnj8qq.pdf', '2025-06-20', 'Accepted', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419200/l09un0isebzppnqiqiqy.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419201/u8raym1pvmt0s5jyvc7f.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419203/waox5gf7nxrg4xnpxgl1.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419204/zge08xhsk4matgo83haq.pdf', 'Paid', '2025-06-21', NULL, NULL, '2025-06-20', '2025-06-27', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419205/dmjqvkeithssp7kear9e.pdf', NULL, 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419207/ipgrflodn8mc79hyfxzr.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419209/pe47akajlkcbmwpmcfe4.pdf', '2025-06-27', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419210/wpnau5e2owqikywemnyr.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419212/dwn2mm8hvnnnzmnpjzck.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419213/p2ae9udsguivfsy9j0zg.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419214/nmcnvdmvwdohzqyigwb8.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419215/vma1ivly9exhm5hjzgnx.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419216/hojjl5iwcfjgnfvrxu3v.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419226/ijandb99l7ozlcihb4c1.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419218/t2lxduamnjksxluddnym.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419219/cawjjsif51pqlus2i9ml.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419221/p1wwdddeb0jdvbaov6mu.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419222/z3fljn2ikb4pl9bt2nhz.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419225/grzuia4vuwb8vkckglc8.png', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419223/xtt3sue8dcn6qf4zimue.pdf', 'Rejected', 'Paid', 1, 1, 1, 'India', 23, 1, 0, 0, 0),
+(60, 56, 'Paid', '2025-06-21', '2025-06-27', 'Paid', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419380/wx1g50rzcyfgocdklrda.pdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, NULL, 24, 1, 0, 0, 0),
+(61, 56, 'Paid', '2025-06-21', '2025-06-27', 'Paid', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419537/r9ultronmhlylfneukux.pdf', '2025-06-21', 'Foundation', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419538/jmhvr4dzhe0f8mw2ojgx.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419540/aed0fdscjlwnfudzcwvj.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419541/bkqadofkgc53b2lzdp1x.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419542/znihrkmeaxt19c4aefxu.pdf', 'Paid', '2025-06-21', NULL, NULL, '2025-06-21', '2025-06-27', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419543/sc9hwosxblnitpmrngb6.pdf', NULL, 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419545/lmevtw8kag13qx6gunlk.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419546/hjthdc3gcelzyjktrucs.pdf', '2025-06-27', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419548/eylpv2krj5aybnsjf4gv.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419549/h6fh67r8p5futsly3xea.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419550/nk8tczeoso96nnduozzo.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419551/xdklkxcg9mo0hgqooghl.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419552/xdje3pwjl0rynglxt50v.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419553/uhbt637regtaytoys581.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419562/etlsjgeptlvizdes3bmc.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419554/lplrybwys1wdnkz00pa8.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419555/uisbri8gj0chqemff0y4.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419557/gdrtmp0bh6tgtgb7uzeo.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419558/eqckxb6ky80opuspt7jf.pdf', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419560/ujxosqjrevnjbrewx361.jpg', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750419559/kcn9fxkm6hotcs6vkhqt.pdf', 'Approved', 'Paid', 0, 1, 1, 'indore', 24, 1, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -482,9 +488,10 @@ CREATE TABLE `students` (
 INSERT INTO `students` (`id`, `user_id`, `father_name`, `admission_no`, `id_no`, `mobile_number`, `university_id`, `date_of_birth`, `gender`, `category`, `address`, `full_name`, `role`, `photo`, `documents`, `created_at`, `updated_at`) VALUES
 (35, 1, 'newfather01', '', '01', '01111111', 24, '1999-02-03', 'Male', 'General', 'Rua Serpa Pinto 7  3 ESQ', '', '', '/uploads/1747876147274-16562491-aaa.png', '/uploads/1747876147368-706505454-Bank Statement ( Md.Rajyan).pdf', '2025-05-22 01:09:08', '2025-05-22 01:09:08'),
 (36, 54, NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', '', NULL, NULL, '2025-06-04 16:43:22', '2025-06-04 16:43:22'),
-(47, 0, '', '', '', '', 0, '0000-00-00', '', '', '', '', '', '', '', '2025-06-05 17:58:58', '2025-06-05 17:58:58'),
 (49, 59, 'demo', '123', '01', '07302161', 23, '2025-06-28', 'Male', 'ST', 'Indore\r\nGopal gram', 'virat', 'student', '/uploads/1749297395642-930506709-WhatsApp Image 2025-05-29 at 1.51.37 PM.jpeg', '/uploads/1749297395721-618431-Invoice_29.pdf', '2025-06-07 17:26:35', '2025-06-07 17:26:35'),
-(51, 61, 'demo', '3234', '06', '6676767776', 22, '2025-06-26', 'Male', 'SC', 'Gopal gram - chirola,Chirola,Ujjain Madhya Pradesh - 456313\r\nGopal gram', 'ritika', 'student', '', '', '2025-06-10 16:31:21', '2025-06-10 16:31:21');
+(51, 61, 'demo', '3234', '06', '6676767776', 22, '2025-06-26', 'Male', 'SC', 'Gopal gram - chirola,Chirola,Ujjain Madhya Pradesh - 456313\r\nGopal gram', 'ritika', 'student', '', '', '2025-06-10 16:31:21', '2025-06-10 16:31:21'),
+(52, 63, 'David Smith', 'ADM1001', 'ID1001', '9999999999', 1, '2000-01-01', 'Male', 'General', '123 Street', 'John Smith', 'student', '', '', '2025-06-20 15:51:30', '2025-06-20 15:51:30'),
+(56, 68, 'demo', '02', '201', '07047687998', 22, '2025-06-25', 'Male', 'OBC', 'kesarbag road', 'kush', 'student', '', '', '2025-06-20 16:15:47', '2025-06-20 16:15:47');
 
 -- --------------------------------------------------------
 
@@ -646,7 +653,7 @@ CREATE TABLE `universities` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `logo_url` text DEFAULT NULL,
+  `logo_url` varchar(500) NOT NULL,
   `location` varchar(255) DEFAULT NULL,
   `programs` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `highlights` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
@@ -661,13 +668,11 @@ CREATE TABLE `universities` (
 --
 
 INSERT INTO `universities` (`id`, `user_id`, `name`, `logo_url`, `location`, `programs`, `highlights`, `contact_phone`, `contact_email`, `created_at`, `updated_at`) VALUES
-(12, 1, 'Gyan Sagar ', '/uploads/1746442628489-144683235-smart-life-academy-logo.jpg', 'indore', '[\"fedfdfdf\"]', '[\"hfhfhfh\"]', '07302161400', 'krishnarajputkiaan@gmail.com', '2025-05-05 16:27:08', '2025-05-05 17:26:56'),
-(17, 1, 'Delhi University', '/uploads/1746539482209-958921538-logo.jpg', 'Delhi, India', '[\"Arts, Commerce, Science\",\"Business, AI, Computer Science\"]', '[\"Largest public university in India\",\"Japan\'s top-ranked university\"]', '46546656', 'info@u-tokyo.ac.jp', '2025-05-06 13:51:21', '2025-05-06 13:51:21'),
-(18, 1, 'Oxford, United Kingdom', '/uploads/1746771567018-650254915-pngtree-graduation-season-doctor-hat-globe-school-green-plant-vector-image_2300931-removebg-preview.png', '49, indore mp', '[\"Humanities, Law, Philosophy\",\"Engineering, Data Science, Medicine\"]', '[\"One of the oldest universities in the world\",\"Ranked consistently in global top 5 universities\"]', '📞 0044 1865 270000', 'info@oxgmail.com', '2025-05-09 06:19:27', '2025-05-09 06:19:27'),
-(20, 1, 'Budapest Metropolitan University ', '/uploads/1746943295541-971691652-budapest-metropolitan-university-budapest-hungary.jpg', 'budapest', NULL, NULL, '+880 9613-752752', 'info@stuyfirstinfo.com', '2025-05-11 06:01:35', '2025-05-11 06:01:35'),
+(18, 1, 'Oxford, United Kingdom', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750412597/cpyzppbhd3sr93uddfxy.png', '49, indore mp', '[\"Humanities, Law, Philosophy\",\"Engineering, Data Science, Medicine\"]', '[\"One of the oldest universities in the world\",\"Ranked consistently in global top 5 universities\"]', '📞 0044 1865 270000', 'info@oxgmail.com', '2025-05-09 06:19:27', '2025-06-20 15:15:14'),
+(20, 1, 'Budapest Metropolitan University ', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750412643/qpatlkg5di1rjzrl9jri.jpg', 'budapest', NULL, NULL, '+880 9613-752752', 'info@stuyfirstinfo.com', '2025-05-11 06:01:35', '2025-06-20 15:14:57'),
 (21, 1, 'Gyor University', '/uploads/1747120642271-143442955-wC4KFGDB_400x400[1].jpg', 'University in Győr, Hungary', NULL, NULL, '+36 96 503 400', 'lukacs.eszter@sze.hu', '2025-05-13 07:17:22', '2025-05-13 07:17:22'),
-(22, 1, 'Wekerle Business School', '/uploads/1747120858055-752979428-160561_52315698_1218299558323083_4847638838631202816_n[1].png', 'Budapest, Jázmin u. 10, 1083 Hungary', NULL, NULL, '+36 1 50 174 50', 'international@wsuf.hu', '2025-05-13 07:20:58', '2025-05-13 07:20:58'),
-(23, 1, 'University of Debrecen', '/uploads/1747121291692-486528945-images[1]', 'Debrecen, Egyetem tér 1, 4032 Hungary', NULL, NULL, '30,418 (2011)', 'info@edu.unideb.hu', '2025-05-13 07:28:11', '2025-05-13 07:28:11'),
+(22, 1, 'Wekerle Business School', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750412758/oueinvkhnholy4woa71y.jpg', 'Budapest, Jázmin u. 10, 1083 Hungary', NULL, NULL, '+36 1 50 174 50', 'international@wsuf.hu', '2025-05-13 07:20:58', '2025-06-20 15:16:15'),
+(23, 1, 'University of Debrecen', 'https://res.cloudinary.com/dkqcqrrbp/image/upload/v1750412997/qqbmab3ox9eqjqknnbr5.png', 'Debrecen, Egyetem tér 1, 4032 Hungary', NULL, NULL, '30,418 (2011)', 'info@edu.unideb.hu', '2025-05-13 07:28:11', '2025-06-20 15:20:17'),
 (24, 1, 'Pecs University Hungary', '/uploads/1747121716692-886939212-images[1]', 'Pécs, 48-as tér 1, 7622 Hungary', NULL, NULL, '+36 72 501 599', 'international@pte.hu', '2025-05-13 07:35:16', '2025-05-13 07:35:16');
 
 -- --------------------------------------------------------
@@ -700,9 +705,6 @@ INSERT INTO `users` (`id`, `email`, `password`, `role`, `full_name`, `user_id`, 
 (25, 'sohan@gmail.com', '$2b$10$mTeLlgcLzkNgjw2UqxkHyeQij4JiQJPUeaz6ZYHiwLFqDNgtmp6fi', 'counselor', 'sohan', 888, '2025-05-05 08:26:47', '2025-05-05 08:26:47', NULL, 4, NULL, NULL),
 (26, 'ankit@gmail.com', '$2b$10$GpJuJPLgnU1nmTzLD2g5RedVcIj79MHvMUflmGtOYNu/gzPb/IPJm', 'counselor', 'ankit', 7788, '2025-05-05 08:38:32', '2025-05-05 08:38:32', NULL, 5, NULL, NULL),
 (27, 'admin@gmai.com', '$2b$10$S9.t8G8mNvjFNPPXiJJsLusokXClG7vYQuXkesBpWbDeKCGdDPf0K', 'counselor', 'ggfd', 1, '2025-05-05 08:43:06', '2025-05-05 08:43:06', NULL, 6, NULL, NULL),
-(28, 'rohan@gmail.com', '$2b$10$Ozm/VWBEN.Q1Fy.h4zptyOpkCMGWKZuA7d/6k105WISNOMWMRLtKW', 'counselor', 'rohan', 1, '2025-05-06 00:32:56', '2025-05-06 00:32:56', NULL, 7, NULL, NULL),
-(29, 'kiaan@gmail.com', '$2b$10$lF7o5hf6jbBUEq1D3yJHj.sHBlKjfDsP8blsrS1DxAhUFLUflix9a', 'counselor', 'krishna', 4555, '2025-05-06 00:45:19', '2025-05-07 07:26:18', NULL, 8, NULL, NULL),
-(35, 'pooja@example.com', '$2b$10$8rXEadO0bo0dkTNWZGGtjeVAe6sdDkSSXGJzCk/LLHFBGXpaQYN4S', 'counselor', 'Pooja', 1, '2025-05-08 01:23:23', '2025-05-12 00:25:48', NULL, 12, NULL, NULL),
 (37, 'jubed@example.com', '$2b$10$jVaeLn8YeedDVTQPNpT6.OHHJrgTiEWqYDiVYLDwoydgkj5jmOVte', 'counselor', 'jubed', 1, '2025-05-09 21:29:35', '2025-05-09 21:29:35', NULL, 13, NULL, NULL),
 (41, 'kaniz@studyfirstinfo.com', '$2b$10$qm9EPxJcWAf/X0QJDvWDxekLcSKwL0IYWHFG3FVF3WAMAgGoN2Qoi', 'counselor', 'kaniz', 1, '2025-05-11 00:33:13', '2025-05-11 00:33:13', NULL, 14, NULL, NULL),
 (45, 'Counselor@example.com', '$2b$10$Myi4DXoecZWXfct60wq64eP8pGG/KzIylRNpb7kghh0tIDMMPBgsi', 'counselor', 'Counselor', 1, '2025-05-12 06:00:47', '2025-05-12 06:00:47', NULL, 16, NULL, NULL),
@@ -711,10 +713,11 @@ INSERT INTO `users` (`id`, `email`, `password`, `role`, `full_name`, `user_id`, 
 (52, 'vishal@example.com', '$2b$10$ruvrwn0M.uads0MsNdCkHedf4YBOT65v5pXw2vT2X2Z1uibAkmtHW', 'student', 'vishal ', 0, '2025-06-04 06:31:15', '2025-06-04 06:31:15', NULL, NULL, NULL, NULL),
 (53, 'vishaltest@example.com', '$2b$10$KMlOcmkmwSevhVMnIlXI/ubxe6tyuH3pGosONc5cEojdWqLKmXbom', 'student', 'vishal ', 0, '2025-06-04 06:32:14', '2025-06-04 06:32:14', NULL, NULL, NULL, NULL),
 (54, 'rehan@gmail.com', '$2b$10$FhVw.KpA8lSSLOviVT6C0.FTZLrYv.xiIYU8Kw4aKHK3PlKiOo6tS', 'student', 'rehana', 0, '2025-06-04 11:13:22', '2025-06-04 11:13:22', NULL, NULL, NULL, NULL),
-(57, 'muskan@gmail.com', '$2a$12$5C.1lZWEjJ.6vyHpkVLdt.qb.8SqH8UgVl1DEVIoh7yB0M2/Rcr4G', 'student', 'muskan', 0, '2025-06-05 12:28:58', '2025-06-06 10:00:42', 47, NULL, NULL, NULL),
 (59, 'virat@gmail.com', '$2b$10$gD9.vy5R85k.G9Uoz4Qv5e7x0.W4.NEQCmwsvT3jpfitpTEzUgLF2', 'student', 'virat', 0, '2025-06-07 11:56:35', '2025-06-07 11:56:35', 49, NULL, NULL, NULL),
 (61, 'ritika@gmail.com', '$2b$10$3ZA.G8pRa5KeIvODzTtMu.NhuJ5tyBG047josh86vFbu.dqQCp50.', 'student', 'ritika', 0, '2025-06-10 11:01:21', '2025-06-10 11:01:21', 51, NULL, NULL, NULL),
-(62, 'syam@gmail.com', '$2b$10$Tj.a19kNzW0EtBUAZzk5n./VUDSdeKrllASI40ht22fsXi/vQYnb6', 'counselor', 'syam', 1, '2025-06-10 11:03:12', '2025-06-10 11:03:12', NULL, 18, NULL, NULL);
+(63, 'john.smith@example.com', '$2b$10$Bl4lWrf0YjM7w9DI8Du.XeAIdEbs3L4eVynEhi02Grxtu.0GWA7E.', 'student', 'John Smith', 0, '2025-06-20 10:21:30', '2025-06-20 10:21:30', 52, NULL, NULL, NULL),
+(64, 'johnss.smith@example.com', '$2b$10$f/EmwVWu83vsaXrH9iJSNefsPeQPog3S1EszWGehv6vE4lAP5DG5i', 'student', 'John Smith', 0, '2025-06-20 10:28:19', '2025-06-20 10:28:19', NULL, NULL, NULL, NULL),
+(68, 'kushrajawat209@gmail.com', '$2b$10$bhHk5QpMVLfZMmhK/96bY.OmhyWEOdfniIb3Etsz30vuxb81jN/Om', 'student', 'kush', 0, '2025-06-20 10:45:47', '2025-06-20 10:45:47', 56, NULL, NULL, NULL);
 
 --
 -- Indexes for dumped tables
@@ -911,13 +914,13 @@ ALTER TABLE `remainder`
 -- AUTO_INCREMENT for table `studentapplicationprocess`
 --
 ALTER TABLE `studentapplicationprocess`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `student_fees`
@@ -947,13 +950,13 @@ ALTER TABLE `tasks`
 -- AUTO_INCREMENT for table `universities`
 --
 ALTER TABLE `universities`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
 
 --
 -- Constraints for dumped tables

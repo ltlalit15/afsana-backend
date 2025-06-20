@@ -15,10 +15,15 @@ router.post('/changePassword/:id',changeNewPassword);
 //   ]), createStudent);
 
 
-router.post('/createStudent', upload.fields([
-    { name: 'photo', maxCount: 1 },
-    { name: 'documents', maxCount: 1 }
-  ]), createStudent);
+// router.post('/createStudent', upload.fields([
+//     { name: 'photo', maxCount: 1 },
+//     { name: 'documents', maxCount: 1 }
+//   ]), createStudent);
+
+
+
+router.post('/createStudent', createStudent);
+
 
 
 
