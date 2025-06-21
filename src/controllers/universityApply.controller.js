@@ -188,23 +188,88 @@ export const assignCounselor = async (req, res) => {
     }
 };
 
+// export const getApplicationsByCounselor = async (req, res) => {
+//     const { counselor_id } = req.params;
+
+//     try {
+//         const query = `SELECT * FROM studentapplicationprocess WHERE counselor_id = ?`;
+//         const [rows] = await db.query(query, [counselor_id]);
+
+//         if (rows.length === 0) {
+//             return res.status(404).json({ message: "No applications found for this counselor." });
+//         }
+
+//         res.status(200).json(rows);
+//     } catch (error) {
+//         console.error("Error fetching applications:", error);
+//         res.status(500).json({ message: "Server error", error: error.message });
+//     }
+// };
+
+
+
 export const getApplicationsByCounselor = async (req, res) => {
     const { counselor_id } = req.params;
 
     try {
         const query = `SELECT * FROM studentapplicationprocess WHERE counselor_id = ?`;
-        const [rows] = await db.query(query, [counselor_id]);
+        const [applications] = await db.query(query, [counselor_id]);
 
-        if (rows.length === 0) {
+        if (applications.length === 0) {
             return res.status(404).json({ message: "No applications found for this counselor." });
         }
 
-        res.status(200).json(rows);
+        const baseUrl = "http://yourdomain.com/uploads/"; // Replace with your actual base URL
+        const fileFields = [
+            "fee_confirmation_document",
+            "invoice_with_conditional_offer",
+            "tuition_fee_transfer_proof",
+            "final_university_offer_letter",
+            "passport_copy_prepared"
+            // Add all other file fields used in your schema
+        ];
+
+        const data = await Promise.all(
+            applications.map(async (app) => {
+                let studentName = '';
+                let universityName = '';
+                try {
+                    const studentResult = await studentNameById(app.student_id);
+                    const universityResult = await universityNameById(app.university_id);
+                    studentName = studentResult[0]?.full_name || '';
+                    universityName = universityResult[0]?.name || '';
+                } catch (err) {
+                    console.error(`Error fetching names for application ID ${app.id}:`, err);
+                }
+
+                // Update file paths with base URL
+                fileFields.forEach((field) => {
+                    if (app[field] !== null) {
+                        if (!app[field].startsWith('http')) {
+                            app[field] = `${baseUrl}${app[field]}`;
+                        }
+                    } else {
+                        app[field] = null;
+                    }
+                });
+
+                return {
+                    ...app,
+                    student_name: studentName,
+                    university_name: universityName
+                };
+            })
+        );
+
+        res.status(200).json(data);
     } catch (error) {
         console.error("Error fetching applications:", error);
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+
+
+
 
 export const getAllApplications = async (req, res) => {
     try {
