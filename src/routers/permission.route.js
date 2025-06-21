@@ -6,5 +6,4 @@ router.post('/permission',createPermission);
 router.get('/permission', getPermissions);
 router.get('/permission/:id', getPermissionById);
 router.put('/permission/:id', updatePermissionStatus);
-
 export default router;

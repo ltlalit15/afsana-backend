@@ -1,5 +1,5 @@
 import express from 'express';
-import { createApply, deleteApply, getAllApplications, getAllApplicationsById, getAplicationBYStudentID, getApplicationByStudentAndUniversity, updateApply, updateStatus } from '../controllers/universityApply.controller.js';
+import { createApply, deleteApply, getAllApplications, getAllApplicationsById, getAplicationBYStudentID, getApplicationByStudentAndUniversity, updateApply, updateStatus, assignCounselor , getApplicationsByCounselor } from '../controllers/universityApply.controller.js';
 import { upload } from '../middlewares/upload.js';
 const router = express.Router();
 
@@ -32,6 +32,12 @@ const router = express.Router();
 
 
 router.post('/application', createApply);
+router.patch('/assignCounselorapllication', assignCounselor);
+
+router.get('/applications/counselor/:counselor_id', getApplicationsByCounselor);
+
+
+
 
 router.get('/application',getAllApplications);
 router.get('/application/:id', getAllApplicationsById);

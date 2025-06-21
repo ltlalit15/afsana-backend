@@ -120,6 +120,91 @@ export const createApply = async (req, res) => {
 };
 
 
+// export const assignCounselor = async (req, res) => {
+//     const { application_id, counselor_id } = req.body;
+
+//     // Validate input
+//     if (!application_id || !counselor_id) {
+//         return res.status(400).json({ message: "Both 'application_id' and 'counselor_id' are required" });
+//     }
+
+//     try {
+//         const query = `UPDATE studentapplicationprocess SET counselor_id = ? WHERE id = ?`;
+//         const [result] = await db.query(query, [counselor_id, application_id]);
+
+//         if (result.affectedRows === 0) {
+//             return res.status(404).json({ message: "Application ID not found" });
+//         }
+
+//         res.status(200).json({ message: "Counselor assigned successfully" });
+//     } catch (error) {
+//         console.error("Error assigning counselor:", error);
+//         res.status(500).json({ message: "Failed to assign counselor", error: error.message });
+//     }
+// };
+
+
+export const assignCounselor = async (req, res) => {
+    const { application_id, counselor_id, follow_up, notes } = req.body;
+
+    // Check for required identifier
+    if (!application_id) {
+        return res.status(400).json({ message: "'application_id' is required" });
+    }
+
+    // Build dynamic fields
+    const updates = [];
+    const values = [];
+
+    if (counselor_id !== undefined) {
+        updates.push("counselor_id = ?");
+        values.push(counselor_id);
+    }
+    if (follow_up !== undefined) {
+        updates.push("follow_up = ?");
+        values.push(follow_up);
+    }
+    if (notes !== undefined) {
+        updates.push("notes = ?");
+        values.push(notes);
+    }
+    // If nothing to update
+    if (updates.length === 0) {
+        return res.status(400).json({ message: "No fields provided to update" });
+    }
+    const query = `UPDATE studentapplicationprocess SET ${updates.join(", ")} WHERE id = ?`;
+    values.push(application_id);
+    try {
+        const [result] = await db.query(query, values);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Application ID not found" });
+        }
+
+        res.status(200).json({ message: "Application updated successfully" });
+    } catch (error) {
+        console.error("Error updating application:", error);
+        res.status(500).json({ message: "Update failed", error: error.message });
+    }
+};
+
+export const getApplicationsByCounselor = async (req, res) => {
+    const { counselor_id } = req.params;
+
+    try {
+        const query = `SELECT * FROM studentapplicationprocess WHERE counselor_id = ?`;
+        const [rows] = await db.query(query, [counselor_id]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: "No applications found for this counselor." });
+        }
+
+        res.status(200).json(rows);
+    } catch (error) {
+        console.error("Error fetching applications:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
 
 export const getAllApplications = async (req, res) => {
     try {
@@ -519,9 +604,7 @@ export const updateApply = async (req, res) => {
     const { id } = req.params;
     const data = req.body;
     const files = req.files;
-
     console.log("Files received for update:", files);
-
     // List of date fields
     const dateFields = [
         "registration_date",
@@ -553,7 +636,6 @@ export const updateApply = async (req, res) => {
         if (data[key] === '') {
             data[key] = null;
         }
-
         // If the field is a date field, validate the format
         if (dateFields.includes(key) && data[key]) {
             const dateValue = new Date(data[key]);
@@ -562,7 +644,6 @@ export const updateApply = async (req, res) => {
             }
         }
     });
-
     try {
         const query = `UPDATE studentapplicationprocess SET ? WHERE id = ?`;
         const [result] = await db.query(query, [data, id]);
