@@ -38,11 +38,11 @@ dotenv.config();
 
 // Create a MySQL connection pool
 const pool = mysql.createPool({
-  host: "ballast.proxy.rlwy.net",      // Host from your connection string
+  host: "turntable.proxy.rlwy.net",      // Host from your connection string
   user: "root",                       // User from your connection string
-  password: "EXoOaiRxZJeDNexzzwUDrndcVXXbZUxS",  // Password from your connection string
+  password: "EIcKauAxByaFbfbhJXnvEGrVBxQidirg",  // Password from your connection string
   database: "railway",                // Database name from your connection string
-  port: 36624,                        // Port from your connection string (use a number here)
+  port: 54125,                        // Port from your connection string (use a number here)
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
