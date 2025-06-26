@@ -3,18 +3,15 @@ import db from '../config/db.js';
 
 export const createPermission = async (req, res) => {
     const { role_name, permission_name, view_permission, add_permission, edit_permission, delete_permission, user_id } = req.body;
-  
     if (!role_name || !permission_name || user_id === undefined) {
       return res.status(400).json({ message: 'Required fields missing' });
     }
-  
     try {
       const [result] = await db.query(
         `INSERT INTO permissions (role_name, permission_name, view_permission, add_permission, edit_permission, delete_permission, user_id)
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [role_name, permission_name, view_permission, add_permission, edit_permission, delete_permission, user_id]
       );
-  
       res.status(201).json({ message: 'Permission created', id: result.insertId });
     } catch (err) {
       console.error('Error creating permission:', err);
@@ -64,7 +61,6 @@ export const updatePermission = async (req, res) => {
   }
 };
 
-
 export const deletePermission = async (req, res) => {
   try {
     const [result] = await db.query('DELETE FROM permissions WHERE id = ?', [req.params.id]);
@@ -76,7 +72,6 @@ export const deletePermission = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
 
 export const updatePermissionStatus =  async (req, res) => {
     try {

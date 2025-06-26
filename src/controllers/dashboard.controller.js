@@ -360,7 +360,6 @@ const [studentApps] = await db.query(`
     //   ORDER BY date DESC 
     //   LIMIT 5
     // `, [counselor_id]);
-
     res.status(200).json({
       kpi: {
         totalLeads: leads[0].totalleads,
@@ -372,8 +371,6 @@ const [studentApps] = await db.query(`
         conversionRate: `${conversionRate}%`,
         inquiries: inquiries[0].total,
         applications: applications[0].total
-
-
       },
       // conversionFunnel: {
       //   inquiries: inquiries[0].total,
