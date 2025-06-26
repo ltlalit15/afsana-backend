@@ -293,7 +293,7 @@ export const getCounselorDashboardData = async (req, res) => {
     // const [followups] = await db.query(`SELECT COUNT(*) AS totalFollowUps FROM follow_ups WHERE counselor_id = ?`, [counselor_id]);
     // Conversion Funnel
     const [inquiries] = await db.query(`SELECT COUNT(*) AS total FROM inquiries WHERE counselor_id = ?`, [counselor_id]);
-    const [applications] = await db.query(`SELECT COUNT(*) AS total FROM studentapplicationprocess WHERE student_id IN (SELECT id FROM students WHERE counselor_id = ?)`, [counselor_id]);
+    const [applications] = await db.query(`SELECT COUNT(*) AS total FROM studentapplicationprocess WHERE counselor_id =?` , [counselor_id]);
     // Efficiency Calculation
     const followUpsDue = inquiries[0].total;
     // const followUpsDone = followups[0].totalFollowUps;
@@ -336,6 +336,21 @@ export const getCounselorDashboardData = async (req, res) => {
     //   ORDER BY a.created_at DESC 
     //   LIMIT 5
     // `, [counselor_id]);
+const [studentApps] = await db.query(`
+  SELECT 
+    s.full_name AS name, 
+    u.name AS university, 
+    a.Application_stage AS stage, 
+    a.created_at AS assigned_date 
+  FROM studentapplicationprocess a
+  JOIN students s ON a.student_id = s.id
+  JOIN universities u ON a.university_id = u.id
+  WHERE a.counselor_id = ?
+  ORDER BY a.created_at DESC 
+  LIMIT 5
+`, [counselor_id]);
+
+
 
     // Follow-up Table
     // const [followUpList] = await db.query(`
@@ -369,7 +384,7 @@ export const getCounselorDashboardData = async (req, res) => {
       // followUpGaps: `${gapLeads[0].gapCount} leads not followed up in 7+ days`,
       // performanceTips: `${uncontactedLeads[0].uncontacted} leads not contacted in 10 days`,
       recentLeads,
-      // studentApplications: studentApps,
+      studentApplications: studentApps,
       // followUpTable: followUpList
     });
 
