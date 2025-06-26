@@ -1,172 +1,211 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Recruitment Admin Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .card h6 { font-size: 0.9rem; color: #fff; margin-bottom: 4px; }
-    .card h3 { margin: 0; font-weight: bold; color: #fff; }
-    .list-group-item { display: flex; justify-content: space-between; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Counselor Dashboard</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
-<body style="background-color:#f4f6f9;">
-  <div class="container-fluid p-4">
+<style>
+    body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f8f9fc;
+}
 
+.dashboard-container {
+  padding: 20px;
+}
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-bar select,
+.reset-btn {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.reset-btn {
+  background-color: #fff;
+  color: red;
+  border: 1px solid red;
+  cursor: pointer;
+}
+
+.kpi-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.kpi-card {
+  background: linear-gradient(145deg, #2a2fbd, #091d50);
+  color: white;
+  flex: 1 1 150px;
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.kpi-card i {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.conversion-growth {
+  background: orange;
+  padding: 20px;
+  border-radius: 10px;
+  color: black;
+  margin-bottom: 20px;
+}
+
+.growth-up {
+  color: green;
+  font-weight: bold;
+}
+
+.data-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.conversion-funnel, .top-performers {
+  flex: 1;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.chart-placeholder {
+  height: 150px;
+  background: #eee;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+.top-performers table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.top-performers th, .top-performers td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.tables-section h4 {
+  margin-top: 20px;
+}
+
+.table {
+  background: white;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  min-height: 80px;
+}
+
+.performance-section {
+  background: #fff8e1;
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: 10px;
+}
+
+.performance-section ul {
+  padding-left: 20px;
+}
+
+</style>
+<body>
+  <div class="dashboard-container">
     <!-- Filters -->
-    <div class="card mb-4 shadow-sm">
-      <div class="card-body">
-        <form class="row g-3">
-          <div class="col-md-2">
-            <label class="form-label">Date Range</label>
-            <select class="form-select">
-              <option>Today</option>
-              <option selected>This Week</option>
-              <option>This Month</option>
-              <option>Custom</option>
-            </select>
-          </div>
-          <div class="col-md-2">
-            <label class="form-label">Country</label>
-            <select class="form-select">
-              <option selected>Canada</option>
-              <option>UK</option>
-              <option>Hungary</option>
-            </select>
-          </div>
-          <div class="col-md-2">
-            <label class="form-label">Counselor</label>
-            <select class="form-select">
-              <option selected>Counselor A</option>
-              <option>Counselor B</option>
-              <option>Counselor C</option>
-            </select>
-          </div>
-          <div class="col-md-2">
-            <label class="form-label">Status</label>
-            <select class="form-select">
-              <option selected>In Review</option>
-              <option>New</option>
-              <option>Converted</option>
-              <option>Not Interested</option>
-            </select>
-          </div>
-          <div class="col-md-2">
-            <label class="form-label">Intake</label>
-            <select class="form-select">
-              <option>Fall 2025</option>
-              <option selected>Spring 2026</option>
-            </select>
-          </div>
-          <div class="col-md-2">
-            <label class="form-label">Lead Source</label>
-            <select class="form-select">
-              <option selected>Facebook</option>
-              <option>YouTube</option>
-              <option>Referral</option>
-            </select>
-          </div>
-        </form>
+    <div class="filter-bar">
+      <select><option>Date Range</option></select>
+      <select><option>Country</option></select>
+      <select><option>Status</option></select>
+      <select><option>Intake</option></select>
+      <select><option>Lead Source</option></select>
+      <button class="reset-btn">Reset Filters</button>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-cards">
+      <div class="kpi-card"><i class="fas fa-users"></i><p>Total Leads</p><h2>2</h2></div>
+      <div class="kpi-card"><i class="fas fa-user-graduate"></i><p>Total Students</p><h2>7</h2></div>
+      <div class="kpi-card"><i class="fas fa-chalkboard-teacher"></i><p>Total Counselors</p><h2>7</h2></div>
+      <div class="kpi-card"><i class="fas fa-university"></i><p>Total Universities</p><h2>6</h2></div>
+      <div class="kpi-card"><i class="fas fa-tasks"></i><p>Total Tasks</p><h2>3</h2></div>
+      <div class="kpi-card"><i class="fas fa-question-circle"></i><p>Inquiries</p><h2>7</h2></div>
+    </div>
+
+    <!-- Conversion Growth -->
+    <div class="conversion-growth">
+      <h3><i class="fas fa-chart-line"></i> Leads Conversion Growth</h3>
+      <p>This Month: <strong>50.00%</strong></p>
+      <p>Last Month: <strong>0.00%</strong></p>
+      <p class="growth-up">▲ +50.00%</p>
+    </div>
+
+    <!-- Graph and Top Performers -->
+    <div class="data-section">
+      <div class="conversion-funnel">
+        <h4>Conversion Funnel</h4>
+        <!-- Placeholder for chart -->
+        <div class="chart-placeholder">Chart here</div>
+      </div>
+      <div class="top-performers">
+        <h4>Top Performing Counselors</h4>
+        <table>
+          <thead>
+            <tr><th>#</th><th>Name</th><th>Converted Lead</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Counselor</td><td>2</td></tr>
+            <tr><td>2</td><td>jubed</td><td>1</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <!-- Summary Cards -->
-    <div class="row text-white mb-4">
-      <div class="col-md-2">
-        <div class="card bg-primary text-center shadow">
-          <div class="card-body">
-            <h6>Total Leads</h6>
-            <h3>128</h3>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2">
-        <div class="card bg-success text-center shadow">
-          <div class="card-body">
-            <h6>Total Students</h6>
-            <h3>92</h3>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2">
-        <div class="card bg-warning text-center shadow">
-          <div class="card-body">
-            <h6>Counselors</h6>
-            <h3>6</h3>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2">
-        <div class="card bg-info text-center shadow">
-          <div class="card-body">
-            <h6>Universities</h6>
-            <h3>18</h3>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2">
-        <div class="card bg-dark text-center shadow">
-          <div class="card-body">
-            <h6>Active Tasks</h6>
-            <h3>34</h3>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2">
-        <div class="card bg-danger text-center shadow">
-          <div class="card-body">
-            <h6>Inquiries</h6>
-            <h3>187</h3>
-          </div>
-        </div>
-      </div>
+    <!-- Tables Section -->
+    <div class="tables-section">
+      <h4>Recent Leads</h4>
+      <div class="table">[Lead list here]</div>
+
+      <h4>Student Application List</h4>
+      <div class="table">[Student application table here]</div>
+
+      <h4>Follow-up Table</h4>
+      <div class="table">[Follow-up table here]</div>
+
+      <h4>Upcoming Tasks</h4>
+      <div class="table">[Tasks table here]</div>
     </div>
 
-    <!-- KPI Widget -->
-    <div class="card mb-4 shadow-sm">
-      <div class="card-body d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">📈 KPI Overview</h5>
-        <span class="text-success fw-bold">⬆ 23% More Leads than Last Month</span>
-      </div>
-    </div>
-
-    <!-- Conversion Funnel Placeholder -->
-    <div class="card mb-4 shadow-sm">
-      <div class="card-header bg-light fw-bold">Conversion Funnel</div>
-      <div class="card-body">
-        <ul class="list-group list-group-horizontal text-center">
-          <li class="list-group-item flex-fill bg-primary text-white">Inquiries<br><strong>250</strong></li>
-          <li class="list-group-item flex-fill bg-info text-white">Leads<br><strong>128</strong></li>
-          <li class="list-group-item flex-fill bg-success text-white">Students<br><strong>92</strong></li>
-          <li class="list-group-item flex-fill bg-warning text-dark">Applicants<br><strong>64</strong></li>
-          <li class="list-group-item flex-fill bg-dark text-white">Enrolled<br><strong>47</strong></li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Top Counselors -->
-    <div class="card mb-4 shadow-sm">
-      <div class="card-header bg-light fw-bold">🌟 Top Performing Counselors</div>
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item">Counselor A <span class="badge bg-success">42 Leads</span></li>
-        <li class="list-group-item">Counselor B <span class="badge bg-primary">38 Leads</span></li>
-        <li class="list-group-item">Counselor C <span class="badge bg-info">27 Leads</span></li>
+    <!-- Optimization Tips -->
+    <div class="performance-section">
+      <h4>Optimization Insights</h4>
+      <ul>
+        <li>Most Active University: XYZ University</li>
+        <li>Most Responsive Leads: 3 leads replied in < 24 hrs</li>
+        <li>Follow-up Gaps: 2 leads not followed up in 7+ days</li>
+        <li>Tip: 3 leads not contacted in 10 days</li>
       </ul>
     </div>
-
-    <!-- Recent Activities -->
-    <div class="card mb-4 shadow-sm">
-      <div class="card-header bg-light fw-bold">🕒 Recent Activities</div>
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item">New inquiry from <strong>John Doe</strong> via Facebook</li>
-        <li class="list-group-item">Counselor A updated <strong>Aisha Khan</strong> to <span class="badge bg-info">In Review</span></li>
-        <li class="list-group-item">Follow-up task added for <strong>Emily Ray</strong> - <em>Due Tomorrow</em></li>
-        <li class="list-group-item">Status changed to <span class="badge bg-success">Converted</span> for <strong>Alex Brown</strong></li>
-      </ul>
-    </div>
-
   </div>
 </body>
 </html>
-

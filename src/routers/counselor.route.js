@@ -7,4 +7,8 @@ router.get('/counselor/:id', getCounselorById);
 router.put('/counselor/:id', updateCounselor);
 router.delete('/counselor/:id', deleteCounselor);           
 router.get('/counselor', getAllCounselor);
+
+  
+
+
 export default router;  

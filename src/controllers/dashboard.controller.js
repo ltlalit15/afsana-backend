@@ -250,3 +250,133 @@ export const getDashboardDataUniversity = async (req, res) => {
   }
 };
 
+
+
+
+
+
+
+
+
+// Counslor Dashboard
+
+export const getCounselorDashboardData = async (req, res) => {
+  try {
+    const {
+      startDate,
+      endDate,
+      country,
+      intake,
+      leadStatus,
+      counselor_id
+    } = req.query;
+
+    const getDateFilter = (alias = '') =>
+      startDate && endDate
+        ? `${alias}created_at BETWEEN '${startDate} 00:00:00' AND '${endDate} 23:59:59'`
+        : '';
+
+    const filters = [];
+
+    if (startDate && endDate) filters.push(getDateFilter());
+    if (country) filters.push(`country = '${country}'`);
+    if (intake) filters.push(`intake = '${intake}'`);
+    if (leadStatus) filters.push(`lead_status = '${leadStatus}'`);
+    if (counselor_id) filters.push(`counselor_id = '${counselor_id}'`);
+
+    const whereClause = filters.length ? `WHERE ${filters.join(' AND ')}` : '';
+    const counselorWhere = `WHERE counselor_id = '${counselor_id}'`;
+    const [leads] = await db.query(`SELECT COUNT(*) AS totalleads FROM leads WHERE counselor = ?`, [counselor_id]);
+    const [students] = await db.query(`SELECT COUNT(*) AS totalstudents FROM students WHERE counselor_id = ?`, [counselor_id]);
+    const [universities] = await db.query(`SELECT  COUNT(*) AS totalUniversities FROM counselors WHERE id = ?`, [counselor_id]);
+    const [tasks] = await db.query(`SELECT COUNT(*) AS totalTasks FROM tasks WHERE counselor_id = ?`, [counselor_id]);
+    // const [followups] = await db.query(`SELECT COUNT(*) AS totalFollowUps FROM follow_ups WHERE counselor_id = ?`, [counselor_id]);
+    // Conversion Funnel
+    const [inquiries] = await db.query(`SELECT COUNT(*) AS total FROM inquiries WHERE counselor_id = ?`, [counselor_id]);
+    const [applications] = await db.query(`SELECT COUNT(*) AS total FROM studentapplicationprocess WHERE student_id IN (SELECT id FROM students WHERE counselor_id = ?)`, [counselor_id]);
+    // Efficiency Calculation
+    const followUpsDue = inquiries[0].total;
+    // const followUpsDone = followups[0].totalFollowUps;
+    const leadsCount = leads[0].totalleads;
+    const studentsCount = students[0].totalstudents;
+
+    // const followUpEfficiency = followUpsDue > 0 ? ((followUpsDone / followUpsDue) * 100).toFixed(2) : "0.00";
+    const conversionRate = leadsCount > 0 ? ((studentsCount / leadsCount) * 100).toFixed(2) : "0.00";
+
+    // Follow-up Gaps
+    const [gapLeads] = await db.query(`
+      SELECT COUNT(*) AS gapCount 
+      FROM leads 
+      WHERE counselor = ? AND DATEDIFF(NOW(), follow_up_date) > 7
+    `, [counselor_id]);
+
+    // Performance Tips
+    const [uncontactedLeads] = await db.query(`
+      SELECT COUNT(*) AS uncontacted 
+      FROM leads 
+      WHERE counselor = ? AND DATEDIFF(NOW(), follow_up_date) > 10
+    `, [counselor_id]);
+
+    // Recent Leads
+    const [recentLeads] = await db.query(`
+      SELECT full_name AS name, country, intake, lead_status AS status, follow_up_date AS last_follow_up 
+      FROM inquiries 
+      WHERE counselor_id = ? 
+      ORDER BY created_at DESC 
+      LIMIT 5
+    `, [counselor_id]);
+
+    // Student Application List
+    // const [studentApps] = await db.query(`
+    //   SELECT s.full_name AS name, u.name AS university, a.Application_stage AS stage, a.created_at AS assigned_date 
+    //   FROM students s
+    //   JOIN universities u ON s.university_id = u.id
+    //   JOIN studentapplicationprocess a ON s.id = a.student_id
+    //   WHERE s.counselor_id = ?
+    //   ORDER BY a.created_at DESC 
+    //   LIMIT 5
+    // `, [counselor_id]);
+
+    // Follow-up Table
+    // const [followUpList] = await db.query(`
+    //   SELECT type, date, remarks, status 
+    //   FROM follow_ups 
+    //   WHERE counselor_id = ? 
+    //   ORDER BY date DESC 
+    //   LIMIT 5
+    // `, [counselor_id]);
+
+    res.status(200).json({
+      kpi: {
+        totalLeads: leads[0].totalleads,
+        totalStudents: students[0].totalstudents,
+        totalUniversities: universities[0].totalUniversities,
+        totalTasks: tasks[0].totalTasks,
+        // totalFollowUps: followups[0].totalFollowUps,
+        // followUpEfficiency: `${followUpEfficiency}%`,
+        conversionRate: `${conversionRate}%`,
+        inquiries: inquiries[0].total,
+        applications: applications[0].total
+
+
+      },
+      // conversionFunnel: {
+      //   inquiries: inquiries[0].total,
+      //   leads: leadsCount,
+      //   students: studentsCount,
+      //   applications: applications[0].total
+      // },
+      // followUpGaps: `${gapLeads[0].gapCount} leads not followed up in 7+ days`,
+      // performanceTips: `${uncontactedLeads[0].uncontacted} leads not contacted in 10 days`,
+      recentLeads,
+      // studentApplications: studentApps,
+      // followUpTable: followUpList
+    });
+
+  } catch (error) {
+    console.error("Counselor Dashboard Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+

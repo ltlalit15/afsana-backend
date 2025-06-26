@@ -54,11 +54,7 @@ dotenv.config();
       if (existing.length > 0) {
         return res.status(409).json({ message: 'User already exists' });
       }
-  
-      
       const hashed = await bcrypt.hash(password, 10);
-  
-     
       const [counselorResult] = await db.query(
         `INSERT INTO counselors (user_id,  phone, university_id, status)
          VALUES (?, ?, ?, ?)`,
@@ -88,6 +84,10 @@ dotenv.config();
       res.status(500).json({ message: 'Internal server error', error: err.message });
     }
   };
+
+
+ 
+  
   
 
   export const getCounselorById = async (req, res) => {

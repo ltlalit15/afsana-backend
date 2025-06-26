@@ -1,6 +1,6 @@
 import express from 'express';
 import { upload } from '../middlewares/upload.js';
-import { register, login, createStudent, getAllStudents, getStudentById, deleteStudent, changeNewPassword, updateUser, getuserById, getAllByRoles } from '../controllers/auth.controller.js';
+import { register, login, createStudent, StudentAssignToCounselor, getAllStudents, getStudentById, deleteStudent, changeNewPassword, updateUser, getuserById, getAllByRoles, getStudentsByCounselorId } from '../controllers/auth.controller.js';
 // import { authenticate } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
@@ -23,6 +23,12 @@ router.post('/changePassword/:id',changeNewPassword);
 
 
 router.post('/createStudent', createStudent);
+router.patch('/StudentAssignToCounselor', StudentAssignToCounselor);
+router.get('/students/by-counselor/:counselorId', getStudentsByCounselorId);
+
+
+
+
 
 
 

@@ -12,7 +12,6 @@ export const register = async (req, res) => {
   if (!email || !password || !full_name || !role) {
     return res.status(400).json({ message: 'All fields are required' });
   }
-
   try {
     // Check if user already exists
     const [existing] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
@@ -138,6 +137,44 @@ export const login = async (req, res) => {
     res.status(500).json({ message: 'Internal server error', err, errmsg: err.message });
   }
 };
+
+
+export const checkPermission = (permissionName, action) => {
+  return async (req, res, next) => {
+    try {
+      const userId = req.user.id; // Make sure req.user is set from JWT
+
+      // Validate input
+      if (!permissionName || !action) {
+        return res.status(400).json({ message: "Permission check configuration error" });
+      }
+
+      // Fetch permissions for the user
+      const [permissions] = await db.query(`
+        SELECT p.* FROM user_permissions up
+        JOIN permission p ON p.permission_name = up.permission_name
+        WHERE up.user_id = ?
+      `, [userId]);
+
+      // Check if required permission exists and action (view/add/edit/delete) is allowed
+      const hasPermission = permissions.some(p => 
+        p.permission_name === permissionName && p[`${action}_permission`] === 1
+      );
+
+      if (!hasPermission) {
+        return res.status(403).json({ message: "Access Denied: No Permission" });
+      }
+
+      // Permission granted
+      next();
+
+    } catch (error) {
+      console.error("Permission check failed:", error);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
+};
+
 
 export const getuserById = async (req, res) => {
   const { id } = req.params;
@@ -410,6 +447,101 @@ export const createStudent = async (req, res) => {
 };
 
 
+export const StudentAssignToCounselor = async (req, res) => {
+  try {
+    const { student_id, counselor_id, follow_up, notes } = req.body;
+
+    // Validate required field
+    if (!student_id) {
+      return res.status(400).json({ message: "'student_id' is required" });
+    }
+
+    // Build dynamic update parts
+    const updates = [];
+    const values = [];
+
+    if (counselor_id !== undefined) {
+      updates.push("counselor_id = ?");
+      values.push(counselor_id);
+    }
+
+    if (follow_up !== undefined) {
+      updates.push("follow_up = ?");
+      values.push(follow_up);
+    }
+
+    if (notes !== undefined) {
+      updates.push("notes = ?");
+      values.push(notes);
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ message: "No fields provided to update" });
+    }
+
+    // Always update updated_at
+    updates.push("updated_at = NOW()");
+
+    // Final SQL query
+    const sql = `UPDATE students SET ${updates.join(", ")} WHERE id = ?`;
+    values.push(student_id);
+
+    // Execute update
+    const [result] = await db.query(sql, values);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Student ID not found" });
+    }
+
+    // Optionally return updated data
+    const [updatedStudent] = await db.query("SELECT * FROM students WHERE id = ?", [student_id]);
+
+    res.status(200).json({
+      message: "Student updated successfully",
+      data: updatedStudent[0],
+    });
+
+  } catch (error) {
+    console.error("Error updating student:", error);
+    res.status(500).json({
+      message: "Update failed",
+      error: error.message,
+    });
+  }
+};
+
+
+export const getStudentsByCounselorId = async (req, res) => {
+  const { counselorId } = req.params;
+
+  try {
+    const [students] = await db.query(
+      `SELECT
+        s.*,
+        u.email,
+        u.full_name AS user_full_name,
+        u.role AS user_role,
+        uni.name AS university_name
+      FROM students s
+      JOIN users u ON s.id = u.student_id
+      LEFT JOIN universities uni ON s.university_id = uni.id
+      WHERE s.counselor_id = ?`,
+      [counselorId]
+    );
+
+    res.status(200).json(students);
+  } catch (error) {
+    console.error("Error fetching students by counselor ID:", error);
+    res.status(500).json({ message: "Internal server error", error });
+  }
+};
+
+
+
+
+
+
+
 export const getAllStudents = async (req, res) => {
   try {
     const [rows] = await db.query(`
@@ -425,7 +557,6 @@ export const getAllStudents = async (req, res) => {
       LEFT JOIN universities uni
         ON s.university_id = uni.id
     `);
-
     const parsedRows = rows.map(row => ({
       ...row,
       photo: row.photo
@@ -435,13 +566,14 @@ export const getAllStudents = async (req, res) => {
         ? `${req.protocol}://${req.get("host")}${row.documents}`
         : null,
     }));
-
     res.status(200).json(parsedRows);
   } catch (error) {
     console.error('Error fetching students:', error);
     res.status(500).json({ message: 'Internal server error', error });
   }
 };
+
+
 
 export const getStudentById = async (req, res) => {
   const { id } = req.params;
@@ -615,19 +747,14 @@ export const changeNewPassword = async (req, res) => {
   if (!password || !newPassword) {
     return res.status(400).json({ message: 'Both old and new passwords are required' });
   }
-
-
   try {
     const [user] = await db.query('SELECT * FROM users WHERE id = ?', [id]);
 
     if (user.length === 0 || !(await bcrypt.compare(password, user[0].password))) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
-
     const hashed = await bcrypt.hash(newPassword, 10);
-
     await db.query('UPDATE users SET password = ? WHERE id = ?', [hashed, id]);
-
     res.status(200).json({ message: 'Password changed successfully' });
   } catch (error) {
     console.error('Error changing password:', error);
