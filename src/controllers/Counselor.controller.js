@@ -226,4 +226,45 @@ dotenv.config();
         res.status(500).json({ message: 'Internal server error' });
       }
     };
+
+ 
+    export const creategettesting = async (req, res) => {
+  try {
+    const {
+      name, email, password, phone
+    } = req.body;
+    
+    const [result] = await db.query(
+      `INSERT INTO testing (name, email, password, phone)
+       VALUES (?, ?, ?, ?)`,
+      [ name, email, password, phone]
+    );
+
+    res.status(201).json({
+       message: 'Task created successfully',
+       taskId: result.insertId });
+  } catch (err) {
+    console.error('Create Task Error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+export const gettesting = async(req, res) =>{
+
+  try{
+    const [result] = await db.query(`SELECT * FROM testing`);
+    res.status(201).json({
+       message: 'result fetch successfully',
+       data: result });
+
+  }
+  catch
+  {
+    console.error('Create Task Error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+
    

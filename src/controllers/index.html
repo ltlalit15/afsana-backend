@@ -1,211 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Counselor Dashboard</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-</head>
-<style>
+  <meta charset="UTF-8">
+  <title>Visa Processing CRM Forms</title>
+  <style>
     body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: #f8f9fc;
-}
-
-.dashboard-container {
-  padding: 20px;
-}
-
-.filter-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.filter-bar select,
-.reset-btn {
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-.reset-btn {
-  background-color: #fff;
-  color: red;
-  border: 1px solid red;
-  cursor: pointer;
-}
-
-.kpi-cards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.kpi-card {
-  background: linear-gradient(145deg, #2a2fbd, #091d50);
-  color: white;
-  flex: 1 1 150px;
-  text-align: center;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.kpi-card i {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-.conversion-growth {
-  background: orange;
-  padding: 20px;
-  border-radius: 10px;
-  color: black;
-  margin-bottom: 20px;
-}
-
-.growth-up {
-  color: green;
-  font-weight: bold;
-}
-
-.data-section {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.conversion-funnel, .top-performers {
-  flex: 1;
-  background: white;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.chart-placeholder {
-  height: 150px;
-  background: #eee;
-  margin-top: 10px;
-  border-radius: 8px;
-}
-
-.top-performers table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-.top-performers th, .top-performers td {
-  padding: 8px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
-}
-
-.tables-section h4 {
-  margin-top: 20px;
-}
-
-.table {
-  background: white;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  min-height: 80px;
-}
-
-.performance-section {
-  background: #fff8e1;
-  padding: 15px;
-  margin-top: 20px;
-  border-radius: 10px;
-}
-
-.performance-section ul {
-  padding-left: 20px;
-}
-
-</style>
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    details {
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 6px;
+      background-color: #f9f9f9;
+    }
+    summary {
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    label {
+      display: block;
+      margin: 8px 0 4px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 6px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
 <body>
-  <div class="dashboard-container">
-    <!-- Filters -->
-    <div class="filter-bar">
-      <select><option>Date Range</option></select>
-      <select><option>Country</option></select>
-      <select><option>Status</option></select>
-      <select><option>Intake</option></select>
-      <select><option>Lead Source</option></select>
-      <button class="reset-btn">Reset Filters</button>
-    </div>
 
-    <!-- KPI Cards -->
-    <div class="kpi-cards">
-      <div class="kpi-card"><i class="fas fa-users"></i><p>Total Leads</p><h2>2</h2></div>
-      <div class="kpi-card"><i class="fas fa-user-graduate"></i><p>Total Students</p><h2>7</h2></div>
-      <div class="kpi-card"><i class="fas fa-chalkboard-teacher"></i><p>Total Counselors</p><h2>7</h2></div>
-      <div class="kpi-card"><i class="fas fa-university"></i><p>Total Universities</p><h2>6</h2></div>
-      <div class="kpi-card"><i class="fas fa-tasks"></i><p>Total Tasks</p><h2>3</h2></div>
-      <div class="kpi-card"><i class="fas fa-question-circle"></i><p>Inquiries</p><h2>7</h2></div>
-    </div>
+<h2>Visa Processing CRM - Multi-Step Forms</h2>
 
-    <!-- Conversion Growth -->
-    <div class="conversion-growth">
-      <h3><i class="fas fa-chart-line"></i> Leads Conversion Growth</h3>
-      <p>This Month: <strong>50.00%</strong></p>
-      <p>Last Month: <strong>0.00%</strong></p>
-      <p class="growth-up">▲ +50.00%</p>
-    </div>
+<!-- Step 1: Document Upload -->
+<details>
+  <summary>Step 1: Document Upload</summary>
+  <form action="/api/visa/documents/upload" method="POST" enctype="multipart/form-data">
+    <label>Passport: <input type="file" name="passport" /></label>
+    <label>Photo: <input type="file" name="photo" /></label>
+    <label>SSC Certificate: <input type="file" name="ssc_cert" /></label>
+    <label>IELTS Certificate: <input type="file" name="ielts_cert" /></label>
+    <!-- Add more fields as needed -->
+    <button type="submit">Upload Documents</button>
+  </form>
+</details>
 
-    <!-- Graph and Top Performers -->
-    <div class="data-section">
-      <div class="conversion-funnel">
-        <h4>Conversion Funnel</h4>
-        <!-- Placeholder for chart -->
-        <div class="chart-placeholder">Chart here</div>
-      </div>
-      <div class="top-performers">
-        <h4>Top Performing Counselors</h4>
-        <table>
-          <thead>
-            <tr><th>#</th><th>Name</th><th>Converted Lead</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>1</td><td>Counselor</td><td>2</td></tr>
-            <tr><td>2</td><td>jubed</td><td>1</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+<!-- Step 2: Application Submission -->
+<details>
+  <summary>Step 2: Application Submission</summary>
+  <form action="/api/visa/application" method="POST" enctype="multipart/form-data">
+    <label>University Name: <input name="university" /></label>
+    <label>Program: <input name="program" /></label>
+    <label>Submission Date: <input type="date" name="submission_date" /></label>
+    <label>Proof (upload): <input type="file" name="proof" /></label>
+    <label>Status:
+      <select name="status">
+        <option>Submitted</option>
+        <option>Pending</option>
+      </select>
+    </label>
+    <button type="submit">Submit Application</button>
+  </form>
+</details>
 
-    <!-- Tables Section -->
-    <div class="tables-section">
-      <h4>Recent Leads</h4>
-      <div class="table">[Lead list here]</div>
+<!-- Step 3: Application Fee Payment -->
+<details>
+  <summary>Step 3: Application Fee Payment</summary>
+  <form action="/api/visa/application-fee" method="POST" enctype="multipart/form-data">
+    <label>Amount: <input type="number" name="amount" /></label>
+    <label>Method: <input name="method" /></label>
+    <label>Date: <input type="date" name="date" /></label>
+    <label>Proof: <input type="file" name="payment_proof" /></label>
+    <label>Status:
+      <select name="status">
+        <option>Paid</option>
+        <option>Pending</option>
+      </select>
+    </label>
+    <button type="submit">Save Payment</button>
+  </form>
+</details>
 
-      <h4>Student Application List</h4>
-      <div class="table">[Student application table here]</div>
+<!-- Step 4: Zoom / University Interview -->
+<details>
+  <summary>Step 4: Zoom / University Interview</summary>
+  <form action="/api/visa/interview/schedule" method="POST">
+    <label>Date/Time: <input type="datetime-local" name="datetime" /></label>
+    <label>Platform: <input name="platform" /></label>
+    <label>Interviewer: <input name="interviewer" /></label>
+    <label>Status:
+      <select name="status">
+        <option>Scheduled</option>
+        <option>Completed</option>
+      </select>
+    </label>
+    <button type="submit">Save Interview</button>
+  </form>
+</details>
 
-      <h4>Follow-up Table</h4>
-      <div class="table">[Follow-up table here]</div>
+<!-- Step 5: Zoom Interview Result -->
+<details>
+  <summary>Step 5: Zoom Interview Result</summary>
+  <form action="/api/visa/interview/result" method="POST">
+    <label>Result:
+      <select name="result">
+        <option>Accepted</option>
+        <option>Rejected</option>
+        <option>Waitlisted</option>
+      </select>
+    </label>
+    <label>Feedback: <textarea name="feedback"></textarea></label>
+    <label>Date: <input type="date" name="date" /></label>
+    <button type="submit">Save Result</button>
+  </form>
+</details>
 
-      <h4>Upcoming Tasks</h4>
-      <div class="table">[Tasks table here]</div>
-    </div>
+<!-- Step 6: Conditional Offer Letter -->
+<details>
+  <summary>Step 6: Conditional Offer Letter</summary>
+  <form action="/api/visa/offer/conditional" method="POST" enctype="multipart/form-data">
+    <label>Upload Letter: <input type="file" name="offer_letter" /></label>
+    <label>Date: <input type="date" name="date" /></label>
+    <label>Conditions: <textarea name="conditions"></textarea></label>
+    <label>Status:
+      <select name="status">
+        <option>Received</option>
+        <option>Pending</option>
+      </select>
+    </label>
+    <button type="submit">Save Offer</button>
+  </form>
+</details>
 
-    <!-- Optimization Tips -->
-    <div class="performance-section">
-      <h4>Optimization Insights</h4>
-      <ul>
-        <li>Most Active University: XYZ University</li>
-        <li>Most Responsive Leads: 3 leads replied in < 24 hrs</li>
-        <li>Follow-up Gaps: 2 leads not followed up in 7+ days</li>
-        <li>Tip: 3 leads not contacted in 10 days</li>
-      </ul>
-    </div>
-  </div>
+<!-- Step 7: Tuition Fee Payment -->
+<details>
+  <summary>Step 7: Tuition Fee Payment</summary>
+  <form action="/api/visa/tuition-fee" method="POST" enctype="multipart/form-data">
+    <label>Amount: <input type="number" name="amount" /></label>
+    <label>Date: <input type="date" name="date" /></label>
+    <label>Proof: <input type="file" name="proof" /></label>
+    <label>Status:
+      <select name="status">
+        <option>Fully Paid</option>
+        <option>Partially Paid</option>
+        <option>Not Paid</option>
+      </select>
+    </label>
+    <label>Comments: <textarea name="comments"></textarea></label>
+    <button type="submit">Save Tuition Payment</button>
+  </form>
+</details>
+
+<!-- Step 8: Main Offer Letter -->
+<details>
+  <summary>Step 8: Main Offer Letter</summary>
+  <form action="/api/visa/offer/main" method="POST" enctype="multipart/form-data">
+    <label>Upload Main Offer: <input type="file" name="main_offer" /></label>
+    <label>Date: <input type="date" name="date" /></label>
+    <label>Status:
+      <select name="status">
+        <option>Received</option>
+        <option>Not Issued</option>
+      </select>
+    </label>
+    <button type="submit">Save Main Offer</button>
+  </form>
+</details>
+
+<!-- Continue for remaining steps: Embassy Document Upload, Appointment, Interview Result, Visa Decision, etc. -->
+
 </body>
 </html>

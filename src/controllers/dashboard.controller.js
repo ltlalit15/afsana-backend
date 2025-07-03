@@ -1,5 +1,4 @@
 import db from '../config/db.js';
-
 export const getDashboardData = async (req, res) => {
   const { counselor_id } = req.params;
   try {
@@ -51,56 +50,43 @@ export const getDashboardData = async (req, res) => {
 export const getDashboardDataAdmin = async (req, res) => {
   try {
     const { startDate, endDate, country, source, counselor_id, leadStatus, intake } = req.query;
-
     // Common date filter
     const getDateFilter = (alias = '') =>
       startDate && endDate
         ? `${alias}created_at BETWEEN '${startDate} 00:00:00' AND '${endDate} 23:59:59'`
         : '';
-
     // Table-specific filters
     const leadFilters = [];
     const inquiryFilters = [];
     const counselorsFilter = [];
     const commonFilters = [];
-
     if (startDate && endDate) {
       leadFilters.push(getDateFilter());
       inquiryFilters.push(getDateFilter());
       counselorsFilter.push(getDateFilter());
       commonFilters.push(getDateFilter());
     }
-
     if (country) {
       leadFilters.push(`preferred_countries = '${country}'`);
       inquiryFilters.push(`country = '${country}'`);
     }
-
     if (source) {
       leadFilters.push(`source = '${source}'`);
       inquiryFilters.push(`source = '${source}'`);
     }
-
     if (counselor_id) {
-
       leadFilters.push(`counselor = '${counselor_id}'`);
       inquiryFilters.push(`counselor_id = '${counselor_id}'`);
       counselorsFilter.push(`id = '${counselor_id}'`);
     }
-
     if (leadStatus) {
       inquiryFilters.push(`lead_status = '${leadStatus}'`);
     }
-
     if (intake) {
 
       inquiryFilters.push(`intake = '${intake}'`);
-
     }
-
-
     const buildWhereClause = (filters) => filters.length ? `WHERE ${filters.join(' AND ')}` : '';
-
     const [totalLeads] = await db.query(`SELECT COUNT(*) AS totalleads FROM leads ${buildWhereClause(leadFilters)}`);
     const [totalStudents] = await db.query(`SELECT COUNT(*) AS totalstudents FROM students ${buildWhereClause(commonFilters)}`);
     const [totalCounselors] = await db.query(`SELECT COUNT(*) AS totalcounselors FROM counselors ${buildWhereClause(counselorsFilter)}`);
@@ -108,7 +94,6 @@ export const getDashboardDataAdmin = async (req, res) => {
     const [totalTasks] = await db.query(`SELECT COUNT(*) AS totalTasks FROM tasks ${buildWhereClause(commonFilters)}`);
     const [totalInquiries] = await db.query(`SELECT COUNT(*) AS totalInquiries FROM inquiries ${buildWhereClause(inquiryFilters)}`);
     const [totalUniversities] = await db.query(`SELECT COUNT(*) AS totalUniversities FROM universities ${buildWhereClause(commonFilters)}`);
-
     res.status(200).json({
       totalleads: totalLeads[0].totalleads,
       totalstudents: totalStudents[0].totalstudents,
@@ -221,7 +206,6 @@ ORDER BY FIELD(d.day, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'S
   }
 };
 
-
 export const getDashboardDataUniversity = async (req, res) => {
   const { university_id, studentId } = req.params;
 
@@ -250,14 +234,6 @@ export const getDashboardDataUniversity = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
-
-
 // Counslor Dashboard
 
 export const getCounselorDashboardData = async (req, res) => {
@@ -270,20 +246,16 @@ export const getCounselorDashboardData = async (req, res) => {
       leadStatus,
       counselor_id
     } = req.query;
-
     const getDateFilter = (alias = '') =>
       startDate && endDate
         ? `${alias}created_at BETWEEN '${startDate} 00:00:00' AND '${endDate} 23:59:59'`
         : '';
-
     const filters = [];
-
     if (startDate && endDate) filters.push(getDateFilter());
     if (country) filters.push(`country = '${country}'`);
     if (intake) filters.push(`intake = '${intake}'`);
     if (leadStatus) filters.push(`lead_status = '${leadStatus}'`);
     if (counselor_id) filters.push(`counselor_id = '${counselor_id}'`);
-
     const whereClause = filters.length ? `WHERE ${filters.join(' AND ')}` : '';
     const counselorWhere = `WHERE counselor_id = '${counselor_id}'`;
     const [leads] = await db.query(`SELECT COUNT(*) AS totalleads FROM leads WHERE counselor = ?`, [counselor_id]);
@@ -299,24 +271,20 @@ export const getCounselorDashboardData = async (req, res) => {
     // const followUpsDone = followups[0].totalFollowUps;
     const leadsCount = leads[0].totalleads;
     const studentsCount = students[0].totalstudents;
-
     // const followUpEfficiency = followUpsDue > 0 ? ((followUpsDone / followUpsDue) * 100).toFixed(2) : "0.00";
     const conversionRate = leadsCount > 0 ? ((studentsCount / leadsCount) * 100).toFixed(2) : "0.00";
-
     // Follow-up Gaps
     const [gapLeads] = await db.query(`
       SELECT COUNT(*) AS gapCount 
       FROM leads 
       WHERE counselor = ? AND DATEDIFF(NOW(), follow_up_date) > 7
     `, [counselor_id]);
-
     // Performance Tips
     const [uncontactedLeads] = await db.query(`
       SELECT COUNT(*) AS uncontacted 
       FROM leads 
       WHERE counselor = ? AND DATEDIFF(NOW(), follow_up_date) > 10
     `, [counselor_id]);
-
     // Recent Leads
     const [recentLeads] = await db.query(`
       SELECT full_name AS name, country, intake, lead_status AS status, follow_up_date AS last_follow_up 
@@ -325,7 +293,6 @@ export const getCounselorDashboardData = async (req, res) => {
       ORDER BY created_at DESC 
       LIMIT 5
     `, [counselor_id]);
-
     // Student Application List
     // const [studentApps] = await db.query(`
     //   SELECT s.full_name AS name, u.name AS university, a.Application_stage AS stage, a.created_at AS assigned_date 
@@ -349,9 +316,6 @@ const [studentApps] = await db.query(`
   ORDER BY a.created_at DESC 
   LIMIT 5
 `, [counselor_id]);
-
-
-
     // Follow-up Table
     // const [followUpList] = await db.query(`
     //   SELECT type, date, remarks, status 

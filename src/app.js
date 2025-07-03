@@ -61,6 +61,10 @@ import studentInvoiceRouter from "./routers/studentInvoiceRouter.js";
 import invoiceByCounselor from "./routers/invoiceByCounselor.route.js";
 import studentinvoiceByCounselors from "./routers/studentinvoiceByCounselor.router.js";
 import staff from './routers/staff.routes.js';
+import visaRouters from './routers/visaRouters.js';
+
+
+
 
 // ✅ Route handling
 
@@ -89,6 +93,7 @@ app.use('/api', studentInvoiceRouter);
 app.use('/api', invoiceByCounselor);
 app.use('/api', studentinvoiceByCounselors);
 app.use('/api', staff);
+app.use('/api', visaRouters);
 
 // ✅ Log every incoming request
 app.use((req, res, next) => {
