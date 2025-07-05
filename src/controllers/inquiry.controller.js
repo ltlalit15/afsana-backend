@@ -1,6 +1,72 @@
 import db from '../config/db.js';
 import dotenv from 'dotenv';
 dotenv.config();
+import cloudinary from "cloudinary";
+import fs from 'fs';
+
+cloudinary.config({
+    cloud_name: 'dkqcqrrbp',
+    api_key: '418838712271323',
+    api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
+});
+
+
+export const uploadDocuments = async (req, res) => {
+  const inquiryId = req.params.id;
+
+  if (!inquiryId) {
+    return res.status(400).json({ message: "Inquiry ID is required" });
+  }
+
+  try {
+
+    // ✅ Upload files to Cloudinary and set public URLs
+
+
+
+    const updatedFields = {};
+
+    for (const docField of ["passport", "certificates", "ielts", "sop"]) {
+      if (req.files[docField]) {
+        const localPath = req.files[docField][0].path;
+
+        const result = await cloudinary.uploader.upload(localPath, {
+          folder: "inquiries/documents",
+        });
+
+        // Save Cloudinary URL to update later
+        updatedFields[docField] = result.secure_url;
+
+        // Clean up local file
+        fs.unlinkSync(localPath);
+      }
+    }
+
+    if (Object.keys(updatedFields).length === 0) {
+      return res.status(400).json({ message: "No files were uploaded" });
+    }
+
+    // Build SET part of the SQL query dynamically
+    const setFields = Object.keys(updatedFields)
+      .map((field) => `${field} = ?`)
+      .join(", ");
+    const values = Object.values(updatedFields);
+
+    const sql = `UPDATE inquiries SET ${setFields} WHERE id = ?`;
+
+    await db.query(sql, [...values, inquiryId]);
+
+    res.status(200).json({
+      message: "Documents uploaded and inquiry updated successfully",
+      documents: updatedFields,
+    });
+  } catch (err) {
+    console.error("Upload error:", err);
+    res.status(500).json({ message: "Failed to upload documents", error: err.message });
+  }
+};
+
+
 
 export const createInquiry = async (req, res) => {
   const { 
@@ -270,7 +336,7 @@ export const getAllConvertedLeads = async (req, res) => {
     //   OR new_leads IN (${placeholders})
     // `;
 
-      const query =` SELECT 
+      const query =`SELECT 
         i.*, 
         u.full_name AS counselor_name
       FROM 

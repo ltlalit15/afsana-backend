@@ -1,11 +1,12 @@
 import express from 'express';
-import { createInquiry, deleteInquiry, getAllInquiries, getInquiryById, updateInquiry, assignInquiry, getCounselorWisePerformance ,  getAllConvertedLeads , getAllleadsstatus , getCheckEligiblity, updateEligibilityStatus, updateLeadStatus } from '../controllers/inquiry.controller.js';
+import { upload } from '../middlewares/upload.js';
+import { createInquiry, deleteInquiry, getAllInquiries, getInquiryById, updateInquiry, assignInquiry, getCounselorWisePerformance, getAllConvertedLeads, getAllleadsstatus, getCheckEligiblity, updateEligibilityStatus, updateLeadStatus , uploadDocuments} from '../controllers/inquiry.controller.js';
 // import { authenticate } from '../middlewares/auth.middleware.js';
 const router = express.Router();
 router.post('/inquiries', createInquiry);
 router.get('/inquiries/:id', getInquiryById);
 router.put('/inquiries/:id', updateInquiry);
-router.delete('/inquiries/:id', deleteInquiry); 
+router.delete('/inquiries/:id', deleteInquiry);
 router.get('/inquiries', getAllInquiries);
 router.get('/AllConvertedLeadsinquiries', getAllConvertedLeads);
 router.post('/assign-inquiry', assignInquiry); // ✅ Add this line
@@ -15,6 +16,6 @@ router.get('/getCheckEligiblity/:id', getCheckEligiblity); // ✅ Add this lineg
 router.patch("/inquiries/:id/eligibility", updateEligibilityStatus);
 router.patch("/update-lead-status-new", updateLeadStatus);
 
+router.put("/inquiries/:id",uploadDocuments);
 
-    
 export default router;
