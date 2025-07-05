@@ -1,16 +1,9 @@
 import db from '../config/db.js';
 import dotenv from 'dotenv';
 dotenv.config();
-
 import nodemailer from "nodemailer";
-
 import PDFDocument from "pdfkit";
-
-
-
 import fs from "fs";
-
-
 
 // CREATE Fee Record
 // export const createStudentFeeBYcounselor = async (req, res) => { 
@@ -27,11 +20,9 @@ import fs from "fs";
 //       VALUES (?, ?, ?, ?, ?)`;
 
 //     const result = await db.query(query, [student_name, description, amount, status, fee_date]);
-
 //     if (result.affectedRows === 0) {
 //       return res.status(500).json({ message: "Failed to create fee record" });
 //     }
-
 //     return res.status(200).json({ message: 'Student fee record created successfully', id: result.insertId });
 //   } catch (error) {
 //     console.log(`Internal server error: ${error}`);
@@ -187,15 +178,8 @@ export const createStudentFeeBYcounselor = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
 export const getInquiryByIdinvoice = async (req, res) => {
   const { inquiry_id } = req.params;
-
   try {
     const [rows] = await db.query(
       `
@@ -214,11 +198,9 @@ export const getInquiryByIdinvoice = async (req, res) => {
       `,
       [inquiry_id]
     );
-
     if (rows.length === 0) {
       return res.status(404).json({ message: 'No record found for this inquiry ID' });
     }
-
     res.status(200).json(rows[0]); // return single latest joined record
   } catch (error) {
     console.error('Error fetching joined inquiry data:', error);
@@ -226,26 +208,18 @@ export const getInquiryByIdinvoice = async (req, res) => {
   }
 };
 
-
-
-
-
 // export const sendMailToInquiryEmail = async (req, res) => {
 //   const { inquiry_id } = req.params;
-
 //   try {
 //     // Step 1: Get inquiry data by ID
 //     const [inquiryRows] = await db.query(
 //       "SELECT full_name, email FROM inquiries WHERE id = ?",
 //       [inquiry_id]
 //     );
-
 //     if (inquiryRows.length === 0) {
 //       return res.status(404).json({ message: "Inquiry not found" });
 //     }
-
 //     const { full_name, email } = inquiryRows[0];
-
 //     // Step 2: Configure the transporter
 //     const transporter = nodemailer.createTransport({
 //       service: 'gmail',
@@ -254,7 +228,6 @@ export const getInquiryByIdinvoice = async (req, res) => {
 //         pass: 'epvuqqesdioohjvi'
 //       }
 //     });
-
 //     // Step 3: Mail options
 //     const mailOptions = {
 //       from: 'packageitappofficially@gmail.com',
@@ -269,7 +242,6 @@ export const getInquiryByIdinvoice = async (req, res) => {
 //     <p>Regards,<br/>Kiaan Technology Team</p>
 //   `
 //     };
-
 //     // Step 4: Send email
 //     transporter.sendMail(mailOptions, (error, info) => {
 //       if (error) {
@@ -278,21 +250,14 @@ export const getInquiryByIdinvoice = async (req, res) => {
 //       }
 //       res.status(200).json({ message: "Email sent successfully", info });
 //     });
-
 //   } catch (error) {
 //     console.error("Server error:", error);
 //     res.status(500).json({ message: "Internal server error", error });
 //   }
 // };
 
-
-
-
-
-
 export const sendMailToInquiryEmail = async (req, res) => {
   const { inquiry_id } = req.params;
-
   try {
     // Step 1: Fetch full inquiry and fee data using JOIN
     const [rows] = await db.query(
@@ -314,11 +279,9 @@ export const sendMailToInquiryEmail = async (req, res) => {
       WHERE i.id = ?`,
       [inquiry_id]
     );
-
     if (rows.length === 0) {
       return res.status(404).json({ message: "Inquiry not found" });
     }
-
     // Step 2: Extract inquiry info (same for all rows)
     const {
       full_name,
@@ -327,7 +290,6 @@ export const sendMailToInquiryEmail = async (req, res) => {
       course_name,
       city,
       country,
-
       date_of_inquiry,
       address
     } = rows[0];
@@ -361,7 +323,6 @@ export const sendMailToInquiryEmail = async (req, res) => {
         <tbody>${feeTableRows}</tbody>
       </table><br/>`
       : `<p>No fee records found for this inquiry.</p>`;
-
     // Step 4: Email Content
     const htmlContent = `
       <p>Hello <strong>${full_name}</strong>,</p>
@@ -372,7 +333,6 @@ export const sendMailToInquiryEmail = async (req, res) => {
         <li><strong>Course:</strong> ${course_name}</li>
         <li><strong>City:</strong> ${city}</li>
         <li><strong>Country:</strong> ${country}</li>
-
         <li><strong>Date of Inquiry:</strong> ${new Date(date_of_inquiry).toLocaleDateString()}</li>
         <li><strong>Address:</strong> ${address}</li>
       </ul>
@@ -380,7 +340,6 @@ export const sendMailToInquiryEmail = async (req, res) => {
       <p>Our team will contact you soon. Thank you for choosing us!</p>
       <p>Regards,<br/>Study First Info</p>
     `;
-
     // Step 5: Nodemailer config
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -389,14 +348,12 @@ export const sendMailToInquiryEmail = async (req, res) => {
         pass: 'epvuqqesdioohjvi'
       }
     });
-
     const mailOptions = {
       from: 'packageitappofficially@gmail.com',
       to: email,
       subject: 'Your Inquiry & Invoice Details',
       html: htmlContent
     };
-
     // Step 6: Send mail
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
@@ -405,15 +362,11 @@ export const sendMailToInquiryEmail = async (req, res) => {
       }
       res.status(200).json({ message: "Email sent successfully", info });
     });
-
   } catch (error) {
     console.error("Server error:", error);
     res.status(500).json({ message: "Internal server error", error });
   }
 };
-
-
-
 
 // export const sendMailToInquiryEmail = async (req, res) => {
 //   const { inquiry_id } = req.params;
@@ -440,11 +393,9 @@ export const sendMailToInquiryEmail = async (req, res) => {
 //       WHERE i.id = ?`,
 //       [inquiry_id]
 //     );
-
 //     if (rows.length === 0) {
 //       return res.status(404).json({ message: "Inquiry not found" });
 //     }
-
 //     const {
 //       full_name,
 //       email,
@@ -458,7 +409,6 @@ export const sendMailToInquiryEmail = async (req, res) => {
 //       date_of_inquiry,
 //       address
 //     } = rows[0];
-
 //     // Step 3: Create the PDF
 //     const doc = new PDFDocument();
 //     const filePath = `./inquiry_${inquiry_id}.pdf`;
@@ -478,7 +428,6 @@ export const sendMailToInquiryEmail = async (req, res) => {
 //     doc.text(`Date of Inquiry: ${new Date(date_of_inquiry).toLocaleDateString()}`);
 //     doc.text(`Address: ${address}`);
 //     doc.moveDown();
-
 //     // Invoice table
 //     if (rows.some(r => r.description && r.amount)) {
 //       doc.fontSize(14).text("Invoice Details").moveDown(0.5);
@@ -490,9 +439,7 @@ export const sendMailToInquiryEmail = async (req, res) => {
 //     } else {
 //       doc.fontSize(12).text("No invoice records found.");
 //     }
-
 //     doc.end();
-
 //     // Step 4: Wait for PDF to finish writing
 //     writeStream.on('finish', () => {
 //       // Step 5: Email with PDF attachment
@@ -503,7 +450,6 @@ export const sendMailToInquiryEmail = async (req, res) => {
 //           pass: 'epvuqqesdioohjvi'
 //         }
 //       });
-
 //       const mailOptions = {
 //         from: 'packageitappofficially@gmail.com',
 //         to: email,
@@ -514,19 +460,15 @@ export const sendMailToInquiryEmail = async (req, res) => {
 //           path: filePath
 //         }]
 //       };
-
 //       transporter.sendMail(mailOptions, (error, info) => {
 //         fs.unlinkSync(filePath); // delete the PDF after sending
-
 //         if (error) {
 //           console.error("Email send error:", error);
 //           return res.status(500).json({ message: "Failed to send email", error });
 //         }
-
 //         res.status(200).json({ message: "Email with PDF sent successfully", info });
 //       });
 //     });
-
 //   } catch (error) {
 //     console.error("Server error:", error);
 //     res.status(500).json({ message: "Internal server error", error });

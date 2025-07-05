@@ -5,60 +5,345 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 
-   export const createStaff = async (req, res) => {
-    console.log("req.body : ", req.body);
+  //  export const createStaff = async (req, res) => {
+  //   console.log("req.body : ", req.body);
 
-    const {
-      user_id,
-      full_name,
-      email,
-      phone,
-      password,
-      role,
-      status
-    } = req.body;
+  //   const {
+  //     user_id,
+  //     full_name,
+  //     email,
+  //     phone,
+  //     password,
+  //     role,
+  //     status
+  //   } = req.body;
   
-    try {
+  //   try {
      
-      if (!full_name || !email || !phone || !password || !role) {
-        return res.status(400).json({ message: 'All required fields must be filled' });
-      }
+  //     if (!full_name || !email || !phone || !password || !role) {
+  //       return res.status(400).json({ message: 'All required fields must be filled' });
+  //     }
   
      
-      const [existing] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
-      if (existing.length > 0) {
-        return res.status(409).json({ message: 'Staff already exists' });
-      }
-      const hashed = await bcrypt.hash(password, 10);
-      const [counselorResult] = await db.query(
-        `INSERT INTO staff (user_id,  phone, status)
-         VALUES (?, ?, ?)`,
-        [user_id, phone, status]
-      );
+  //     const [existing] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
+  //     if (existing.length > 0) {
+  //       return res.status(409).json({ message: 'Staff already exists' });
+  //     }
+  //     const hashed = await bcrypt.hash(password, 10);
+  //     const [counselorResult] = await db.query(
+  //       `INSERT INTO staff (user_id,  phone, status)
+  //        VALUES (?, ?, ?)`,
+  //       [user_id, phone, status]
+  //     );
   
-      if (!counselorResult.affectedRows) {
-        return res.status(400).json({ message: 'Staff not added properly' });
-      }
+  //     if (!counselorResult.affectedRows) {
+  //       return res.status(400).json({ message: 'Staff not added properly' });
+  //     }
   
-      const staffID = counselorResult.insertId;
+  //     const staffID = counselorResult.insertId;
   
     
-      const [userResult] = await db.query(
-        'INSERT INTO users (email, password, full_name, role, user_id, staff_id) VALUES (?, ?, ?, ?, ?, ?)',
-        [email, hashed, full_name, role, user_id, staffID]
-      );
+  //     const [userResult] = await db.query(
+  //       'INSERT INTO users (email, password, full_name, role, user_id, staff_id) VALUES (?, ?, ?, ?, ?, ?)',
+  //       [email, hashed, full_name, role, user_id, staffID]
+  //     );
   
-      if (!userResult.insertId) {
-        return res.status(400).json({ message: 'Staff creation failed' });
-      }
+  //     if (!userResult.insertId) {
+  //       return res.status(400).json({ message: 'Staff creation failed' });
+  //     }
   
-      res.status(201).json({ message: 'Staff created successfully' });
+  //     res.status(201).json({ message: 'Staff created successfully' });
   
-    } catch (err) {
-      console.error('Create Staff error:', err);
-      res.status(500).json({ message: 'Internal server error', error: err.message });
+  //   } catch (err) {
+  //     console.error('Create Staff error:', err);
+  //     res.status(500).json({ message: 'Internal server error', error: err.message });
+  //   }
+  // };
+
+
+//   export const createStaff = async (req, res) => {
+//   console.log("req.body : ", req.body);
+
+//   const {
+//     user_id,
+//     full_name,
+//     email,
+//     phone,
+//     password,
+//     role,
+//     status,
+//     permissions // ये array आएगा: [{ permission_name, view_permission, add_permission, edit_permission, delete_permission }]
+//   } = req.body;
+
+//   try {
+//     if (!full_name || !email || !phone || !password || !role) {
+//       return res.status(400).json({ message: 'All required fields must be filled' });
+//     }
+
+//     const [existing] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
+//     if (existing.length > 0) {
+//       return res.status(409).json({ message: 'Staff already exists' });
+//     }
+
+//     const hashed = await bcrypt.hash(password, 10);
+
+//     const [staffResult] = await db.query(
+//       `INSERT INTO staff (user_id, phone, status) VALUES (?, ?, ?)`,
+//       [user_id, phone, status]
+//     );
+
+//     if (!staffResult.affectedRows) {
+//       return res.status(400).json({ message: 'Staff not added properly' });
+//     }
+
+//     const staffID = staffResult.insertId;
+
+//     const [userResult] = await db.query(
+//       'INSERT INTO users (email, password, full_name, role, user_id, staff_id) VALUES (?, ?, ?, ?, ?, ?)',
+//       [email, hashed, full_name, role, user_id, staffID]
+//     );
+
+//     const insertedUserID = userResult.insertId;
+
+//     // 👇 Permission assign (if permissions are provided)
+//     if (Array.isArray(permissions) && permissions.length > 0) {
+//       const permissionQueries = permissions.map(p =>
+//         db.query(
+//           `INSERT INTO permissions (role_name, permission_name, view_permission, add_permission, edit_permission, delete_permission, user_id) 
+//            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+//           [role, p.permission_name, p.view_permission, p.add_permission, p.edit_permission, p.delete_permission, insertedUserID]
+//         )
+//       );
+//       await Promise.all(permissionQueries);
+//     }
+
+//     res.status(201).json({ message: 'Staff created successfully with permissions' });
+
+//   } catch (err) {
+//     console.error('Create Staff error:', err);
+//     res.status(500).json({ message: 'Internal server error', error: err.message });
+//   }
+// };
+
+
+
+export const createStaff = async (req, res) => {
+  console.log("req.body : ", req.body);
+
+  const {
+    user_id,
+    full_name,
+    email,
+    phone,
+    password,
+    role,
+    status,
+    permissions // array of permission objects
+  } = req.body;
+
+  try {
+    if (!full_name || !email || !phone || !password || !role) {
+      return res.status(400).json({ message: 'All required fields must be filled' });
     }
-  };
+
+    const [existing] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
+    if (existing.length > 0) {
+      return res.status(409).json({ message: 'Staff already exists' });
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    const [staffResult] = await db.query(
+      `INSERT INTO staff (user_id, phone, status) VALUES (?, ?, ?)`,
+      [user_id, phone, status]
+    );
+
+    if (!staffResult.affectedRows) {
+      return res.status(400).json({ message: 'Staff not added properly' });
+    }
+
+    const staffID = staffResult.insertId;
+
+    const [userResult] = await db.query(
+      `INSERT INTO users (email, password, full_name, role, user_id, staff_id)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [email, hashed, full_name, role, user_id, staffID]
+    );
+
+    const insertedUserID = userResult.insertId;
+
+    // 👇 Assign permission if provided
+    if (Array.isArray(permissions) && permissions.length > 0) {
+      const permissionQueries = permissions.map(p =>
+        db.query(
+          `INSERT INTO permissions 
+            (role_name, permission_name, view_permission, add_permission, edit_permission, delete_permission, user_id) 
+           VALUES (?, ?, ?, ?, ?, ?, ?)`,
+          [role, p.permission_name, p.view_permission, p.add_permission, p.edit_permission, p.delete_permission, insertedUserID]
+        )
+      );
+      await Promise.all(permissionQueries);
+    }
+
+    res.status(201).json({ message: 'Staff created successfully with permissions' });
+
+  } catch (err) {
+    console.error('Create Staff error:', err);
+    res.status(500).json({ message: 'Internal server error', error: err.message });
+  }
+};
+
+
+
+// await axios.post('/api/staff/create', {
+//   user_id: 1,
+//   full_name: "Ramesh Sharma",
+//   email: "ramesh@example.com",
+//   phone: "1234567890",
+//   password: "secret123",
+//   role: "staff",
+//   status: "active",
+//   permissions: [
+//     {
+//       permission_name: "Dashboard",
+//       view_permission: 1,
+//       add_permission: 1,
+//       edit_permission: 1,
+//       delete_permission: 0
+//     },
+//     {
+//       permission_name: "Leads",
+//       view_permission: 1,
+//       add_permission: 1,
+//       edit_permission: 1,
+//       delete_permission: 1
+//     }
+//   ]
+// });
+
+
+
+
+// export const assignOrUpdatePermission = async (req, res) => {
+//   const { user_id, role_name, permission_name, view_permission, add_permission, edit_permission, delete_permission } = req.body;
+
+//   if (!user_id || !role_name || !permission_name) {
+//     return res.status(400).json({ message: "Required fields missing" });
+//   }
+
+//   try {
+//     const [existing] = await db.query(
+//       `SELECT id FROM permissions WHERE user_id = ? AND permission_name = ?`,
+//       [user_id, permission_name]
+//     );
+
+//     if (existing.length > 0) {
+//       // Update existing permission
+//       await db.query(
+//         `UPDATE permissions SET view_permission=?, add_permission=?, edit_permission=?, delete_permission=? WHERE id=?`,
+//         [view_permission, add_permission, edit_permission, delete_permission, existing[0].id]
+//       );
+//     } else {
+//       // Create new permission
+//       await db.query(
+//         `INSERT INTO permissions (user_id, role_name, permission_name, view_permission, add_permission, edit_permission, delete_permission)
+//          VALUES (?, ?, ?, ?, ?, ?, ?)`,
+//         [user_id, role_name, permission_name, view_permission, add_permission, edit_permission, delete_permission]
+//       );
+//     }
+
+//     res.status(200).json({ message: "Permission assigned/updated successfully" });
+//   } catch (error) {
+//     console.error("Permission Error:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
+
+
+
+
+export const assignOrUpdatePermission = async (req, res) => { 
+  const {
+    user_id,
+    role_name,
+    permission_name,
+    view_permission,
+    add_permission,
+    edit_permission,
+    delete_permission
+  } = req.body;
+
+  if (!user_id || !role_name || !permission_name) {
+    return res.status(400).json({ message: "Required fields missing" });
+  }
+
+  try {
+    const [existing] = await db.query(
+      `SELECT id FROM permissions WHERE user_id = ? AND permission_name = ?`,
+      [user_id, permission_name]
+    );
+
+    if (existing.length > 0) {
+      // Update existing permission
+      await db.query(
+        `UPDATE permissions 
+         SET view_permission = ?, add_permission = ?, edit_permission = ?, delete_permission = ? 
+         WHERE id = ?`,
+        [view_permission, add_permission, edit_permission, delete_permission, existing[0].id]
+      );
+    } else {
+      // Insert new permission
+      await db.query(
+        `INSERT INTO permissions 
+         (user_id, role_name, permission_name, view_permission, add_permission, edit_permission, delete_permission)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [user_id, role_name, permission_name, view_permission, add_permission, edit_permission, delete_permission]
+      );
+    }
+
+    res.status(200).json({ message: "Permission assigned/updated successfully" });
+
+  } catch (error) {
+    console.error("Permission Error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+export const getPermissionsByUser = async (req, res) => {
+  const { user_id } = req.query;
+
+  if (!user_id) {
+    return res.status(400).json({ message: 'user_id is required' });
+  }
+
+  try {
+    const [rows] = await db.query(
+      `SELECT * FROM permissions WHERE user_id = ?`,
+      [user_id]
+    );
+
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error('Error fetching permissions by user:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+
+
+// await axios.post('/api/permissions/update', {
+//   user_id: 1,
+//   role_name: "staff",
+//   permission_name: "Leads",
+//   view_permission: 1,
+//   add_permission: 1,
+//   edit_permission: 1,
+//   delete_permission: 1
+// });
+
+
   
 
 

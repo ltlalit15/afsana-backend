@@ -85,14 +85,8 @@ dotenv.config();
     }
   };
 
-
- 
-  
-  
-
   export const getCounselorById = async (req, res) => {
-    const { id } = req.params;
-  
+    const { id } = req.params;  
     try {
       const [rows] = await db.query(
         `
@@ -105,14 +99,11 @@ dotenv.config();
         `,
         [id]
       );
-  
       if (rows.length === 0) {
         return res.status(404).json({ message: 'Counselor not found' });
       }
-  
       const counselor = rows[0];
       const university_name = await universityNameById(counselor.university_id);
-  
       const response = {
         id: counselor.id,
         user_id: counselor.user_id,
@@ -123,7 +114,6 @@ dotenv.config();
         full_name: counselor.full_name,
         role: counselor.role,
       };
-  
       res.status(200).json(response);
     } catch (err) {
       console.error('Get Counselor error:', err);
@@ -233,13 +223,11 @@ dotenv.config();
     const {
       name, email, password, phone
     } = req.body;
-    
     const [result] = await db.query(
       `INSERT INTO testing (name, email, password, phone)
        VALUES (?, ?, ?, ?)`,
       [ name, email, password, phone]
     );
-
     res.status(201).json({
        message: 'Task created successfully',
        taskId: result.insertId });
@@ -249,15 +237,12 @@ dotenv.config();
   }
 };
 
-
 export const gettesting = async(req, res) =>{
-
   try{
     const [result] = await db.query(`SELECT * FROM testing`);
     res.status(201).json({
        message: 'result fetch successfully',
        data: result });
-
   }
   catch
   {

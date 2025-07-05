@@ -5,6 +5,7 @@ export const getDashboardData = async (req, res) => {
     const [totalLeads] = await db.query('SELECT COUNT(*) AS totalleads FROM leads WHERE counselor = ?', [counselor_id]);
     const [totalStudents] = await db.query('SELECT COUNT(*) AS totalstudents FROM students');
     const [totalCounselors] = await db.query('SELECT COUNT(*) AS totalcounselors FROM counselors');
+
     const [totalFollowUps] = await db.query('SELECT COUNT(*) AS totalFollowUps FROM follow_ups');
     const [totalTasks] = await db.query('SELECT COUNT(*) AS totalTasks FROM tasks WHERE counselor_id =?', [counselor_id]);
     const [totalInquiries] = await db.query('SELECT COUNT(*) AS totalInquiries FROM inquiries WHERE counselor_id =?', [counselor_id]);
@@ -60,10 +61,11 @@ export const getDashboardDataAdmin = async (req, res) => {
     const inquiryFilters = [];
     const counselorsFilter = [];
     const commonFilters = [];
+
     if (startDate && endDate) {
       leadFilters.push(getDateFilter());
       inquiryFilters.push(getDateFilter());
-      counselorsFilter.push(getDateFilter());
+      counselorsFilter.push(getDateFilter('c.'));
       commonFilters.push(getDateFilter());
     }
     if (country) {
@@ -77,7 +79,7 @@ export const getDashboardDataAdmin = async (req, res) => {
     if (counselor_id) {
       leadFilters.push(`counselor = '${counselor_id}'`);
       inquiryFilters.push(`counselor_id = '${counselor_id}'`);
-      counselorsFilter.push(`id = '${counselor_id}'`);
+      counselorsFilter.push(`c.id = '${counselor_id}'`);
     }
     if (leadStatus) {
       inquiryFilters.push(`lead_status = '${leadStatus}'`);
@@ -89,7 +91,14 @@ export const getDashboardDataAdmin = async (req, res) => {
     const buildWhereClause = (filters) => filters.length ? `WHERE ${filters.join(' AND ')}` : '';
     const [totalLeads] = await db.query(`SELECT COUNT(*) AS totalleads FROM leads ${buildWhereClause(leadFilters)}`);
     const [totalStudents] = await db.query(`SELECT COUNT(*) AS totalstudents FROM students ${buildWhereClause(commonFilters)}`);
-    const [totalCounselors] = await db.query(`SELECT COUNT(*) AS totalcounselors FROM counselors ${buildWhereClause(counselorsFilter)}`);
+    // const [totalCounselors] = await db.query(`SELECT COUNT(*) AS totalcounselors FROM counselors ${buildWhereClause(counselorsFilter)}`);
+
+    const [totalCounselors] = await db.query(`
+  SELECT COUNT(*) AS totalcounselors 
+  FROM counselors c 
+  JOIN users u ON c.id = u.counselor_id 
+  ${buildWhereClause(counselorsFilter)}
+`);
     const [totalFollowUps] = await db.query(`SELECT COUNT(*) AS totalFollowUps FROM follow_ups ${buildWhereClause(commonFilters)}`);
     const [totalTasks] = await db.query(`SELECT COUNT(*) AS totalTasks FROM tasks ${buildWhereClause(commonFilters)}`);
     const [totalInquiries] = await db.query(`SELECT COUNT(*) AS totalInquiries FROM inquiries ${buildWhereClause(inquiryFilters)}`);
