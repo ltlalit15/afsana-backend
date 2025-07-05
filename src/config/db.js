@@ -45,11 +45,11 @@ dotenv.config();
 
 // Create a MySQL connection pool
 const pool = mysql.createPool({
-  host: "localhost",      // Host from your connection string
-  user: "root",                       // User from your connection string
-  password: "",  // Password from your connection string
-  database: "afsanacrm",                // Database name from your connection string
-  port: 3306,                        // Port from your connection string (use a number here)
+  host: "turntable.proxy.rlwy.net",          // ✅ same as in CLI
+  user: "root",                               // ✅ same as in CLI
+  password: "DDgbsFmfBnTxkujTeOpqDDixBLceSRiY", // ✅ password from CLI
+  database: "railway",                        // ✅ database name from CLI
+  port: 18439,                                // ✅ port from CLI
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
