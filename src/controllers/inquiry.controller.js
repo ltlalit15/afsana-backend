@@ -11,62 +11,93 @@ cloudinary.config({
 });
 
 
+// export const uploadDocuments = async (req, res) => {
+//   const inquiryId = req.params.id;
+
+//   if (!inquiryId) {
+//     return res.status(400).json({ message: "Inquiry ID is required" });
+//   }
+//   try {
+//     // ✅ Upload files to Cloudinary and set public URLs
+//     const updatedFields = {};
+//     for (const docField of ["passport", "certificates", "ielts", "sop"]) {
+//       if (req.files[docField]) {
+//         const localPath = req.files[docField][0].path;
+
+//         const result = await cloudinary.uploader.upload(localPath, {
+//           folder: "inquiries/documents",
+//         });
+
+//         // Save Cloudinary URL to update later
+//         updatedFields[docField] = result.secure_url;
+
+//         // Clean up local file
+//         fs.unlinkSync(localPath);
+//       }
+//     }
+
+//     if (Object.keys(updatedFields).length === 0) {
+//       return res.status(400).json({ message: "No files were uploaded" });
+//     }
+
+//     // Build SET part of the SQL query dynamically
+//     const setFields = Object.keys(updatedFields)
+//       .map((field) => `${field} = ?`)
+//       .join(", ");
+//     const values = Object.values(updatedFields);
+
+//     const sql = `UPDATE inquiries SET ${setFields} WHERE id = ?`;
+
+//     await db.query(sql, [...values, inquiryId]);
+
+//     res.status(200).json({
+//       message: "Documents uploaded and inquiry updated successfully",
+//       documents: updatedFields,
+//     });
+//   } catch (err) {
+//     console.error("Upload error:", err);
+//     res.status(500).json({ message: "Failed to upload documents", error: err.message });
+//   }
+// };
+
+
+
+
 export const uploadDocuments = async (req, res) => {
   const inquiryId = req.params.id;
+  const updates = { ...req.body };
 
   if (!inquiryId) {
     return res.status(400).json({ message: "Inquiry ID is required" });
   }
 
   try {
+    const uploadFields = ['passport', 'certificates', 'ielts', 'sop'];
 
-    // ✅ Upload files to Cloudinary and set public URLs
+    for (const field of uploadFields) {
+      const file = req.files?.[field];
 
-
-
-    const updatedFields = {};
-
-    for (const docField of ["passport", "certificates", "ielts", "sop"]) {
-      if (req.files[docField]) {
-        const localPath = req.files[docField][0].path;
-
-        const result = await cloudinary.uploader.upload(localPath, {
-          folder: "inquiries/documents",
+      if (file) {
+        const result = await cloudinary.uploader.upload(file.tempFilePath, {
+          folder: `inquiries/${inquiryId}/${field}`
         });
-
-        // Save Cloudinary URL to update later
-        updatedFields[docField] = result.secure_url;
-
-        // Clean up local file
-        fs.unlinkSync(localPath);
+        updates[field] = result.secure_url;
+        fs.unlinkSync(file.tempFilePath); // Delete temp file
       }
     }
 
-    if (Object.keys(updatedFields).length === 0) {
-      return res.status(400).json({ message: "No files were uploaded" });
+    const [result] = await db.query('UPDATE inquiries SET ? WHERE id = ?', [updates, inquiryId]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Inquiry not found' });
     }
 
-    // Build SET part of the SQL query dynamically
-    const setFields = Object.keys(updatedFields)
-      .map((field) => `${field} = ?`)
-      .join(", ");
-    const values = Object.values(updatedFields);
-
-    const sql = `UPDATE inquiries SET ${setFields} WHERE id = ?`;
-
-    await db.query(sql, [...values, inquiryId]);
-
-    res.status(200).json({
-      message: "Documents uploaded and inquiry updated successfully",
-      documents: updatedFields,
-    });
-  } catch (err) {
-    console.error("Upload error:", err);
-    res.status(500).json({ message: "Failed to upload documents", error: err.message });
+    res.status(200).json({ message: 'Inquiry updated successfully', data: updates });
+  } catch (error) {
+    console.error('Update Error:', error);
+    res.status(500).json({ message: 'Update failed', error: error.message });
   }
 };
-
-
 
 export const createInquiry = async (req, res) => {
   const { 

@@ -13,13 +13,11 @@ cloudinary.config({
 
 export const createVisaProcess = async (req, res) => {
     const data = req.body;
-
     const requiredFields = [
-        'full_name', 'email', 'phone', 'date_of_birth',
+        'student_id','full_name', 'email', 'phone', 'date_of_birth',
         'passport_no', 'applied_program', 'intake',
         'assigned_counselor', 'registration_date', 'source'
     ];
-
     for (let field of requiredFields) {
         if (!data[field]) {
             return res.status(400).json({ message: `${field} is required.` });
@@ -36,17 +34,84 @@ export const createVisaProcess = async (req, res) => {
     }
 };
 
-export const updateVisaProcess = async (req, res) => {
-    const id = req.params.id;
-    const updates = req.body;
 
-    try {
-        const [result] = await db.query('UPDATE visa_process SET ? WHERE id = ?', [updates, id]);
-        res.status(200).json({ message: 'Visa process updated', affectedRows: result.affectedRows });
-    } catch (error) {
-        console.error('Update error:', error);
-        res.status(500).json({ message: 'Update failed', error: error.message });
+
+
+
+
+export const getVisaProcessByStudentId = async (req, res) => {
+  const { student_id } = req.params;
+
+  try {
+    const [rows] = await db.query('SELECT * FROM visa_process WHERE student_id = ?', [student_id]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "Visa application not found" });
     }
+
+    return res.status(200).json(rows[0]); // correct: rows[0]
+  } catch (error) {
+    console.log(`internal server error : ${error}`);
+    res.status(500).json({ message: 'internal server error' });
+  }
+};
+
+
+
+// export const updateVisaProcess = async (req, res) => {
+//     const id = req.params.id;
+//     const updates = req.body;
+//     console.log("updates", updates)
+//     try {
+//         const [result] = await db.query('UPDATE visa_process SET ? WHERE id = ?', [updates, id]);
+//         res.status(200).json({ message: 'Visa process updated', affectedRows: result.affectedRows });
+//     } catch (error) {
+//         console.error('Update error:', error);
+//         res.status(500).json({ message: 'Update failed', error: error.message });
+//     }
+// };
+
+
+
+export const updateVisaProcess = async (req, res) => {
+  const id = req.params.id;
+  const updates = { ...req.body };
+  const files = req.files;
+
+  // ✅ Upload files to Cloudinary and set public URLs
+  for (const key in files) {
+    const file = files[key];
+    if (file && file.tempFilePath) {
+      try {
+        const result = await cloudinary.uploader.upload(file.tempFilePath, {
+          folder: "student_application_docs"
+        });
+        updates[key] = result.secure_url;
+      } catch (err) {
+        console.error(`Cloudinary upload error for ${key}:`, err);
+        return res.status(500).json({ message: `Upload failed for ${key}` });
+      }
+    }
+  }
+
+  // ✅ Convert empty strings to NULL
+  Object.keys(updates).forEach((key) => {
+    if (updates[key] === '') {
+      updates[key] = null;
+    }
+  });
+
+  try {
+    const [result] = await db.query('UPDATE visa_process SET ? WHERE id = ?', [updates, id]);
+    res.status(200).json({
+      message: 'Visa process updated successfully',
+      affectedRows: result.affectedRows,
+      updatedFields: updates
+    });
+  } catch (error) {
+    console.error('Update error:', error);
+    res.status(500).json({ message: 'Update failed', error: error.message });
+  }
 };
 
 
