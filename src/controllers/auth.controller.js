@@ -535,7 +535,7 @@ export const signupWithGoogle = async (req, res) => {
 
     const token = jwt.sign(
       { id: user.id, email: user.email },
-      process.env.JWT_SECRET,
+      "dfsdfdsfdsg34345464543sdffdg#%$",
       { expiresIn: '1h' }
     );
 
@@ -621,7 +621,72 @@ export const createStudentWithGoogle = async (req, res) => {
     // 🧩 Step 6: Generate JWT
     const jwtToken = jwt.sign(
       { id: userId, email, role },
-      process.env.JWT_SECRET,
+      export const signupWithGoogle = async (req, res) => {
+  const { email, googleSignIn } = req.body;
+  console.log(req.body);
+
+  try {
+    if (!email) {
+      return res.status(400).json({
+        status: "false",
+        message: "Email is required",
+        data: []
+      });
+    }
+
+    const [existingUser] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
+
+    let user;
+
+    if (existingUser.length > 0) {
+      user = existingUser[0];
+      if (!user.googleSignIn && googleSignIn) {
+        await db.execute('UPDATE users SET googleSignIn = ? WHERE email = ?', [true, email]);
+        user.googleSignIn = true;
+      }
+    } else {
+      const [insertResult] = await db.execute(
+        'INSERT INTO users (email, googleSignIn) VALUES (?, ?)',
+        [email, googleSignIn || true]
+      );
+
+      const userId = insertResult.insertId;
+
+      const [newUser] = await db.execute(
+        'SELECT id, email, password, googleSignIn FROM users WHERE id = ?',
+        [userId]
+      );
+
+      user = newUser[0];
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      "dfsdfdsfdsg34345464543sdffdg#%$",
+      { expiresIn: '1h' }
+    );
+
+    return res.status(200).json({
+      status: "true",
+      message: existingUser.length > 0
+        ? "Google login successful"
+        : "Google signup successful",
+      data: {
+        ...user,
+        token
+      }
+    });
+
+  } catch (error) {
+    console.error("Google Sign-Up Error:", error);
+    return res.status(500).json({
+      status: "false",
+      message: "Server error",
+      error: error.message
+    });
+  }
+};
+,
       { expiresIn: "7d" }
     );
 
