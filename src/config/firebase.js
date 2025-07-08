@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // 🔐 Decode base64
-const base64 = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64;
+const base64 = ``;
 
 if (!base64) {
   throw new Error("Firebase config not found in .env");
