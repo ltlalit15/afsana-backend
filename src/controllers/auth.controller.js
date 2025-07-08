@@ -5,6 +5,12 @@ import dotenv from 'dotenv';
 import { getCounselorById } from '../models/counselor.model.js';
 import { universityNameById } from '../models/universities.model.js';
 dotenv.config();
+import nodemailer from "nodemailer";
+
+import admin from '../config/firebase.js';
+
+
+
 
 export const register = async (req, res) => {
   const { email, password, full_name, role } = req.body;
@@ -270,13 +276,14 @@ export const getuserById = async (req, res) => {
   }
 };
 
-// export const createStudent = async (req, res) => {
-//   console.log("req.body : ", req.body);
-//   console.log("req.files : ", req.files);
 
+
+
+// export const createStudent = async (req, res) => {
+//   console.log("req.body:", req.body);
+//   console.log("req.files:", req.files);
 //   try {
 //     const {
-//       user_id,
 //       father_name,
 //       admission_no,
 //       id_no,
@@ -287,77 +294,65 @@ export const getuserById = async (req, res) => {
 //       category,
 //       address,
 //       full_name,
-//       role,
 //       password,
 //       email
 //     } = req.body;
-
-//     // ✅ Auto-generate public URLs for uploaded files
+//     // ✅ Check for required fields
+//     if (!full_name || !email || !password) {
+//       return res.status(400).json({ message: 'full_name, email, and password are required' });
+//     }
+//     const role = 'student';
+//     // ✅ Handle optional file uploads
 //     const photo = req.files?.photo?.[0]
 //       ? `/uploads/${req.files.photo[0].filename}`
 //       : '';
-
 //     const documents = req.files?.documents?.[0]
 //       ? `/uploads/${req.files.documents[0].filename}`
 //       : '';
-
-//     // ✅ Validate required fields
-//     if (
-//       !user_id || !father_name || !admission_no || !id_no ||
-//       !mobile_number || !university_id || !date_of_birth || !gender ||
-//       !category || !full_name || !role || !password || !email
-//     ) {
-//       return res.status(400).json({ message: 'All fields are required' });
-//     }
-
-//     // ✅ Check if user already exists
+//     // ✅ Email uniqueness check
 //     const [existing] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
 //     if (existing.length > 0) {
 //       return res.status(409).json({ message: 'User already exists' });
 //     }
-
-//     // ✅ Hash password
+//     // ✅ Password hashing
 //     const hashed = await bcrypt.hash(password, 10);
-
-//     // ✅ Insert student data
+//     // ✅ Handle optional fields with null values for optional fields
+//     const parsedUniversityId =
+//       university_id && !isNaN(university_id) ? Number(university_id) : null;
+//     // ✅ Insert into users table first (since user_id is created there)
+//     const [userResult] = await db.query(
+//       'INSERT INTO users (email, password, full_name, user_id, role) VALUES (?, ?, ?, ?, ?)',
+//       [email, hashed, full_name,0, role]
+//     );
+//     const userId = userResult.insertId;
+//     // ✅ Insert into students table with the `user_id` created in the `users` table
 //     const [studentResult] = await db.query(
 //       `INSERT INTO students 
-//         (user_id, father_name, admission_no, id_no, mobile_number, university_id, date_of_birth, gender, category, address, photo, documents) 
-//         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+//         (user_id, father_name, admission_no, id_no, mobile_number, university_id, date_of_birth, gender, category, address, full_name, role, photo, documents) 
+//         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 //       [
-//         user_id,
-//         father_name,
-//         admission_no,
-//         id_no,
-//         mobile_number,
-//         university_id,
-//         date_of_birth,
-//         gender,
-//         category,
-//         address,
+//         userId,
+//         father_name || '',
+//         admission_no || '',
+//         id_no || '',
+//         mobile_number || '',
+//         parsedUniversityId,
+//         date_of_birth || null,
+//         gender || '',
+//         category || '',
+//         address || '',
+//         full_name,
+//         role,
 //         photo,
 //         documents
 //       ]
 //     );
-
-//     if (!studentResult.affectedRows) {
-//       return res.status(400).json({ message: 'Student not added properly' });
-//     }
-
 //     const studentId = studentResult.insertId;
-
-
-//     const [userResult] = await db.query(
-//       'INSERT INTO users (email, password, full_name, role, user_id, student_id) VALUES (?, ?, ?, ?, ?, ?)',
-//       [email, hashed, full_name, role, user_id, studentId]
-//     );
-
-//     const insertedUserId = userResult.insertId;
-//     if (!insertedUserId) {
-//       return res.status(400).json({ message: 'User creation failed' });
-//     }
+//     // ✅ After inserting the student, update `users` table with the `student_id`
+//     await db.query('UPDATE users SET student_id = ? WHERE id = ?', [studentId, userId]);
 
 //     res.status(201).json({ message: 'Student created successfully' });
+
 //   } catch (error) {
 //     console.error('Error creating student:', error);
 //     res.status(500).json({ message: 'Internal server error', error });
@@ -366,85 +361,296 @@ export const getuserById = async (req, res) => {
 
 
 
-export const createStudent = async (req, res) => {
-  console.log("req.body:", req.body);
-  console.log("req.files:", req.files);
-  try {
-    const {
-      father_name,
-      admission_no,
-      id_no,
-      mobile_number,
-      university_id,
-      date_of_birth,
-      gender,
-      category,
-      address,
-      full_name,
-      password,
-      email
-    } = req.body;
-    // ✅ Check for required fields
-    if (!full_name || !email || !password) {
-      return res.status(400).json({ message: 'full_name, email, and password are required' });
-    }
-    const role = 'student';
-    // ✅ Handle optional file uploads
-    const photo = req.files?.photo?.[0]
-      ? `/uploads/${req.files.photo[0].filename}`
-      : '';
-    const documents = req.files?.documents?.[0]
-      ? `/uploads/${req.files.documents[0].filename}`
-      : '';
-    // ✅ Email uniqueness check
-    const [existing] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
-    if (existing.length > 0) {
-      return res.status(409).json({ message: 'User already exists' });
-    }
-    // ✅ Password hashing
-    const hashed = await bcrypt.hash(password, 10);
-    // ✅ Handle optional fields with null values for optional fields
-    const parsedUniversityId =
-      university_id && !isNaN(university_id) ? Number(university_id) : null;
-    // ✅ Insert into users table first (since user_id is created there)
-    const [userResult] = await db.query(
-      'INSERT INTO users (email, password, full_name, user_id, role) VALUES (?, ?, ?, ?, ?)',
-      [email, hashed, full_name,0, role]
-    );
-    const userId = userResult.insertId;
-    // ✅ Insert into students table with the `user_id` created in the `users` table
-    const [studentResult] = await db.query(
-      `INSERT INTO students 
-        (user_id, father_name, admission_no, id_no, mobile_number, university_id, date_of_birth, gender, category, address, full_name, role, photo, documents) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        userId,
-        father_name || '',
-        admission_no || '',
-        id_no || '',
-        mobile_number || '',
-        parsedUniversityId,
-        date_of_birth || null,
-        gender || '',
-        category || '',
-        address || '',
-        full_name,
-        role,
-        photo,
-        documents
-      ]
-    );
-    const studentId = studentResult.insertId;
-    // ✅ After inserting the student, update `users` table with the `student_id`
-    await db.query('UPDATE users SET student_id = ? WHERE id = ?', [studentId, userId]);
 
-    res.status(201).json({ message: 'Student created successfully' });
+// export const signupWithGoogle = async (req, res) => {
+//   const { email, googleSignIn } = req.body;
+//   console.log(req.body);
+
+//   try {
+//     if (!email) {
+//       return res.status(400).json({
+//         status: "false",
+//         message: "Email  are required",
+//         data: []
+//       });
+//     }
+
+//     // Step 1: Check if user already exists
+//     const [existingUser] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
+
+//     let user;
+
+//     if (existingUser.length > 0) {
+//       // ✅ User exists — login
+//       user = existingUser[0];
+
+//       // Optional: update googleSignIn flag if not already true
+//       if (!user.googleSignIn && googleSignIn) {
+//         await db.execute('UPDATE users SET googleSignIn = ? WHERE email = ?', [true, email]);
+//         user.googleSignIn = true;
+//       }
+
+//     } else {
+//       // ✅ User doesn't exist — create new user
+//       const [insertResult] = await db.execute(
+//         'INSERT INTO users (email, googleSignIn) VALUES (?, ?)',
+//         [email, googleSignIn || true]
+//       );
+
+//       const userId = insertResult.insertId;
+
+//       const [newUser] = await db.execute(
+//         'SELECT id,  email, password, googleSignIn FROM users WHERE id = ?',
+//         [userId]
+//       );
+
+//       user = newUser[0];
+//     }
+
+//     // Step 2: Generate JWT Token
+//     const token = jwt.sign(
+//       { id: user.id, email: user.email },
+//       process.env.JWT_SECRET,
+//       { expiresIn: '1h' }
+//     );
+
+//     // Step 3: Return success response
+//     return res.status(200).json({
+//       status: "true",
+//       message: existingUser.length > 0
+//         ? "Google login successful"
+//         : "Google signup successful",
+//       data: {
+//         ...user,
+//         token
+//       }
+//     });
+
+//   } catch (error) {
+//     console.error("Google Sign-Up Error:", error);
+//     return res.status(500).json({
+//       status: "false",
+//       message: "Server error",
+//       error: error.message
+//     });
+//   }
+// };
+
+
+
+
+
+
+const OTPStore = new Map(); // temporary (in-memory); use Redis or DB in production
+
+export const sendOtpToEmail = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ status: "false", message: "Email is required" });
+  }
+
+  try {
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    OTPStore.set(email, otp); // store OTP temporarily
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS
+      }
+    });
+
+    await transporter.sendMail({
+      from: `"Your App" <${process.env.MAIL_USER}>`,
+      to: email,
+      subject: "Signup OTP Verification",
+      html: `<h3>Your OTP is: <b>${otp}</b></h3><p>Valid for 10 minutes.</p>`
+    });
+
+    return res.status(200).json({ status: "true", message: "OTP sent to email" });
 
   } catch (error) {
-    console.error('Error creating student:', error);
-    res.status(500).json({ message: 'Internal server error', error });
+    console.error("Send OTP Error:", error);
+    return res.status(500).json({ status: "false", message: "Failed to send OTP", error: error.message });
   }
 };
+
+export const verifyOtp = async (req, res) => {
+  const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    return res.status(400).json({ status: "false", message: "Email and OTP required" });
+  }
+
+  const storedOtp = OTPStore.get(email);
+  if (storedOtp === otp) {
+    OTPStore.delete(email);
+    return res.status(200).json({ status: "true", message: "OTP verified" });
+  } else {
+    return res.status(400).json({ status: "false", message: "Invalid or expired OTP" });
+  }
+};
+
+export const signupWithGoogle = async (req, res) => {
+  const { email, googleSignIn } = req.body;
+  console.log(req.body);
+
+  try {
+    if (!email) {
+      return res.status(400).json({
+        status: "false",
+        message: "Email is required",
+        data: []
+      });
+    }
+
+    const [existingUser] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
+
+    let user;
+
+    if (existingUser.length > 0) {
+      user = existingUser[0];
+      if (!user.googleSignIn && googleSignIn) {
+        await db.execute('UPDATE users SET googleSignIn = ? WHERE email = ?', [true, email]);
+        user.googleSignIn = true;
+      }
+    } else {
+      const [insertResult] = await db.execute(
+        'INSERT INTO users (email, googleSignIn) VALUES (?, ?)',
+        [email, googleSignIn || true]
+      );
+
+      const userId = insertResult.insertId;
+
+      const [newUser] = await db.execute(
+        'SELECT id, email, password, googleSignIn FROM users WHERE id = ?',
+        [userId]
+      );
+
+      user = newUser[0];
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    return res.status(200).json({
+      status: "true",
+      message: existingUser.length > 0
+        ? "Google login successful"
+        : "Google signup successful",
+      data: {
+        ...user,
+        token
+      }
+    });
+
+  } catch (error) {
+    console.error("Google Sign-Up Error:", error);
+    return res.status(500).json({
+      status: "false",
+      message: "Server error",
+      error: error.message
+    });
+  }
+};
+
+
+
+
+
+
+
+export const createStudentWithGoogle = async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(400).json({ message: "Google token is required" });
+    }
+
+    // 🔍 Step 1: Verify Google token
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    const googleUser = await admin.auth().getUser(decodedToken.uid);
+    const email = googleUser.email;
+    const full_name = googleUser.displayName || "";
+    const role = "student";
+
+    // 🔍 Step 2: Check if user already exists
+    const [existing] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+
+    if (existing.length > 0) {
+      const token = jwt.sign(
+        { id: existing[0].id, email: existing[0].email, role: existing[0].role },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+      );
+
+      return res.status(200).json({
+        message: "User already registered. Please log in.",
+        user: existing[0],
+        token,
+        status: "existing",
+      });
+    }
+
+    // 🧩 Step 3: Insert into users table
+    const [userResult] = await db.query(
+      "INSERT INTO users (email, full_name, role, user_id) VALUES (?, ?, ?, ?)",
+      [email, full_name, role, 0]
+    );
+    const userId = userResult.insertId;
+
+    // 🧩 Step 4: Insert into students table
+    const [studentResult] = await db.query(
+      `INSERT INTO students 
+        (user_id, full_name, role) 
+        VALUES (?, ?, ?)`,
+      [userId, full_name, role]
+    );
+    const studentId = studentResult.insertId;
+
+    // 🧩 Step 5: Update users table with student_id
+    await db.query("UPDATE users SET student_id = ? WHERE id = ?", [studentId, userId]);
+
+    // 🧩 Step 6: Generate JWT
+    const jwtToken = jwt.sign(
+      { id: userId, email, role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // ✅ Done
+
+
+res.status(201).json({
+  message: "Student registered via Google Sign-In",
+  user: {
+    id: userId,
+    student_id: studentId, // 👈 Add this line
+    email,
+    full_name,
+    role
+  },
+  token: jwtToken,
+  status: "registered",
+});
+
+
+
+  } catch (error) {
+    console.error("Google Sign-Up Error:", error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
+
+
+
 
 
 export const StudentAssignToCounselor = async (req, res) => {
@@ -628,7 +834,7 @@ export const updateUser = async (req, res) => {
 
   const photo = req.files?.photo?.[0] ? `/uploads/${req.files.photo[0].filename}` : null;
   const documents = req.files?.documents?.[0] ? `/uploads/${req.files.documents[0].filename}` : null;
-
+ 
   try {
     const [data ] = await db.query('SELECT * FROM users WHERE id = ?', [id]);
     if (data.length === 0) {
