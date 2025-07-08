@@ -587,7 +587,7 @@ export const createStudentWithGoogle = async (req, res) => {
     if (existing.length > 0) {
       const token = jwt.sign(
         { id: existing[0].id, email: existing[0].email, role: existing[0].role },
-        process.env.JWT_SECRET,
+        "dfsdfdsfdsg34345464543sdffdg#%$",
         { expiresIn: "7d" }
       );
 
