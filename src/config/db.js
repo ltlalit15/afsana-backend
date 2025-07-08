@@ -7,11 +7,11 @@ dotenv.config();
 
 // Create a MySQL connection pool
 const pool = mysql.createPool({
-  host: "nozomi.proxy.rlwy.net",             // ✅ host from CLI
-  user: "root",                               // ✅ user from CLI
-  password: "gjHTOWGUmuSbMHZPthEEQDFdNAjTakLn", // ✅ password from CLI
-  database: "railway",                        // ✅ database name from CLI
-  port: 44601,                                // ✅ port from CLI
+  host: "shortline.proxy.rlwy.net",               // ✅ New host
+  user: "root",                                    // ✅ Username from CLI
+  password: "LIknVKtgQGhauuQPrUiLuhTaXminChaS",    // ✅ Password from CLI
+  database: "railway",                             // ✅ Database name
+  port: 51412,                                     // ✅ New port
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
