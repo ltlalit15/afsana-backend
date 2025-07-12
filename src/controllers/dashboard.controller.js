@@ -89,7 +89,7 @@ export const getDashboardDataAdmin = async (req, res) => {
       inquiryFilters.push(`intake = '${intake}'`);
     }
     const buildWhereClause = (filters) => filters.length ? `WHERE ${filters.join(' AND ')}` : '';
-    const [totalLeads] = await db.query(`SELECT COUNT(*) AS totalleads FROM leads ${buildWhereClause(leadFilters)}`);
+    const [totalLeads] = await db.query(`SELECT COUNT(*) AS totalleads FROM inquiries ${buildWhereClause(leadFilters)}`);
     const [totalStudents] = await db.query(`SELECT COUNT(*) AS totalstudents FROM students ${buildWhereClause(commonFilters)}`);
     // const [totalCounselors] = await db.query(`SELECT COUNT(*) AS totalcounselors FROM counselors ${buildWhereClause(counselorsFilter)}`);
 
@@ -254,7 +254,7 @@ export const getCounselorDashboardData = async (req, res) => {
       intake,
       leadStatus,
       counselor_id
-    } = req.query;
+    } = req.query; 
     const getDateFilter = (alias = '') =>
       startDate && endDate
         ? `${alias}created_at BETWEEN '${startDate} 00:00:00' AND '${endDate} 23:59:59'`
@@ -267,7 +267,10 @@ export const getCounselorDashboardData = async (req, res) => {
     if (counselor_id) filters.push(`counselor_id = '${counselor_id}'`);
     const whereClause = filters.length ? `WHERE ${filters.join(' AND ')}` : '';
     const counselorWhere = `WHERE counselor_id = '${counselor_id}'`;
-    const [leads] = await db.query(`SELECT COUNT(*) AS totalleads FROM leads WHERE counselor = ?`, [counselor_id]);
+
+
+
+    const [leads] = await db.query(`SELECT COUNT(*) AS totalleads FROM inquiries WHERE counselor_id = ?`, [counselor_id]);
     const [students] = await db.query(`SELECT COUNT(*) AS totalstudents FROM students WHERE counselor_id = ?`, [counselor_id]);
     const [universities] = await db.query(`SELECT  COUNT(*) AS totalUniversities FROM counselors WHERE id = ?`, [counselor_id]);
     const [tasks] = await db.query(`SELECT COUNT(*) AS totalTasks FROM tasks WHERE counselor_id = ?`, [counselor_id]);

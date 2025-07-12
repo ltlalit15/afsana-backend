@@ -1,6 +1,14 @@
 import db from '../config/db.js'
 import { universityNameById, StudentNameById, StudentInvoiceById } from '../models/universities.model.js';
 import { BranchNameById } from '../models/universities.model.js';
+import cloudinary from 'cloudinary';
+import fs from 'fs';
+
+cloudinary.config({
+    cloud_name: 'dkqcqrrbp',
+    api_key: '418838712271323',
+    api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ',
+});
 
 export const createPayment = async (req, res) => {
     const {
@@ -19,11 +27,28 @@ export const createPayment = async (req, res) => {
         paymentTypeOther,
         assistant,
         note,
-        
+
     } = req.body;
 
-    const logoFile = req.file;
-    const filePath = logoFile ? `/uploads/${logoFile.filename}` : '';
+
+
+
+    let filePath = '';
+
+    // ✅ Upload to Cloudinary if file is provided
+    if (req.files && req.files.file) {
+        const file = req.files.file;
+        try {
+            const uploadResult = await cloudinary.uploader.upload(file.tempFilePath, {
+                folder: 'payment_files', // your Cloudinary folder name
+            });
+            filePath = uploadResult.secure_url;
+            fs.unlinkSync(file.tempFilePath); // Clean temp file
+        } catch (err) {
+            console.error("Cloudinary Upload Error:", err);
+            return res.status(500).json({ message: 'File upload failed' });
+        }
+    }
 
     // Validate required fields
 
@@ -72,7 +97,11 @@ export const getPayments = async (req, res) => {
                 console.log(branch_name)
                 return {
                     ...task,
-                    file: task.file ? `${req.protocol}://${req.get('host')}${task.file}` : null,
+                    // file: task.file ? `${req.protocol}://${req.get('host')}${task.file}` : null,
+                    file: task.file?.startsWith('http')
+                        ? task.file
+                        : `${req.protocol}://${req.get('host')}${task.file}`,
+
                     universityName: university_name[0]?.name || '',
                     branch_name: branch_name[0]?.branch_name,
                     name: student_name[0]?.full_name,
@@ -110,7 +139,12 @@ export const getPaymentsByid = async (req, res) => {
                 console.log(branch_name)
                 return {
                     ...task,
-                    file: task.file ? `${req.protocol}://${req.get('host')}${task.file}` : null,
+                    // file: task.file ? `${req.protocol}://${req.get('host')}${task.file}` : null,
+
+         file: task.file?.startsWith('http')
+                        ? task.file
+                        : `${req.protocol}://${req.get('host')}${task.file}`,
+
                     universityName: university_name[0]?.name || '',
                     branch_name: branch_name[0].branch_name,
                     name: student_name[0].full_name,
@@ -160,7 +194,12 @@ export const getPaymentByEmail = async (req, res) => {
 
                 return {
                     ...task,
-                    file: task.file ? `${req.protocol}://${req.get('host')}${task.file}` : null,
+                    // file: task.file ? `${req.protocol}://${req.get('host')}${task.file}` : null,
+
+         file: task.file?.startsWith('http')
+                        ? task.file
+                        : `${req.protocol}://${req.get('host')}${task.file}`,
+
                     universityName: university_name[0]?.name || ''
                 };
             })

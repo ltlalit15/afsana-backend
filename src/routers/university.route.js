@@ -3,7 +3,7 @@ import { createUniversity, deleteUniversity, getAllUniversities, getUniversityBy
 import { upload } from '../middlewares/upload.js';
 const router = express.Router();
 
-// router.post('/universities', upload.single('logo_url'), createUniversity);
+
 router.post('/universities', createUniversity);
 
 router.get('/universities', getAllUniversities);

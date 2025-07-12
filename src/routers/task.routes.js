@@ -22,6 +22,6 @@ router.get('/student_task/:student_id', getTaskByStudentID)
 router.get('/task/:id', getTaskById);
 router.put('/task/:id', updateTask);
 router.delete('/task/:id', deleteTask);
-router.patch('/update_task/:id',upload.single('image'),updateTaskNotesAndStatus);
+router.patch('/update_task/:id',updateTaskNotesAndStatus);
 router.get("/tasks/reminder", reminder_task);
 export default router;

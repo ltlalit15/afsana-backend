@@ -1,6 +1,6 @@
 import express from 'express';
 import { upload } from '../middlewares/upload.js';
-import { register, login, StudentAssignToCounselor, getAllStudents, getStudentById, deleteStudent, changeNewPassword, updateUser, getuserById, getAllByRoles, getStudentsByCounselorId, signupWithGoogle , sendOtpToEmail, verifyOtp, createStudentWithGoogle
+import {createStudent, register, login, StudentAssignToCounselor, getAllStudents, getStudentById, deleteStudent, changeNewPassword, updateUser, getuserById, getAllByRoles, getStudentsByCounselorId, signupWithGoogle , sendOtpToEmail, verifyOtp, createStudentWithGoogle
 } from '../controllers/auth.controller.js';
 // import { authenticate } from '../middlewares/auth.middleware.js';
 
@@ -10,7 +10,7 @@ router.post('/register', register);
 router.post('/login', login);
 router.get('/getUser/:id',getuserById)
 router.post('/changePassword/:id',changeNewPassword);
-// router.post('/createStudent', createStudent);
+router.post('/createStudent', createStudent);
 
 
 router.post('/check-google-details', signupWithGoogle);

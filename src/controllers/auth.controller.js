@@ -279,162 +279,89 @@ export const getuserById = async (req, res) => {
 
 
 
-// export const createStudent = async (req, res) => {
-//   console.log("req.body:", req.body);
-//   console.log("req.files:", req.files);
-//   try {
-//     const {
-//       father_name,
-//       admission_no,
-//       id_no,
-//       mobile_number,
-//       university_id,
-//       date_of_birth,
-//       gender,
-//       category,
-//       address,
-//       full_name,
-//       password,
-//       email
-//     } = req.body;
-//     // ✅ Check for required fields
-//     if (!full_name || !email || !password) {
-//       return res.status(400).json({ message: 'full_name, email, and password are required' });
-//     }
-//     const role = 'student';
-//     // ✅ Handle optional file uploads
-//     const photo = req.files?.photo?.[0]
-//       ? `/uploads/${req.files.photo[0].filename}`
-//       : '';
-//     const documents = req.files?.documents?.[0]
-//       ? `/uploads/${req.files.documents[0].filename}`
-//       : '';
-//     // ✅ Email uniqueness check
-//     const [existing] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
-//     if (existing.length > 0) {
-//       return res.status(409).json({ message: 'User already exists' });
-//     }
-//     // ✅ Password hashing
-//     const hashed = await bcrypt.hash(password, 10);
-//     // ✅ Handle optional fields with null values for optional fields
-//     const parsedUniversityId =
-//       university_id && !isNaN(university_id) ? Number(university_id) : null;
-//     // ✅ Insert into users table first (since user_id is created there)
-//     const [userResult] = await db.query(
-//       'INSERT INTO users (email, password, full_name, user_id, role) VALUES (?, ?, ?, ?, ?)',
-//       [email, hashed, full_name,0, role]
-//     );
-//     const userId = userResult.insertId;
-//     // ✅ Insert into students table with the `user_id` created in the `users` table
-//     const [studentResult] = await db.query(
-//       `INSERT INTO students 
-//         (user_id, father_name, admission_no, id_no, mobile_number, university_id, date_of_birth, gender, category, address, full_name, role, photo, documents) 
-//         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-//       [
-//         userId,
-//         father_name || '',
-//         admission_no || '',
-//         id_no || '',
-//         mobile_number || '',
-//         parsedUniversityId,
-//         date_of_birth || null,
-//         gender || '',
-//         category || '',
-//         address || '',
-//         full_name,
-//         role,
-//         photo,
-//         documents
-//       ]
-//     );
-//     const studentId = studentResult.insertId;
-//     // ✅ After inserting the student, update `users` table with the `student_id`
-//     await db.query('UPDATE users SET student_id = ? WHERE id = ?', [studentId, userId]);
+export const createStudent = async (req, res) => {
+  console.log("req.body:", req.body);
+  console.log("req.files:", req.files);
+  try {
+    const {
+      father_name,
+      admission_no,
+      id_no,
+      mobile_number,
+      university_id,
+      date_of_birth,
+      gender,
+      category,
+      address,
+      full_name,
+      password,
+      email
+    } = req.body;
+    // ✅ Check for required fields
+    if (!full_name || !email || !password) {
+      return res.status(400).json({ message: 'full_name, email, and password are required' });
+    }
+    const role = 'student';
+    // ✅ Handle optional file uploads
+    const photo = req.files?.photo?.[0]
+      ? `/uploads/${req.files.photo[0].filename}`
+      : '';
+    const documents = req.files?.documents?.[0]
+      ? `/uploads/${req.files.documents[0].filename}`
+      : '';
+    // ✅ Email uniqueness check
+    const [existing] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
+    if (existing.length > 0) {
+      return res.status(409).json({ message: 'User already exists' });
+    }
+    // ✅ Password hashing
+    const hashed = await bcrypt.hash(password, 10);
+    // ✅ Handle optional fields with null values for optional fields
+    const parsedUniversityId =
+      university_id && !isNaN(university_id) ? Number(university_id) : null;
+    // ✅ Insert into users table first (since user_id is created there)
+    const [userResult] = await db.query(
+      'INSERT INTO users (email, password, full_name, user_id, role) VALUES (?, ?, ?, ?, ?)',
+      [email, hashed, full_name,0, role]
+    );
+    const userId = userResult.insertId;
+    // ✅ Insert into students table with the `user_id` created in the `users` table
+    const [studentResult] = await db.query(
+      `INSERT INTO students 
+        (user_id, father_name, admission_no, id_no, mobile_number, university_id, date_of_birth, gender, category, address, full_name, role, photo, documents) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        userId,
+        father_name || '',
+        admission_no || '',
+        id_no || '',
+        mobile_number || '',
+        parsedUniversityId,
+        date_of_birth || null,
+        gender || '',
+        category || '',
+        address || '',
+        full_name,
+        role,
+        photo,
+        documents
+      ]
+    );
+    const studentId = studentResult.insertId;
+    // ✅ After inserting the student, update `users` table with the `student_id`
+    await db.query('UPDATE users SET student_id = ? WHERE id = ?', [studentId, userId]);
 
-//     res.status(201).json({ message: 'Student created successfully' });
+    res.status(201).json({ message: 'Student created successfully' });
 
-//   } catch (error) {
-//     console.error('Error creating student:', error);
-//     res.status(500).json({ message: 'Internal server error', error });
-//   }
-// };
-
-
+  } catch (error) {
+    console.error('Error creating student:', error);
+    res.status(500).json({ message: 'Internal server error', error });
+  }
+};
 
 
-// export const signupWithGoogle = async (req, res) => {
-//   const { email, googleSignIn } = req.body;
-//   console.log(req.body);
 
-//   try {
-//     if (!email) {
-//       return res.status(400).json({
-//         status: "false",
-//         message: "Email  are required",
-//         data: []
-//       });
-//     }
 
-//     // Step 1: Check if user already exists
-//     const [existingUser] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
-
-//     let user;
-
-//     if (existingUser.length > 0) {
-//       // ✅ User exists — login
-//       user = existingUser[0];
-
-//       // Optional: update googleSignIn flag if not already true
-//       if (!user.googleSignIn && googleSignIn) {
-//         await db.execute('UPDATE users SET googleSignIn = ? WHERE email = ?', [true, email]);
-//         user.googleSignIn = true;
-//       }
-
-//     } else {
-//       // ✅ User doesn't exist — create new user
-//       const [insertResult] = await db.execute(
-//         'INSERT INTO users (email, googleSignIn) VALUES (?, ?)',
-//         [email, googleSignIn || true]
-//       );
-
-//       const userId = insertResult.insertId;
-
-//       const [newUser] = await db.execute(
-//         'SELECT id,  email, password, googleSignIn FROM users WHERE id = ?',
-//         [userId]
-//       );
-
-//       user = newUser[0];
-//     }
-
-//     // Step 2: Generate JWT Token
-//     const token = jwt.sign(
-//       { id: user.id, email: user.email },
-//       process.env.JWT_SECRET,
-//       { expiresIn: '1h' }
-//     );
-
-//     // Step 3: Return success response
-//     return res.status(200).json({
-//       status: "true",
-//       message: existingUser.length > 0
-//         ? "Google login successful"
-//         : "Google signup successful",
-//       data: {
-//         ...user,
-//         token
-//       }
-//     });
-
-//   } catch (error) {
-//     console.error("Google Sign-Up Error:", error);
-//     return res.status(500).json({
-//       status: "false",
-//       message: "Server error",
-//       error: error.message
-//     });
-//   }
-// };
 
 
 
@@ -670,38 +597,29 @@ export const StudentAssignToCounselor = async (req, res) => {
       updates.push("counselor_id = ?");
       values.push(counselor_id);
     }
-
     if (follow_up !== undefined) {
       updates.push("follow_up = ?");
       values.push(follow_up);
     }
-
     if (notes !== undefined) {
       updates.push("notes = ?");
       values.push(notes);
     }
-
     if (updates.length === 0) {
       return res.status(400).json({ message: "No fields provided to update" });
     }
-
     // Always update updated_at
     updates.push("updated_at = NOW()");
-
     // Final SQL query
     const sql = `UPDATE students SET ${updates.join(", ")} WHERE id = ?`;
     values.push(student_id);
-
     // Execute update
     const [result] = await db.query(sql, values);
-
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Student ID not found" });
     }
-
     // Optionally return updated data
     const [updatedStudent] = await db.query("SELECT * FROM students WHERE id = ?", [student_id]);
-
     res.status(200).json({
       message: "Student updated successfully",
       data: updatedStudent[0],
@@ -719,7 +637,6 @@ export const StudentAssignToCounselor = async (req, res) => {
 
 export const getStudentsByCounselorId = async (req, res) => {
   const { counselorId } = req.params;
-
   try {
     const [students] = await db.query(
       `SELECT
@@ -734,18 +651,12 @@ export const getStudentsByCounselorId = async (req, res) => {
       WHERE s.counselor_id = ?`,
       [counselorId]
     );
-
     res.status(200).json(students);
   } catch (error) {
     console.error("Error fetching students by counselor ID:", error);
     res.status(500).json({ message: "Internal server error", error });
   }
 };
-
-
-
-
-
 
 
 export const getAllStudents = async (req, res) => {
@@ -783,7 +694,6 @@ export const getAllStudents = async (req, res) => {
 
 export const getStudentById = async (req, res) => {
   const { id } = req.params;
-
   try {
     const [student] = await db.query(`
         SELECT 
@@ -797,13 +707,11 @@ export const getStudentById = async (req, res) => {
     if (student.length === 0) {
       return res.status(404).json({ message: 'Student not found' });
     }
-
     const parsedRows = student.map((row) => ({
       ...row,
       photo: row.photo ? `${req.protocol}://${req.get("host")}${row.photo}` : null,
       documents: row.documents ? `${req.protocol}://${req.get("host")}${row.documents}` : null,
     }));
-
     res.status(200).json(parsedRows[0]);
   } catch (error) {
     console.error('Error fetching student:', error);
