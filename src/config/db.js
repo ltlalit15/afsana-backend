@@ -31,7 +31,7 @@ pool.getConnection((err, connection) => {
 // Use promise API for working with queries
 const db = pool.promise();
 
-Export the pool for use elsewhere
+// Export the pool for use elsewhere
 export default db;
 
 // //  live db
