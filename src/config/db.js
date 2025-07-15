@@ -7,11 +7,11 @@ dotenv.config();
 
 // Create a MySQL connection pool
 const pool = mysql.createPool({
-  host: "trolley.proxy.rlwy.net",                // ✅ Host as per CLI
-  user: "root",                                   // ✅ Username
-  password: "lkVqcqRxHqXWajECAoiyQOCQGOFsUEiY",   // ✅ Password
-  database: "railway",                            // ✅ DB Name
-  port: 15025,                                    // ✅ Port as per CLI
+  host: "hopper.proxy.rlwy.net",                // ✅ Updated Host
+  user: "root",                                  // ✅ Username
+  password: "SfPkztbZZFSbJZSydUwWZlKbkSDuMLlJ",  // ✅ Updated Password
+  database: "railway",                           // ✅ DB Name
+  port: 54635,                                   // ✅ Updated Port
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
