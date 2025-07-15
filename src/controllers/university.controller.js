@@ -199,7 +199,7 @@ cloudinary.config({
 //   }
 // };
 
-
+                     
 
 export const createUniversity = async (req, res) => {
   try {
@@ -319,7 +319,7 @@ export const getAllUniversities = async (req, res) => {
     console.error('Error fetching universities:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
-};
+}; 
 
 
 
@@ -358,7 +358,9 @@ export const getAllUniversities = async (req, res) => {
         highlights,
         contact_phone,
         contact_email,
-      } = req.body;
+      } = req.body; 
+
+      console.log("Received body data:", req.body);
   
       const [result] = await db.query(
         `UPDATE universities SET 
