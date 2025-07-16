@@ -63,41 +63,125 @@ cloudinary.config({
 
 
 
-export const uploadDocuments = async (req, res) => {
-  const inquiryId = req.params.id;
-  const updates = { ...req.body };
+// export const uploadDocuments = async (req, res) => {
+//   const inquiryId = parseInt(req.params.id); // 🔁 Ensure it's a number
+//   const updates = { ...(req.body || {}) };
 
-  if (!inquiryId) {
-    return res.status(400).json({ message: "Inquiry ID is required" });
-  }
+//   if (!inquiryId) {
+//     return res.status(400).json({ message: "Inquiry ID is required" });
+//   }
+
+//   try {
+//     console.log("🧾 Request Body:", req.body);
+//     console.log("📁 Request Files:", req.files);
+//     console.log("🔢 Inquiry ID:", inquiryId);
+
+//     const uploadFields = ['passport', 'certificates', 'ielts', 'sop'];
+
+//     for (const field of uploadFields) {
+//       const file = req.files?.[field];
+//       if (file) {
+//         const result = await cloudinary.uploader.upload(file.tempFilePath, {
+//           folder: `inquiries/${inquiryId}/${field}`
+//         });
+//         updates[field] = result.secure_url;
+//         fs.unlinkSync(file.tempFilePath);
+//       }
+//     }
+
+//     console.log("📦 Final Updates to apply:", updates);
+
+//     // 🔁 Prevent running empty update
+//     if (Object.keys(updates).length === 0) {
+//       return res.status(400).json({ message: "No data provided for update" });
+//     }
+
+//     const [result] = await db.query(
+//       "UPDATE inquiries SET ? WHERE id = ?",
+//       [updates, inquiryId]
+//     );
+
+//     console.log("📝 MySQL result:", result);
+
+//     if (result.affectedRows === 0) {
+//       return res.status(404).json({ message: "Inquiry not found or nothing changed" });
+//     }
+
+//     return res.status(200).json({
+//       message: "Inquiry updated successfully",
+//       data: updates,
+//     });
+
+//   } catch (error) {
+//     console.error("❌ Error:", error);
+//     return res.status(500).json({ message: "Update failed", error: error.message });
+//   }
+// };
+
+// controllers/inquiryController.js
+
+
+
+export const uploadDocuments = async (req, res) => {
+  const { id } = req.params;
+  const files = req.files;
 
   try {
-    const uploadFields = ['passport', 'certificates', 'ielts', 'sop'];
-
-    for (const field of uploadFields) {
-      const file = req.files?.[field];
-
-      if (file) {
-        const result = await cloudinary.uploader.upload(file.tempFilePath, {
-          folder: `inquiries/${inquiryId}/${field}`
-        });
-        updates[field] = result.secure_url;
-        fs.unlinkSync(file.tempFilePath); // Delete temp file
-      }
-    }
-
-    const [result] = await db.query('UPDATE inquiries SET ? WHERE id = ?', [updates, inquiryId]);
-
-    if (result.affectedRows === 0) {
+    const [existing] = await db.query('SELECT id FROM inquiries WHERE id = ?', [id]);
+    if (existing.length === 0) {
       return res.status(404).json({ message: 'Inquiry not found' });
     }
 
-    res.status(200).json({ message: 'Inquiry updated successfully', data: updates });
+    const uploads = {};
+
+    const uploadToCloudinary = async (fileBuffer, folderName) => {
+      return new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          { folder: `inquiries/${folderName}`, resource_type: 'auto' },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result.secure_url);
+          }
+        ).end(fileBuffer);
+      });
+    };
+
+    if (files?.passport) {
+      uploads.passport = await uploadToCloudinary(files.passport[0].buffer, 'passport');
+    }
+    if (files?.certificates) {
+      uploads.certificates = await uploadToCloudinary(files.certificates[0].buffer, 'certificates');
+    }
+    if (files?.ielts) {
+      uploads.ielts = await uploadToCloudinary(files.ielts[0].buffer, 'ielts');
+    }
+    if (files?.sop) {
+      uploads.sop = await uploadToCloudinary(files.sop[0].buffer, 'sop');
+    }
+
+    if (Object.keys(uploads).length === 0) {
+      return res.status(400).json({ message: 'No files provided for update' });
+    }
+
+    const updateFields = Object.keys(uploads).map(field => `${field} = ?`).join(', ');
+    const values = Object.values(uploads);
+
+    await db.query(
+      `UPDATE inquiries SET ${updateFields}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+      [...values, id]
+    );
+
+    res.status(200).json({ message: 'Documents uploaded and inquiry updated successfully' });
   } catch (error) {
-    console.error('Update Error:', error);
-    res.status(500).json({ message: 'Update failed', error: error.message });
+    console.error('Upload error:', error);
+    res.status(500).json({ message: 'Server error', error });
   }
 };
+
+
+
+
+
 
 export const createInquiry = async (req, res) => {
   const { 
@@ -534,5 +618,7 @@ const [data] = await db.query(`
     res.status(500).json({ message: 'Server error', error });
   }
 };
+
+
 
   

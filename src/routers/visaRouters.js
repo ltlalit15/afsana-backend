@@ -10,11 +10,6 @@ router.put('/createVisaProcess/:id',updateVisaProcess);
 router.get('/VisaProcess',GetVisaProcess);
 router.get('/VisaProcess/:id',getVisaApplicationById);
 router.delete('/VisaProcess/:id',deleteVisaApplication);
-
-
 router.get('/getVisaProcessByStudentId/VisaProcess/:student_id', getVisaProcessByStudentId);
-
-
-
 
 export default router;

@@ -15,7 +15,7 @@ router.get('/getAllleadsstatus', getAllleadsstatus); // ✅ Add this linegetAlll
 router.get('/getCheckEligiblity/:id', getCheckEligiblity); // ✅ Add this linegetAllleadsstatus
 router.patch("/inquiries/:id/eligibility", updateEligibilityStatus);
 router.patch("/update-lead-status-new", updateLeadStatus);
-
-router.put("/inquiries/:id",uploadDocuments);
+// router.put("/inquiry/:id",uploadDocuments);
+router.put('/inquiry/:id',  uploadDocuments);
 
 export default router;

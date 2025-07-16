@@ -254,7 +254,7 @@ export const getCounselorDashboardData = async (req, res) => {
       intake,
       leadStatus,
       counselor_id
-    } = req.query; 
+    } = req.query;
     const getDateFilter = (alias = '') =>
       startDate && endDate
         ? `${alias}created_at BETWEEN '${startDate} 00:00:00' AND '${endDate} 23:59:59'`
@@ -277,7 +277,7 @@ export const getCounselorDashboardData = async (req, res) => {
     // const [followups] = await db.query(`SELECT COUNT(*) AS totalFollowUps FROM follow_ups WHERE counselor_id = ?`, [counselor_id]);
     // Conversion Funnel
     const [inquiries] = await db.query(`SELECT COUNT(*) AS total FROM inquiries WHERE counselor_id = ?`, [counselor_id]);
-    const [applications] = await db.query(`SELECT COUNT(*) AS total FROM studentapplicationprocess WHERE counselor_id =?` , [counselor_id]);
+    const [applications] = await db.query(`SELECT COUNT(*) AS total FROM studentapplicationprocess WHERE counselor_id =?`, [counselor_id]);
     // Efficiency Calculation
     const followUpsDue = inquiries[0].total;
     // const followUpsDone = followups[0].totalFollowUps;
@@ -315,7 +315,7 @@ export const getCounselorDashboardData = async (req, res) => {
     //   ORDER BY a.created_at DESC 
     //   LIMIT 5
     // `, [counselor_id]);
-const [studentApps] = await db.query(`
+    const [studentApps] = await db.query(`
   SELECT 
     s.full_name AS name, 
     u.name AS university, 
@@ -366,5 +366,40 @@ const [studentApps] = await db.query(`
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
+
+export const sataffdashboard = async (req, res) => {
+  try {
+    // Total converted leads
+    const [totalLeads] = await db.query(
+      `SELECT COUNT(*) AS totalleads FROM inquiries WHERE lead_status = 'Converted to Lead'`
+    );
+    // Total inquiries
+    const [totalInquiries] = await db.query(
+      `SELECT COUNT(*) AS totalinquiries FROM inquiries`
+    );
+    // You can add more queries here if needed, like ordersYes, ordersNo, latestOrders
+    res.status(200).json({
+      success: true,
+      data: {
+        total_leads: totalLeads[0].totalleads,
+        total_inquiries: totalInquiries[0].totalinquiries,
+        chart_data: [
+          { label: 'Leads', value: totalLeads[0].totalleads },
+          { label: 'Inquiries', value: totalInquiries[0].totalinquiries }
+        ]
+        // Add additional keys here if you include other queries above
+      },
+    });
+  } catch (error) {
+    console.error("❌ Dashboard summary error:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+
+
+
 
 

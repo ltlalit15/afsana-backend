@@ -1,7 +1,7 @@
 import express from 'express';
 import { upload } from '../middlewares/upload.js';
 import {createStudent, register, login, StudentAssignToCounselor, getAllStudents, getStudentById, deleteStudent, changeNewPassword, updateUser, getuserById, getAllByRoles, getStudentsByCounselorId, signupWithGoogle , sendOtpToEmail, verifyOtp, createStudentWithGoogle
-} from '../controllers/auth.controller.js';
+, updateStudent} from '../controllers/auth.controller.js';
 // import { authenticate } from '../middlewares/auth.middleware.js';
 
 const router = express.Router();
@@ -24,6 +24,10 @@ router.get('/students/by-counselor/:counselorId', getStudentsByCounselorId);
 // router.get('/getStudentById/:id',authenticate, getStudentById);
 router.get('/getStudentById/:id', getStudentById);
 router.get('/getAllStudents',getAllStudents);
+router.put('/updateStudent/:id', updateStudent);
+
+   
+
 
 router.put('/updateUser/:id', upload.fields([
   { name: 'photo', maxCount: 1 },

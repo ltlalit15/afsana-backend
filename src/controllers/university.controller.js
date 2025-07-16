@@ -331,6 +331,9 @@ export const getAllUniversities = async (req, res) => {
       if (rows.length === 0) {
         return res.status(404).json({ message: 'University not found' });
       }
+
+      console.log(rows);
+      
   
       const parsedRows = rows.map((row) => ({
         ...row,
@@ -346,24 +349,115 @@ export const getAllUniversities = async (req, res) => {
     }
   };
   
- export const updateUniversity = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const {
-        user_id,
-        name,
-        logo_url,
-        location,
-        programs,
-        highlights,
-        contact_phone,
-        contact_email,
-      } = req.body; 
+//  export const updateUniversity = async (req, res) => {
+//     try {
+//       const { id } = req.params;
+//       const {
+//         user_id,
+//         name,
+//         logo_url,
+//         location,
+//         programs,
+//         highlights,
+//         contact_phone,
+//         contact_email,
+//       } = req.body; 
 
-      console.log("Received body data:", req.body);
+//       console.log("Received body data:", req.body);
   
-      const [result] = await db.query(
-        `UPDATE universities SET 
+//       const [result] = await db.query(
+//         `UPDATE universities SET 
+//         user_id = ?, 
+//         name = ?, 
+//         logo_url = ?, 
+//         location = ?, 
+//         programs = ?, 
+//         highlights = ?, 
+//         contact_phone = ?, 
+//         contact_email = ?, 
+//         updated_at = CURRENT_TIMESTAMP 
+//         WHERE id = ?`,
+//         [
+//           user_id,
+//           name,
+//           logo_url,
+//           location,
+//           JSON.stringify(programs),
+//           JSON.stringify(highlights),
+//           contact_phone,
+//           contact_email,
+//           id,
+//         ]
+//       );
+  
+//       if (result.affectedRows === 0) {
+//         return res.status(404).json({ message: 'University not found' });
+//       }
+//       const [updatedRows] = await db.query(
+//       `SELECT * FROM universities WHERE id = ?`,
+//       [id]
+//     );
+
+//     return res.status(200).json({
+//       message: 'University updated successfully',
+//       data: updatedRows[0],
+//     });
+//       // res.status(200).json({ message: 'University updated successfully' });
+//     } catch (error) {
+//       console.error('Error updating university:', error);
+//       res.status(500).json({ message: 'Internal server error' });
+//     }
+//   };
+
+ 
+
+
+
+
+export const updateUniversity = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      user_id,
+      name,
+      location,
+      programs,
+      highlights,
+      contact_phone,
+      contact_email,
+    } = req.body;
+
+    console.log("Received body data:", req.body);
+    console.log("Received files:", req.files);
+
+    let logo_url = req.body.logo_url || '';
+
+    // ✅ Handle optional logo file upload
+    if (req.files && req.files.logo_url) {
+      const file = req.files.logo_url;
+      console.log("Image file found for update:", file.name);
+
+      try {
+        const uploadResult = await cloudinary.uploader.upload(file.tempFilePath, {
+          folder: 'university_logos',
+        });
+
+        logo_url = uploadResult.secure_url;
+        console.log("Cloudinary Upload Result (update):", uploadResult);
+
+        fs.unlinkSync(file.tempFilePath); // Cleanup temp file
+      } catch (err) {
+        console.error("Cloudinary upload error:", err);
+        return res.status(500).json({ message: 'Image upload failed' });
+      }
+    }
+
+    // ✅ Parse programs and highlights
+    const parsedPrograms = Array.isArray(programs) ? programs : JSON.parse(programs || '[]');
+    const parsedHighlights = Array.isArray(highlights) ? highlights : JSON.parse(highlights || '[]');
+
+    const [result] = await db.query(
+      `UPDATE universities SET 
         user_id = ?, 
         name = ?, 
         logo_url = ?, 
@@ -373,32 +467,41 @@ export const getAllUniversities = async (req, res) => {
         contact_phone = ?, 
         contact_email = ?, 
         updated_at = CURRENT_TIMESTAMP 
-        WHERE id = ?`,
-        [
-          user_id,
-          name,
-          logo_url,
-          location,
-          JSON.stringify(programs),
-          JSON.stringify(highlights),
-          contact_phone,
-          contact_email,
-          id,
-        ]
-      );
-  
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'University not found' });
-      }
-  
-      res.status(200).json({ message: 'University updated successfully' });
-    } catch (error) {
-      console.error('Error updating university:', error);
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  };
+       WHERE id = ?`,
+      [
+        user_id,
+        name,
+        logo_url,
+        location,
+        JSON.stringify(parsedPrograms),
+        JSON.stringify(parsedHighlights),
+        contact_phone,
+        contact_email,
+        id,
+      ]
+    );
 
-  export const deleteUniversity = async (req, res) => {
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'University not found' });
+    }
+
+    const [updatedRows] = await db.query(`SELECT * FROM universities WHERE id = ?`, [id]);
+    const updatedUniversity = updatedRows[0];
+    updatedUniversity.programs = JSON.parse(updatedUniversity.programs || '[]');
+    updatedUniversity.highlights = JSON.parse(updatedUniversity.highlights || '[]');
+
+    res.status(200).json({
+      message: 'University updated successfully',
+      data: updatedUniversity,
+    });
+  } catch (error) {
+    console.error('Error updating university:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+export const deleteUniversity = async (req, res) => {
     try {
       const { id } = req.params;
       const [result] = await db.query('DELETE FROM universities WHERE id = ?', [id]);
@@ -412,3 +515,4 @@ export const getAllUniversities = async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   };
+

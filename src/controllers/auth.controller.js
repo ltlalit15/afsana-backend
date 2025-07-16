@@ -368,6 +368,11 @@ export const createStudent = async (req, res) => {
 
 
 
+
+
+
+
+
 const OTPStore = new Map(); // temporary (in-memory); use Redis or DB in production
 
 export const sendOtpToEmail = async (req, res) => {
@@ -690,6 +695,115 @@ export const getAllStudents = async (req, res) => {
   }
 };
 
+export const updateStudent = async (req, res) => {
+  const studentId = req.params.id;
+
+  console.log("req.body:", req.body);
+  console.log("req.files:", req.files);
+
+  try {
+    const {
+      father_name,
+      admission_no,
+      id_no,
+      mobile_number,
+      university_id,
+      date_of_birth,
+      gender,
+      category,
+      address,
+      full_name,
+      email,
+      password // optional update
+    } = req.body;
+
+    if (!full_name || !email) {
+      return res.status(400).json({ message: 'full_name and email are required' });
+    }
+
+    // ✅ Fetch user_id from student_id
+    const [studentRows] = await db.query('SELECT user_id FROM students WHERE id = ?', [studentId]);
+    if (studentRows.length === 0) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+    const userId = studentRows[0].user_id;
+
+    // ✅ Handle file uploads
+    const photo = req.files?.photo?.[0]
+      ? `/uploads/${req.files.photo[0].filename}`
+      : null;
+
+    const documents = req.files?.documents?.[0]
+      ? `/uploads/${req.files.documents[0].filename}`
+      : null;
+
+    const parsedUniversityId =
+      university_id && !isNaN(university_id) ? Number(university_id) : null;
+
+    // ✅ Update users table
+    const userUpdateFields = ['email = ?', 'full_name = ?'];
+    const userUpdateValues = [email, full_name];
+
+    if (password) {
+      const hashed = await bcrypt.hash(password, 10);
+      userUpdateFields.push('password = ?');
+      userUpdateValues.push(hashed);
+    }
+
+    userUpdateValues.push(userId);
+    await db.query(`UPDATE users SET ${userUpdateFields.join(', ')} WHERE id = ?`, userUpdateValues);
+
+    // ✅ Update students table
+    const studentUpdateFields = [
+      'father_name = ?',
+      'admission_no = ?',
+      'id_no = ?',
+      'mobile_number = ?',
+      'university_id = ?',
+      'date_of_birth = ?',
+      'gender = ?',
+      'category = ?',
+      'address = ?',
+      'full_name = ?'
+    ];
+    const studentUpdateValues = [
+      father_name || '',
+      admission_no || '',
+      id_no || '',
+      mobile_number || '',
+      parsedUniversityId,
+      date_of_birth || null,
+      gender || '',
+      category || '',
+      address || '',
+      full_name
+    ];
+
+    if (photo) {
+      studentUpdateFields.push('photo = ?');
+      studentUpdateValues.push(photo);
+    }
+
+    if (documents) {
+      studentUpdateFields.push('documents = ?');
+      studentUpdateValues.push(documents);
+    }
+
+    studentUpdateValues.push(studentId);
+    await db.query(
+      `UPDATE students SET ${studentUpdateFields.join(', ')} WHERE id = ?`,
+      studentUpdateValues
+    );
+
+    res.status(200).json({ message: 'Student updated successfully' });
+
+  } catch (error) {
+    console.error('Error updating student:', error);
+    res.status(500).json({ message: 'Internal server error', error });
+  }
+};
+
+
 
 
 export const getStudentById = async (req, res) => {
@@ -823,6 +937,7 @@ export const updateUser = async (req, res) => {
     res.status(500).json({ message: 'Internal server error', error });
   }
 };
+
 
 export const deleteStudent = async (req, res) => {
   const { id } = req.params;
