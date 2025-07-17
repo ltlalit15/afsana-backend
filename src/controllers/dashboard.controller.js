@@ -187,7 +187,7 @@ ORDER BY FIELD(d.day, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'S
     `);
 
 
-    const [leadCount] = await db.query('SELECT COUNT(*) AS totalleads FROM leads')
+    const [leadCount] = await db.query(`SELECT COUNT(*) AS totalleads FROM inquiries  WHERE lead_status = 'Converted to Lead'`)
     const [studentCount] = await db.query("SELECT COUNT(*) AS totalleads FROM students WHERE role = 'student'");
     const [inquiries] = await db.query('SELECT COUNT(*) AS totalleads FROM inquiries')
     const [application] = await db.query('SELECT COUNT(*) AS application FROM studentapplicationprocess')
