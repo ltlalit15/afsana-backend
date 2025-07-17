@@ -89,7 +89,7 @@ export const getDashboardDataAdmin = async (req, res) => {
       inquiryFilters.push(`intake = '${intake}'`);
     }
     const buildWhereClause = (filters) => filters.length ? `WHERE ${filters.join(' AND ')}` : '';
-    const [totalLeads] = await db.query(`SELECT COUNT(*) AS totalleads FROM inquiries ${buildWhereClause(leadFilters)}`);
+    const [totalLeads] = await db.query(`SELECT COUNT(*) AS totalleads FROM inquiries WHERE lead_status = 'Converted to Lead' ${buildWhereClause(leadFilters)}`);
     const [totalStudents] = await db.query(`SELECT COUNT(*) AS totalstudents FROM students ${buildWhereClause(commonFilters)}`);
     // const [totalCounselors] = await db.query(`SELECT COUNT(*) AS totalcounselors FROM counselors ${buildWhereClause(counselorsFilter)}`);
 
