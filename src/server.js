@@ -24,7 +24,7 @@ const PORT = process.env.PORT || 5000;
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-      origin: "https://apply.studyfirstinfo.com,http://localhost:5173",  // Adjust based on your frontend origin
+      origin: ["https://apply.studyfirstinfo.com","http://localhost:5173"],  // Adjust based on your frontend origin
       methods: ["GET", "POST"]
   }
 });
