@@ -225,7 +225,7 @@ export const getDashboardDataUniversity = async (req, res) => {
           Interview,
           Visa_process
         FROM 
-          StudentApplicationProcess 
+          studentapplicationprocess 
         WHERE 
           student_id = ? 
           AND university_id = ?`;
