@@ -474,6 +474,53 @@ export const getAllConvertedLeads = async (req, res) => {
   }
 };
 
+
+export const getConvertedLeadsByCounselorId = async (req, res) => {
+  const { id } = req.params;
+
+  const allowedNewLeads = [
+    "New Lead",
+    "Contacted",
+    "Follow-Up Needed",
+    "Visited Office",
+    "Not Interested",
+    "Next Intake Interested",
+    "Registered",
+    "Dropped"
+  ];
+  const placeholders = allowedNewLeads.map(() => '?').join(', ');
+
+  try {
+    const query = `
+      SELECT 
+        i.*, 
+        u.full_name AS counselor_name 
+      FROM 
+        inquiries i
+      LEFT JOIN 
+        users u ON i.counselor_id = u.counselor_id
+      WHERE 
+        i.counselor_id = ?
+        AND (i.lead_status = 'Converted to Lead' OR i.new_leads IN (${placeholders}))
+    `;
+
+    const params = [id, ...allowedNewLeads];
+    const [result] = await db.query(query, params);
+
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No leads found for this counselor' });
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error fetching counselor-wise leads:", error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+
+
+
 // export const getAllConvertedLeads = async (req, res) => {
 //   try {
 //     const query = `

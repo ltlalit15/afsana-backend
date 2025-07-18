@@ -214,6 +214,7 @@ export const getLeadByCounselorIdnew = async (req, res) => {
           status: inquiry.status,
           is_view: inquiry.is_view,
           lead_status: inquiry.lead_status,
+          new_leads: inquiry.new_leads,
           payment_status: inquiry.payment_status,
           preferred_countries: inquiry.preferred_countries || '',
           notes: inquiry.assignment_description || '',

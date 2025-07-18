@@ -398,7 +398,63 @@ export const sataffdashboard = async (req, res) => {
   }
 };
 
+// export const studentsdashboard = async (req, res) => {
+//   try {
+//     const { student_id } = req.params;
 
+//     // Tasks for this student
+//     const [totaltasks] = await db.query(
+//       `SELECT  COUNT(*) AS totaltasks FROM tasks WHERE student_id = ?`,
+//       [student_id]
+//     );
+
+//     // Payments for this student (assuming name = student_id or similar)
+//     const [totalpayments] = await db.query(
+//       `SELECT  COUNT(*) AS totalpayments FROM payments WHERE name = ?`,
+//       [student_id]
+//     );
+
+//     res.status(200).json({
+//       success: true,
+//       data: 
+//         totaltasks,
+//         totalpayments
+      
+//     });
+//   } catch (error) {
+//     console.error("❌ Dashboard summary error:", error);
+//     res.status(500).json({ success: false, message: "Internal Server Error" });
+//   }
+// };
+
+export const studentsdashboard = async (req, res) => {
+  try {
+    const { student_id } = req.params;
+
+    // Total tasks for this student
+    const [taskCount] = await db.query(
+      `SELECT COUNT(*) AS totaltasks FROM tasks WHERE student_id = ?`,
+      [student_id]
+    );
+
+    // Total payments for this student
+    const [paymentCount] = await db.query(
+      `SELECT COUNT(*) AS totalpayments FROM payments WHERE name = ?`,
+      [student_id]
+    );
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totaltasks: taskCount[0].totaltasks,
+        totalpayments: paymentCount[0].totalpayments
+      }
+    });
+  } catch (error) {
+    console.error("❌ Dashboard summary error:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
 
 
 

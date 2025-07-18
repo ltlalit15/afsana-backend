@@ -28,7 +28,7 @@ const db = pool.promise();
 
 export default db;
 
-//  live db
+
 // import mysql from 'mysql2';
 // import dotenv from 'dotenv';
 

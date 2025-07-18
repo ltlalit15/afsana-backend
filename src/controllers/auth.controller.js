@@ -63,7 +63,8 @@ export const login = async (req, res) => {
     const user = results[0];
     const match = await bcrypt.compare(password, user.password);
     const token = jwt.sign({ id: user.id, role: user.role }, "dfsdfdsfdsg34345464543sdffdg#%$", { expiresIn: '12h' });
-
+  // const token = jwt.sign({ id: user.id, role: user.role },process.env.JWT_SECRET, { expiresIn: '12h' }
+    // );
 
     if (!match) {
       return res.status(401).json({ message: 'password credentials not match!' });
@@ -90,7 +91,7 @@ export const login = async (req, res) => {
           student_id: user.student_id,
           // father_name : maindetails[0].father_name,
           // admission_no : maindetails[0].admission_no, 
-          // id_no : maindetails[0].id_no,
+        
           // phone : maindetails[0].mobile_number,
           // university_id : maindetails[0].university_id,
           // date_of_birth : maindetails[0].date_of_birth,
@@ -143,6 +144,47 @@ export const login = async (req, res) => {
     res.status(500).json({ message: 'Internal server error', err, errmsg: err.message });
   }
 };
+
+
+
+// Check Token Validity
+
+
+export const validateToken = (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  // Check if token exists and starts with 'Bearer '
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ valid: false, message: 'No token provided' });
+  }
+
+  const token = authHeader.split(' ')[1];
+
+  try {
+    // Verify the token using secret from .env
+
+    const decoded = jwt.verify(token, "dfsdfdsfdsg34345464543sdffdg#%$");
+
+    // const decoded = jwt.verify(token, 'dfsdfdsfdsg34345464543sdffdg#%$');
+
+    return res.status(200).json({
+      valid: true,
+      user: decoded, // id, role, etc.
+    });
+  } catch (err) {
+    console.error('JWT Error:', err.message); // Log the actual error for debug
+    return res.status(401).json({
+      valid: false,
+      message: 'Token expired or invalid',
+    });
+  }
+};
+
+
+
+
+
+
 
 
 export const checkPermission = (permissionName, action) => {
@@ -210,8 +252,9 @@ export const getuserById = async (req, res) => {
           role: user.role,
           student_id: user.student_id,
           father_name: student.father_name,
-          admission_no: student.admission_no,
-          id_no: student.id_no,
+       
+     identifying_name: student.identifying_name,
+          mother_name: student.mother_name,
           phone: student.mobile_number,
           university_id: student.university_id,
           date_of_birth: student.date_of_birth,
@@ -285,8 +328,7 @@ export const createStudent = async (req, res) => {
   try {
     const {
       father_name,
-      admission_no,
-      id_no,
+      
       mobile_number,
       university_id,
       date_of_birth,
@@ -295,7 +337,9 @@ export const createStudent = async (req, res) => {
       address,
       full_name,
       password,
-      email
+      email,
+      identifying_name,
+      mother_name
     } = req.body;
     // ✅ Check for required fields
     if (!full_name || !email || !password) {
@@ -328,13 +372,14 @@ export const createStudent = async (req, res) => {
     // ✅ Insert into students table with the `user_id` created in the `users` table
     const [studentResult] = await db.query(
       `INSERT INTO students 
-        (user_id, father_name, admission_no, id_no, mobile_number, university_id, date_of_birth, gender, category, address, full_name, role, photo, documents) 
+        (user_id, father_name,  identifying_name, mother_name,  mobile_number, university_id, date_of_birth, gender, category, address, full_name, role, photo, documents) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         userId,
         father_name || '',
-        admission_no || '',
-        id_no || '',
+   
+    identifying_name || '',
+    mother_name || '',
         mobile_number || '',
         parsedUniversityId,
         date_of_birth || null,
@@ -664,6 +709,32 @@ export const getStudentsByCounselorId = async (req, res) => {
 };
 
 
+export const getAssignedStudents = async (req, res) => {
+ const { counselor_id } = req.params; // Assuming auth middleware sets req.user
+
+  try {
+    const [students] = await db.query(
+      `SELECT 
+         u.full_name,
+         u.role,
+         s.id AS student_id,
+         u.id
+       FROM students s
+       JOIN users u ON s.id = u.student_id
+       WHERE s.counselor_id = ?`,
+      [counselor_id]
+    );
+
+    res.status(200).json(students);
+  } catch (error) {
+    console.error("Error fetching assigned students:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+
+
 export const getAllStudents = async (req, res) => {
   try {
     const [rows] = await db.query(`
@@ -704,8 +775,9 @@ export const updateStudent = async (req, res) => {
   try {
     const {
       father_name,
-      admission_no,
-      id_no,
+   
+mother_name,
+ identifying_name,
       mobile_number,
       university_id,
       date_of_birth,
@@ -756,8 +828,9 @@ export const updateStudent = async (req, res) => {
     // ✅ Update students table
     const studentUpdateFields = [
       'father_name = ?',
-      'admission_no = ?',
-      'id_no = ?',
+      
+'mother_name = ?',
+ 'identifying_name = ?',
       'mobile_number = ?',
       'university_id = ?',
       'date_of_birth = ?',
@@ -768,8 +841,10 @@ export const updateStudent = async (req, res) => {
     ];
     const studentUpdateValues = [
       father_name || '',
-      admission_no || '',
-      id_no || '',
+   
+    
+mother_name || '',
+identifying_name || '',
       mobile_number || '',
       parsedUniversityId,
       date_of_birth || null,
@@ -841,8 +916,10 @@ export const updateUser = async (req, res) => {
   const {
     user_id,
     father_name,
-    admission_no,
-    id_no,
+   
+  
+  mother_name,
+  identifying_name,
     university_id,
     date_of_birth,
     gender,
@@ -878,10 +955,11 @@ export const updateUser = async (req, res) => {
     if (student_id) {
       const [studentResult] = await db.query(
         `UPDATE students SET 
-          admission_no = COALESCE(?, admission_no),
+         
           user_id = COALESCE(?, user_id),
           father_name = COALESCE(?, father_name),
-          id_no = COALESCE(?, id_no),
+          identifying_name = COALESCE(?, identifying_name),
+          mother_name = COALESCE(?, mother_name),
           mobile_number = COALESCE(?, mobile_number),
           university_id = COALESCE(?, university_id),
           date_of_birth = COALESCE(?, date_of_birth),
@@ -892,10 +970,12 @@ export const updateUser = async (req, res) => {
           documents = COALESCE(?, documents)
         WHERE id = ?`,
         [
-          admission_no,
+      
           user_id,
           father_name,
-          id_no,
+          identifying_name,
+          mother_name,
+       
           phone,
           university_id,
           date_of_birth,
