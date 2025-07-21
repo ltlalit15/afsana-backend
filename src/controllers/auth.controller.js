@@ -11,7 +11,6 @@ import admin from '../config/firebase.js';
 
 
 
-
 export const register = async (req, res) => {
   const { email, password, full_name, role } = req.body;
 
@@ -63,7 +62,7 @@ export const login = async (req, res) => {
     const user = results[0];
     const match = await bcrypt.compare(password, user.password);
     const token = jwt.sign({ id: user.id, role: user.role }, "dfsdfdsfdsg34345464543sdffdg#%$", { expiresIn: '12h' });
-  // const token = jwt.sign({ id: user.id, role: user.role },process.env.JWT_SECRET, { expiresIn: '12h' }
+    // const token = jwt.sign({ id: user.id, role: user.role },process.env.JWT_SECRET, { expiresIn: '12h' }
     // );
 
     if (!match) {
@@ -91,7 +90,7 @@ export const login = async (req, res) => {
           student_id: user.student_id,
           // father_name : maindetails[0].father_name,
           // admission_no : maindetails[0].admission_no, 
-        
+
           // phone : maindetails[0].mobile_number,
           // university_id : maindetails[0].university_id,
           // date_of_birth : maindetails[0].date_of_birth,
@@ -205,7 +204,7 @@ export const checkPermission = (permissionName, action) => {
       `, [userId]);
 
       // Check if required permission exists and action (view/add/edit/delete) is allowed
-      const hasPermission = permissions.some(p => 
+      const hasPermission = permissions.some(p =>
         p.permission_name === permissionName && p[`${action}_permission`] === 1
       );
 
@@ -252,8 +251,8 @@ export const getuserById = async (req, res) => {
           role: user.role,
           student_id: user.student_id,
           father_name: student.father_name,
-       
-     identifying_name: student.identifying_name,
+
+          identifying_name: student.identifying_name,
           mother_name: student.mother_name,
           phone: student.mobile_number,
           university_id: student.university_id,
@@ -328,7 +327,7 @@ export const createStudent = async (req, res) => {
   try {
     const {
       father_name,
-      
+
       mobile_number,
       university_id,
       date_of_birth,
@@ -366,7 +365,7 @@ export const createStudent = async (req, res) => {
     // ✅ Insert into users table first (since user_id is created there)
     const [userResult] = await db.query(
       'INSERT INTO users (email, password, full_name, user_id, role) VALUES (?, ?, ?, ?, ?)',
-      [email, hashed, full_name,0, role]
+      [email, hashed, full_name, 0, role]
     );
     const userId = userResult.insertId;
     // ✅ Insert into students table with the `user_id` created in the `users` table
@@ -377,9 +376,9 @@ export const createStudent = async (req, res) => {
       [
         userId,
         father_name || '',
-   
-    identifying_name || '',
-    mother_name || '',
+
+        identifying_name || '',
+        mother_name || '',
         mobile_number || '',
         parsedUniversityId,
         date_of_birth || null,
@@ -605,18 +604,18 @@ export const createStudentWithGoogle = async (req, res) => {
     // ✅ Done
 
 
-res.status(201).json({
-  message: "Student registered via Google Sign-In",
-  user: {
-    id: userId,
-    student_id: studentId, // 👈 Add this line
-    email,
-    full_name,
-    role
-  },
-  token: jwtToken,
-  status: "registered",
-});
+    res.status(201).json({
+      message: "Student registered via Google Sign-In",
+      user: {
+        id: userId,
+        student_id: studentId, // 👈 Add this line
+        email,
+        full_name,
+        role
+      },
+      token: jwtToken,
+      status: "registered",
+    });
 
 
 
@@ -710,7 +709,7 @@ export const getStudentsByCounselorId = async (req, res) => {
 
 
 export const getAssignedStudents = async (req, res) => {
- const { counselor_id } = req.params; // Assuming auth middleware sets req.user
+  const { counselor_id } = req.params; // Assuming auth middleware sets req.user
 
   try {
     const [students] = await db.query(
@@ -759,7 +758,18 @@ export const getAllStudents = async (req, res) => {
         ? `${req.protocol}://${req.get("host")}${row.documents}`
         : null,
     }));
-    res.status(200).json(parsedRows);
+
+
+    const result = await Promise.all(
+      rows.map(async (decision) => {
+        const counselorDetails = await getCounselorById(decision?.counselor_id);
+        return {
+          ...decision,
+          counselorName:counselorDetails[0]?.full_name || "Not Assigned",
+        };
+      })
+    );
+    res.status(200).json(result);
   } catch (error) {
     console.error('Error fetching students:', error);
     res.status(500).json({ message: 'Internal server error', error });
@@ -775,9 +785,9 @@ export const updateStudent = async (req, res) => {
   try {
     const {
       father_name,
-   
-mother_name,
- identifying_name,
+
+      mother_name,
+      identifying_name,
       mobile_number,
       university_id,
       date_of_birth,
@@ -828,9 +838,9 @@ mother_name,
     // ✅ Update students table
     const studentUpdateFields = [
       'father_name = ?',
-      
-'mother_name = ?',
- 'identifying_name = ?',
+
+      'mother_name = ?',
+      'identifying_name = ?',
       'mobile_number = ?',
       'university_id = ?',
       'date_of_birth = ?',
@@ -841,10 +851,10 @@ mother_name,
     ];
     const studentUpdateValues = [
       father_name || '',
-   
-    
-mother_name || '',
-identifying_name || '',
+
+
+      mother_name || '',
+      identifying_name || '',
       mobile_number || '',
       parsedUniversityId,
       date_of_birth || null,
@@ -916,10 +926,10 @@ export const updateUser = async (req, res) => {
   const {
     user_id,
     father_name,
-   
-  
-  mother_name,
-  identifying_name,
+
+
+    mother_name,
+    identifying_name,
     university_id,
     date_of_birth,
     gender,
@@ -933,9 +943,9 @@ export const updateUser = async (req, res) => {
 
   const photo = req.files?.photo?.[0] ? `/uploads/${req.files.photo[0].filename}` : null;
   const documents = req.files?.documents?.[0] ? `/uploads/${req.files.documents[0].filename}` : null;
- 
+
   try {
-    const [data ] = await db.query('SELECT * FROM users WHERE id = ?', [id]);
+    const [data] = await db.query('SELECT * FROM users WHERE id = ?', [id]);
     if (data.length === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -970,12 +980,12 @@ export const updateUser = async (req, res) => {
           documents = COALESCE(?, documents)
         WHERE id = ?`,
         [
-      
+
           user_id,
           father_name,
           identifying_name,
           mother_name,
-       
+
           phone,
           university_id,
           date_of_birth,

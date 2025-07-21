@@ -1,6 +1,11 @@
 import db from '../config/db.js';
 import { studentNameById } from '../models/student.model.js';
+import { getCounselorById } from '../models/counselor.model.js';
 import { universityNameById } from '../models/universities.model.js';
+import { studentidentifying_name } from '../models/student.model.js';
+
+
+
 import cloudinary from "cloudinary";
 import fs from 'fs';
 
@@ -10,12 +15,11 @@ cloudinary.config({
     api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
 });
 
+
 // export const createApply = async (req, res) => {
 //     const data = req.body;
 //     const files = req.files;
-
 //     console.log("Files received:", files);
-
 //     // List of date fields
 //     const dateFields = [
 //       "registration_date",
@@ -26,7 +30,6 @@ cloudinary.config({
 //       "visa_interview_date",
 //       "final_offer_letter"
 //     ];
-
 //     // Map file paths to fields
 //     for (const key in files) {
 //       if (files[key] && files[key][0]) {
@@ -271,6 +274,95 @@ export const getApplicationsByCounselor = async (req, res) => {
 
 
 
+// export const getAllApplications = async (req, res) => {
+//     try {
+//         const query = `SELECT * FROM studentapplicationprocess`;
+//         const [applications] = await db.query(query);
+
+//         if (applications.length === 0) {
+//             return res.status(404).json({ message: 'No applications found' });
+//         }
+
+//         const baseUrl = `${req.protocol}://${req.get('host')}`;
+
+//         // Fields to update with base URL
+//         const fileFields = [
+//             'fee_confirmation_document',
+//             'conditional_offer_letter',
+//             'invoice_with_conditional_offer',
+//             'tuition_fee_transfer_proof',
+//             'final_university_offer_letter',
+//             'passport_copy_prepared',
+//             'financial_support_declaration',
+//             'final_offer_letter',
+//             'proof_of_relationship',
+//             'english_language_proof',
+//             'residence_permit_form',
+//             'proof_of_income',
+//             'airplane_ticket_booking',
+//             'police_clearance_certificate',
+//             'europass_cv',
+//             'birth_certificate',
+//             'bank_statement',
+//             'accommodation_proof',
+//             'motivation_letter',
+//             'previous_studies_certificates',
+//             'travel_insurance',
+//             'european_photo',
+//             'health_insurance'
+//         ];
+
+//         // Transform data
+//         const data = await Promise.all(
+//             applications.map(async (app) => {
+//                 let studentName = '';
+//                 let universityName = '';
+//                 try {
+//                     const studentResult = await studentNameById(app.student_id);
+//                     const universityResult = await universityNameById(app.university_id);
+//                     studentName = studentResult[0]?.full_name || '';
+//                     universityName = universityResult[0]?.name || '';
+//                 } catch (err) {
+//                     console.error(`Error fetching student name for ID ${app.student_id}:`, err);
+//                 }
+
+//                 // Update file paths with base URL
+//                 // fileFields.forEach((field) => {
+//                 //     if (app[field] !== null) {
+//                 //         app[field] = `${baseUrl}${app[field]}`;
+//                 //     } else {
+//                 //         app[field] = null; // Ensure the field is explicitly set to null
+//                 //     }
+//                 // });
+
+
+//                 // Update file paths with base URL
+//                 fileFields.forEach((field) => {
+//                     if (app[field] !== null) {
+//                         // Avoid prefixing full URLs (e.g., Cloudinary)
+//                         if (!app[field].startsWith('http')) {
+//                             app[field] = `${baseUrl}${app[field]}`;
+//                         }
+//                     } else {
+//                         app[field] = null;
+//                     }
+//                 });
+//                 return {
+//                     ...app,
+//                     student_name: studentName,
+//                     university_name: universityName
+//                 };
+//             })
+//         );
+
+//         res.status(200).json(data);
+//     } catch (error) {
+//         console.error('Error fetching data:', error);
+//         res.status(500).json({ message: 'Error fetching data', error: error.message });
+//     }
+// };
+
+
 export const getAllApplications = async (req, res) => {
     try {
         const query = `SELECT * FROM studentapplicationprocess`;
@@ -282,7 +374,6 @@ export const getAllApplications = async (req, res) => {
 
         const baseUrl = `${req.protocol}://${req.get('host')}`;
 
-        // Fields to update with base URL
         const fileFields = [
             'fee_confirmation_document',
             'conditional_offer_letter',
@@ -309,34 +400,29 @@ export const getAllApplications = async (req, res) => {
             'health_insurance'
         ];
 
-        // Transform data
         const data = await Promise.all(
             applications.map(async (app) => {
                 let studentName = '';
+                let counselorName = '';
                 let universityName = '';
+
                 try {
-                    const studentResult = await studentNameById(app.student_id);
-                    const universityResult = await universityNameById(app.university_id);
+                    const [studentResult, counselorResult, universityResult] = await Promise.all([
+                        studentNameById(app.student_id),
+                        getCounselorById(app?.counselor_id),
+                        universityNameById(app.university_id)
+                    ]);
+
                     studentName = studentResult[0]?.full_name || '';
+                    counselorName = counselorResult[0]?.full_name || '';
                     universityName = universityResult[0]?.name || '';
                 } catch (err) {
-                    console.error(`Error fetching student name for ID ${app.student_id}:`, err);
+                    console.error(`Error fetching related data for application ID ${app.id}:`, err);
                 }
 
-                // Update file paths with base URL
-                // fileFields.forEach((field) => {
-                //     if (app[field] !== null) {
-                //         app[field] = `${baseUrl}${app[field]}`;
-                //     } else {
-                //         app[field] = null; // Ensure the field is explicitly set to null
-                //     }
-                // });
-
-
-                // Update file paths with base URL
+                // Update file fields with full URL if not already full URLs
                 fileFields.forEach((field) => {
                     if (app[field] !== null) {
-                        // Avoid prefixing full URLs (e.g., Cloudinary)
                         if (!app[field].startsWith('http')) {
                             app[field] = `${baseUrl}${app[field]}`;
                         }
@@ -344,9 +430,11 @@ export const getAllApplications = async (req, res) => {
                         app[field] = null;
                     }
                 });
+
                 return {
                     ...app,
                     student_name: studentName,
+                    counselor_name: counselorName,
                     university_name: universityName
                 };
             })
@@ -358,6 +446,9 @@ export const getAllApplications = async (req, res) => {
         res.status(500).json({ message: 'Error fetching data', error: error.message });
     }
 };
+
+
+
 
 export const getAllApplicationsById = async (req, res) => {
     const { id } = req.params;
@@ -406,12 +497,16 @@ export const getAllApplicationsById = async (req, res) => {
             applications.map(async (app) => {
                 let studentName = '';
                 let universityName = '';
+                let studentidentifyname = '';
 
+        
                 try {
                     const studentResult = await studentNameById(app.student_id);
                     const universityResult = await universityNameById(app.university_id);
+                    const studentResultstudentidentifying_name = await studentidentifying_name(app.student_id);
 
                     studentName = studentResult[0]?.full_name || '';
+                    studentidentifyname = studentResultstudentidentifying_name[0]?.identifying_name || '';
                     universityName = universityResult[0]?.name || '';
                 } catch (err) {
                     console.error(`Error fetching related data for ID ${id}:`, err);
@@ -421,7 +516,7 @@ export const getAllApplicationsById = async (req, res) => {
                 //     if (app[field]) {
                 //         app[field] = `${baseUrl}${app[field]}`;
                 //     }
-                // });
+                // }); 
           fileFields.forEach((field) => {
                     if (app[field] !== null) {
                         // Avoid prefixing full URLs (e.g., Cloudinary)
@@ -435,7 +530,9 @@ export const getAllApplicationsById = async (req, res) => {
                 return {
                     ...app,
                     student_name: studentName,
+                    identify_name: studentidentifyname,
                     university_name: universityName
+
                 };
             })
         );

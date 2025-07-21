@@ -5,11 +5,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const pool = mysql.createPool({
-  host: "shortline.proxy.rlwy.net",              // ✅ Corrected Host
-  user: "root",                                  // ✅ Username
-  password: "sBmkggPYyTCRAQLooNgUOovjTaUqPdeY",  // ✅ Password
-  database: "railway",                           // ✅ Database Name
-  port: 15089,                                   // ✅ Port from CLI
+  host: "gondola.proxy.rlwy.net",              // ✅ Host from CLI
+  user: "root",                                 // ✅ Username
+  password: "wWwVcLUHgzyyveXNxUoEzXBJLHBajdmz", // ✅ Password from CLI
+  database: "railway",                          // ✅ Database name
+  port: 50978,                                  // ✅ Port from CLI
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
