@@ -1111,5 +1111,38 @@ export const getAllByRoles = async (req, res) => {
 }
 
 
+export const editStudent = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const updatedData = req.body;
+
+    // Convert JSON fields to string
+    if (updatedData.academic_info) {
+      updatedData.academic_info = JSON.stringify(updatedData.academic_info);
+    }
+    if (updatedData.english_proficiency) {
+      updatedData.english_proficiency = JSON.stringify(updatedData.english_proficiency);
+    }
+    if (updatedData.job_professional) {
+      updatedData.job_professional = JSON.stringify(updatedData.job_professional);
+    }
+
+    const fields = Object.keys(updatedData).map(field => `${field} = ?`).join(', ');
+    const values = Object.values(updatedData);
+
+    const query = `UPDATE students SET ${fields}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
+    values.push(id);
+
+    await db.query(query, values);
+    res.status(200).json({ message: 'Student updated successfully' });
+
+  } catch (error) {
+    console.error('Edit Student Error:', error);
+    res.status(500).json({ message: 'Server error while editing student' });
+  }
+};
+
+
 
 
