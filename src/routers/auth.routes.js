@@ -1,7 +1,7 @@
 import express from 'express';
 import { upload } from '../middlewares/upload.js';
 import {createStudent, register, login, StudentAssignToCounselor, getAllStudents, getStudentById, deleteStudent, changeNewPassword, updateUser, getuserById, getAllByRoles, getStudentsByCounselorId, signupWithGoogle , sendOtpToEmail, verifyOtp, createStudentWithGoogle
-, updateStudent, validateToken, getAssignedStudents, editStudent, StudentAssignToProcessor} from '../controllers/auth.controller.js';
+, updateStudent, validateToken, getAssignedStudents, editStudent} from '../controllers/auth.controller.js';
 // import { authenticate } from '../middlewares/auth.middleware.js';
 const router = express.Router();
 router.post('/register', register);
@@ -13,7 +13,6 @@ router.post('/check-google-details', signupWithGoogle);
 router.post("/send-otp", sendOtpToEmail);
 router.post("/verify-otp", verifyOtp);
 router.patch('/StudentAssignToCounselor', StudentAssignToCounselor);
-router.patch('/StudentAssignToProcessor', StudentAssignToProcessor);
 router.get('/students/by-counselor/:counselorId', getStudentsByCounselorId);
 // router.get('/getStudentById/:id',authenticate, getStudentById);
 router.get('/getStudentById/:id', getStudentById);
