@@ -926,8 +926,6 @@ export const updateUser = async (req, res) => {
   const {
     user_id,
     father_name,
-
-
     mother_name,
     identifying_name,
     university_id,
