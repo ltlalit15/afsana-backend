@@ -191,6 +191,55 @@ export const assignCounselor = async (req, res) => {
     }
 };
 
+
+
+export const assignassignProcessorapllication = async (req, res) => {
+    const { application_id, counselor_id } = req.body;
+
+    // Check for required identifier
+    if (!application_id) {
+        return res.status(400).json({ message: "'application_id' is required" });
+    }
+
+    // Build dynamic fields
+    const updates = [];
+    const values = [];
+
+    if (counselor_id !== undefined) {
+        updates.push("counselor_id = ?");
+        values.push(counselor_id);
+    }
+    
+    // If nothing to update
+    if (updates.length === 0) {
+        return res.status(400).json({ message: "No fields provided to update" });
+    }
+    const query = `UPDATE studentapplicationprocess SET ${updates.join(", ")} WHERE id = ?`;
+    values.push(application_id);
+    try {
+        const [result] = await db.query(query, values);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Application ID not found" });
+        }
+
+        res.status(200).json({ message: "Application updated successfully" });
+    } catch (error) {
+        console.error("Error updating application:", error);
+        res.status(500).json({ message: "Update failed", error: error.message });
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
 // export const getApplicationsByCounselor = async (req, res) => {
 //     const { counselor_id } = req.params;
 
@@ -231,7 +280,6 @@ export const getApplicationsByCounselor = async (req, res) => {
             "passport_copy_prepared"
             // Add all other file fields used in your schema
         ];
-
         const data = await Promise.all(
             applications.map(async (app) => {
                 let studentName = '';

@@ -63,15 +63,11 @@ import studentinvoiceByCounselors from "./routers/studentinvoiceByCounselor.rout
 import staff from './routers/staff.routes.js';
 import visaRouters from './routers/visaRouters.js';
 import folowupnew from './routers/followupnew.router.js';
-
-
-
+import groupRoutes from './routers/groupRoutes.js'; // Import group routes
+import processorRoute from './routers/processorroute.js'; // Import processor routes
 // ✅ Route handling
 
-
-
 app.get('/', (_, res) => { res.send(responsePage) });
-
 app.use('/api/auth', authRoutes);
 app.use('/api', inquiryRoutes);
 app.use('/api', followUproute);
@@ -95,8 +91,8 @@ app.use('/api', studentinvoiceByCounselors);
 app.use('/api', staff);
 app.use('/api', visaRouters);
 app.use('/api', folowupnew);
-
-
+app.use('/api', groupRoutes);
+app.use('/api', processorRoute); // Add processor routes
 
 
 // ✅ Log every incoming request

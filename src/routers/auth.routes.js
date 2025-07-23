@@ -1,14 +1,8 @@
 import express from 'express';
 import { upload } from '../middlewares/upload.js';
 import {createStudent, register, login, StudentAssignToCounselor, getAllStudents, getStudentById, deleteStudent, changeNewPassword, updateUser, getuserById, getAllByRoles, getStudentsByCounselorId, signupWithGoogle , sendOtpToEmail, verifyOtp, createStudentWithGoogle
-, updateStudent, validateToken, getAssignedStudents} from '../controllers/auth.controller.js';
+, updateStudent, validateToken, getAssignedStudents, editStudent} from '../controllers/auth.controller.js';
 // import { authenticate } from '../middlewares/auth.middleware.js';
-
-
-
-
-
-
 const router = express.Router();
 router.post('/register', register);
 router.post('/login', login);
@@ -19,6 +13,7 @@ router.post('/check-google-details', signupWithGoogle);
 router.post("/send-otp", sendOtpToEmail);
 router.post("/verify-otp", verifyOtp);
 router.patch('/StudentAssignToCounselor', StudentAssignToCounselor);
+router.patch('/StudentAssignToProcessor', StudentAssignToCounselor);
 router.get('/students/by-counselor/:counselorId', getStudentsByCounselorId);
 // router.get('/getStudentById/:id',authenticate, getStudentById);
 router.get('/getStudentById/:id', getStudentById);
@@ -35,7 +30,5 @@ router.get('/getAssignedStudents/:counselor_id', getAssignedStudents);
 router.post('/register', register);
 router.post('/login', login);
 router.post('/validate-token', validateToken); // 👈 Add this route
-
-
-
+router.put('/students/:id', editStudent);
 export default router;

@@ -538,10 +538,6 @@ export const signupWithGoogle = async (req, res) => {
 
 
 
-
-
-
-
 export const createStudentWithGoogle = async (req, res) => {
   try {
     const { token } = req.body;
@@ -682,6 +678,50 @@ export const StudentAssignToCounselor = async (req, res) => {
     });
   }
 };
+
+
+export const StudentAssignToProcessor = async (req, res) => {
+  try {
+    const { student_id, processor_id } = req.body;
+
+    // Validate required fields
+    if (!student_id) {
+      return res.status(400).json({ message: "'student_id' is required" });
+    }
+
+    if (!processor_id) {
+      return res.status(400).json({ message: "'processor_id' is required" });
+    }
+
+    // Build dynamic update query
+    const updates = ["processor_id = ?", "updated_at = NOW()"];
+    const values = [processor_id, student_id];
+
+    const sql = `UPDATE students SET ${updates.join(", ")} WHERE id = ?`;
+
+    const [result] = await db.query(sql, values);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Student ID not found" });
+    }
+
+    const [updatedStudent] = await db.query("SELECT * FROM students WHERE id = ?", [student_id]);
+
+    res.status(200).json({
+      message: "Student assigned to processor successfully",
+      data: updatedStudent[0],
+    });
+
+  } catch (error) {
+    console.error("Error assigning student to processor:", error);
+    res.status(500).json({
+      message: "Update failed",
+      error: error.message,
+    });
+  }
+};
+
+
+
 
 
 export const getStudentsByCounselorId = async (req, res) => {
@@ -1107,6 +1147,39 @@ export const getAllByRoles = async (req, res) => {
     res.status(500).json({ message: 'Internal server error', error });
   }
 }
+
+
+export const editStudent = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const updatedData = req.body;
+
+    // Convert JSON fields to string
+    if (updatedData.academic_info) {
+      updatedData.academic_info = JSON.stringify(updatedData.academic_info);
+    }
+    if (updatedData.english_proficiency) {
+      updatedData.english_proficiency = JSON.stringify(updatedData.english_proficiency);
+    }
+    if (updatedData.job_professional) {
+      updatedData.job_professional = JSON.stringify(updatedData.job_professional);
+    }
+
+    const fields = Object.keys(updatedData).map(field => `${field} = ?`).join(', ');
+    const values = Object.values(updatedData);
+
+    const query = `UPDATE students SET ${fields}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
+    values.push(id);
+
+    await db.query(query, values);
+    res.status(200).json({ message: 'Student updated successfully' });
+
+  } catch (error) {
+    console.error('Edit Student Error:', error);
+    res.status(500).json({ message: 'Server error while editing student' });
+  }
+};
 
 
 
