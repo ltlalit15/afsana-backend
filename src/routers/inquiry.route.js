@@ -1,6 +1,6 @@
 import express from 'express';
 import { upload } from '../middlewares/upload.js';
-import { createInquiry, deleteInquiry, getAllInquiries, getInquiryById, updateInquiry, assignInquiry, getCounselorWisePerformance, getAllConvertedLeads, getAllleadsstatus, getCheckEligiblity, updateEligibilityStatus, updateLeadStatus , uploadDocuments, getConvertedLeadsByCounselorId} from '../controllers/inquiry.controller.js';
+import { createInquiry, deleteInquiry, getAllInquiries, getInquiryById, updateInquiry, assignInquiry, getCounselorWisePerformance, getAllConvertedLeads, getAllleadsstatus, getCheckEligiblity, updateEligibilityStatus, updateLeadStatus , uploadDocuments, getConvertedLeadsByCounselorId, StudentAssignToProcessor} from '../controllers/inquiry.controller.js';
 // import { authenticate } from '../middlewares/auth.middleware.js';
 const router = express.Router();
 router.post('/inquiries', createInquiry);
@@ -13,7 +13,7 @@ router.get('/AllConvertedLeadsinquiries', getAllConvertedLeads);
 router.get('/leads/by-counselor/:id', getConvertedLeadsByCounselorId);
 
 
-
+router.patch('/StudentAssignToProcessor', StudentAssignToProcessor);
 router.post('/assign-inquiry', assignInquiry); // ✅ Add this line
 router.get('/counselor-performance', getCounselorWisePerformance); // ✅ Add this linegetAllleadsstatus
 router.get('/getAllleadsstatus', getAllleadsstatus); // ✅ Add this linegetAllleadsstatus
