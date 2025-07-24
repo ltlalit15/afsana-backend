@@ -5,16 +5,15 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const pool = mysql.createPool({
-  host: "mainline.proxy.rlwy.net",              // ✅ Host from CLI
-  user: "root",                                  // ✅ Username
-  password: "SfLMnUpFplpRsaldlWJvpAxQAHlugpxa",  // ✅ Password from CLI
-  database: "railway",                           // ✅ Database name
-  port: 22094,                                   // ✅ Port from CLI
+  host: "yamabiko.proxy.rlwy.net",             // ✅ Updated host
+  user: "root",                                 // ✅ Username
+  password: "qjYEpmptLJgsBJaEQbQfxWOLxHFoBpFo", // ✅ Updated password
+  database: "railway",                          // ✅ Same DB
+  port: 19529,                                  // ✅ Updated port
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
 });
-
 pool.getConnection((err, connection) => {
   if (err) {
     console.error('❌ MySQL connection failed:', err.message);
