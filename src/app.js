@@ -65,6 +65,11 @@ import visaRouters from './routers/visaRouters.js';
 import folowupnew from './routers/followupnew.router.js';
 import groupRoutes from './routers/groupRoutes.js'; // Import group routes
 import processorRoute from './routers/processorroute.js'; // Import processor routes
+import notificationRoutes from './routers/notificationRoutes.js'; // Import notification routes
+
+
+
+
 // ✅ Route handling
 
 app.get('/', (_, res) => { res.send(responsePage) });
@@ -93,6 +98,7 @@ app.use('/api', visaRouters);
 app.use('/api', folowupnew);
 app.use('/api', groupRoutes);
 app.use('/api', processorRoute); // Add processor routes
+app.use('/api', notificationRoutes); // Add processor routes
 
 
 // ✅ Log every incoming request

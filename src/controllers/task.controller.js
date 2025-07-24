@@ -37,6 +37,15 @@ export const createTask = async (req, res) => {
       ]
     );
 
+
+
+   await db.query(`
+      INSERT INTO notifications (senderss_id, receiverss_id, type, related_id, message)
+      VALUES (?, ?, ?, ?, ?)`,
+      [user_id, assigned_to, 'task_assigned', result.insertId, `You have been assigned a task: ${title}`]
+    );
+
+
     res.status(201).json({ message: 'Task created successfully', taskId: result.insertId });
   } catch (err) {
     console.error('Create Task Error:', err);

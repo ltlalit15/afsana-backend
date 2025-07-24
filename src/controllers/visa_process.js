@@ -11,6 +11,8 @@ cloudinary.config({
     api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
 });
 
+
+
 export const createVisaProcess = async (req, res) => {
     const data = req.body;
     const requiredFields = [

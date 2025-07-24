@@ -221,6 +221,14 @@ export const createInquiry = async (req, res) => {
       ]
     );
 
+
+  await db.query(`
+      INSERT INTO notifications (senderss_id, receiverss_id, type, related_id, message)
+      VALUES (?, ?, ?, ?, ?)`,
+      [null, 1, 'new_inquiry', result.insertId, 'A new inquiry has been created.']
+    );
+
+  
     res.status(201).json({ message: 'Inquiry created successfully', inquiryId: result.insertId });
   } catch (err) {
     console.error('Create Inquiry error:', err);
@@ -663,6 +671,48 @@ const [data] = await db.query(`
   } catch (error) {
     console.error('Error fetching counselor performance:', error);
     res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+
+
+export const StudentAssignToProcessor = async (req, res) => {
+  try {
+    const { student_id, processor_id } = req.body;
+
+    // Validate required fields
+    if (!student_id) {
+      return res.status(400).json({ message: "'student_id' is required" });
+    }
+
+    if (!processor_id) {
+      return res.status(400).json({ message: "'processor_id' is required" });
+    }
+
+    // Build dynamic update query
+    const updates = ["processor_id = ?", "updated_at = NOW()"];
+    const values = [processor_id, student_id];
+
+    const sql = `UPDATE students SET ${updates.join(", ")} WHERE id = ?`;
+
+    const [result] = await db.query(sql, values);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Student ID not found" });
+    }
+
+    const [updatedStudent] = await db.query("SELECT * FROM students WHERE id = ?", [student_id]);
+
+    res.status(200).json({
+      message: "Student assigned to processor successfully",
+      data: updatedStudent[0],
+    });
+
+  } catch (error) {
+    console.error("Error assigning student to processor:", error);
+    res.status(500).json({
+      message: "Update failed",
+      error: error.message,
+    });
   }
 };
 

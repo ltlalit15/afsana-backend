@@ -3,6 +3,12 @@ import { studentNameById } from '../models/student.model.js';
 import { getCounselorById } from '../models/counselor.model.js';
 import { universityNameById } from '../models/universities.model.js';
 import { studentidentifying_name } from '../models/student.model.js';
+import { processor_name } from '../models/student.model.js';
+
+
+
+
+// import { getCounselorById } from '../models/counselor.model.js';
 
 
 
@@ -193,8 +199,9 @@ export const assignCounselor = async (req, res) => {
 
 
 
+
 export const assignassignProcessorapllication = async (req, res) => {
-    const { application_id, counselor_id } = req.body;
+    const { application_id, processor_id } = req.body;
 
     // Check for required identifier
     if (!application_id) {
@@ -205,9 +212,9 @@ export const assignassignProcessorapllication = async (req, res) => {
     const updates = [];
     const values = [];
 
-    if (counselor_id !== undefined) {
-        updates.push("counselor_id = ?");
-        values.push(counselor_id);
+    if (processor_id !== undefined) {
+        updates.push("processor_id = ?");
+        values.push(processor_id);
     }
     
     // If nothing to update
@@ -453,17 +460,20 @@ export const getAllApplications = async (req, res) => {
                 let studentName = '';
                 let counselorName = '';
                 let universityName = '';
+                let processorName = '';
 
                 try {
-                    const [studentResult, counselorResult, universityResult] = await Promise.all([
+                    const [studentResult, counselorResult, universityResult, processorResult] = await Promise.all([
                         studentNameById(app.student_id),
                         getCounselorById(app?.counselor_id),
-                        universityNameById(app.university_id)
+                        universityNameById(app.university_id),
+                        processor_name(app?.processor_id)
                     ]);
 
                     studentName = studentResult[0]?.full_name || '';
                     counselorName = counselorResult[0]?.full_name || '';
                     universityName = universityResult[0]?.name || '';
+                    processorName = processorResult[0]?.full_name || '';
                 } catch (err) {
                     console.error(`Error fetching related data for application ID ${app.id}:`, err);
                 }
@@ -483,7 +493,8 @@ export const getAllApplications = async (req, res) => {
                     ...app,
                     student_name: studentName,
                     counselor_name: counselorName,
-                    university_name: universityName
+                    university_name: universityName,
+                    processor_name: processorName
                 };
             })
         );
@@ -667,6 +678,108 @@ export const getAplicationBYStudentID = async (req, res) => {
         res.status(500).json({ message: 'Error fetching data', error: error.message });
     }
 };
+
+
+
+export const getAplicationBYProcessorID = async (req, res) => {
+    console.log("req ", req.params);
+    const processorId = req.params.processorId;
+    try {
+        const query = `SELECT * FROM studentapplicationprocess WHERE processor_id = ?`;
+        const [applications] = await db.query(query, [processorId]);
+
+        if (applications.length === 0) {
+            return res.status(404).json({ message: 'No applications found for the given student ID' });
+        }
+
+        const baseUrl = `${req.protocol}://${req.get('host')}`;
+
+        // Fields to update with base URL
+        const fileFields = [
+            'fee_confirmation_document',
+            'conditional_offer_letter',
+            'invoice_with_conditional_offer',
+            'tuition_fee_transfer_proof',
+            'final_university_offer_letter',
+            'passport_copy_prepared',
+            'financial_support_declaration',
+            'final_offer_letter',
+            'proof_of_relationship',
+            'english_language_proof',
+            'residence_permit_form',
+            'proof_of_income',
+            'airplane_ticket_booking',
+            'police_clearance_certificate',
+            'europass_cv',
+            'birth_certificate',
+            'bank_statement',
+            'accommodation_proof',
+            'motivation_letter',
+            'previous_studies_certificates',
+            'travel_insurance',
+            'european_photo',
+            'health_insurance'
+        ];
+
+
+
+
+ 
+
+        
+           
+
+        
+        // Transform data
+        const data = await Promise.all(
+            applications.map(async (app) => {
+                let studentName = '';
+                let universityName = '';
+                let ProcessorName = '';
+                let counselorName = '';
+                let studentidentifyname = '';
+                try {
+                    const studentResult = await studentNameById(app.student_id);
+                    const universityResult = await universityNameById(app.university_id);
+                    const  ProcessorNameResult = await processor_name(app.processor_id);
+                    const counselorResult = await getCounselorById(app.counselor_id);
+                    const studentResultstudentidentifying_name = await studentidentifying_name(app.student_id);
+                    studentName = studentResult[0]?.full_name || '';
+                    universityName = universityResult[0]?.name || '';
+                    ProcessorName = ProcessorNameResult[0]?.full_name || '';
+                    counselorName = counselorResult[0]?.full_name || '';
+                    studentidentifyname = studentResultstudentidentifying_name[0]?.identifying_name || '';
+                } catch (err) {
+                    console.error(`Error fetching student name for ID ${app.student_id}:`, err);
+                }
+
+                // Update file paths with base URL
+                fileFields.forEach((field) => {
+                    if (app[field]) {
+                        app[field] = `${baseUrl}${app[field]}`;
+                    }
+                });
+
+                return {
+                    ...app,
+                    student_name: studentName,
+                    university_name: universityName,
+                    processor_name: ProcessorName,
+                    counselor_name: counselorName,
+                    studentidentify_name:studentidentifyname
+                };
+            })
+        );
+
+        res.status(200).json(data);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        res.status(500).json({ message: 'Error fetching data', error: error.message });
+    }
+}; 
+
+
+
 
 export const getApplicationByStudentAndUniversity = async (req, res) => {
     const { studentId, universityId } = req.params;
