@@ -681,6 +681,7 @@ export const StudentAssignToCounselor = async (req, res) => {
 
 
 export const StudentAssignToProcessor = async (req, res) => {
+  console.log(req.body);
   try {
     const { student_id, processor_id } = req.body;
 

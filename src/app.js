@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
 const tempDir = path.join(__dirname, 'tmp');
 // 🔐 Middleware
 app.use(cors({
-  origin: '*',
+  origin: '* ',
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
 }));
 app.use(helmet());
