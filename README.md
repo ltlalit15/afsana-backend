@@ -18,3 +18,25 @@ CREATE TABLE student_invoice (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+
+CREATE TABLE chats (
+    id VARCHAR(100) PRIMARY KEY,
+    user_id VARCHAR(100), -- user who created the message (optional)
+    message TEXT NOT NULL,
+    created_at VARCHAR(100),
+    updated_at VARCHAR(100),
+    type VARCHAR(100),
+    sender_id VARCHAR(100) NOT NULL,
+    receiver_id VARCHAR(100), -- null if group message
+    group_id VARCHAR(100) -- null if personal chat
+);
+
+CREATE TABLE groups (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_ids Text NOT NULL,
+    group_name VARCHAR(100),
+    created_by VARCHAR(100),
+     created_at VARCHAR(100),
+    updated_at VARCHAR(100)
+);

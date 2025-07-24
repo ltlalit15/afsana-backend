@@ -1,23 +1,51 @@
 import db from '../config/db.js';
 
 
+
+
 export const createGroup = async (req, res) => {
-  const { name, userIds, created_by } = req.body;
-  // Step 1: Jo create kar raha hai uska role check karo
-  const [user] = await db.query("SELECT role FROM users WHERE id = ?", [created_by]);
-  // Step 2: Agar student hai to mana karo
-  if (!['admin', 'counselor'].includes(user[0]?.role)) {
-    return res.status(403).json({ message: 'Not allowed' });
-  }
-  // Step 3: Group create karo
-  const [result] = await db.query("INSERT INTO group_chats (name, created_by) VALUES (?, ?)", [name, created_by]);
-  const groupId = result.insertId;
-  // Step 4: Members add karo (admin ho ya member)
-  const memberValues = userIds.map(uid => [groupId, uid, uid === created_by ? 'admin' : 'member']);
-  await db.query("INSERT INTO group_members (group_id, user_id, role) VALUES ?", [memberValues]);
-  res.json({ success: true, groupId });
+    const { group_name, user_ids, created_by } = req.body;
+    const [result] = await db.query("INSERT INTO groups (group_name, userIds, created_by) VALUES (?, ?, ?)", [group_name, created_by, user_ids]);
+    res.json({ success: true, result });
 };
 
+export const userDetails = async (req, res) => {
+    const { userId } = req.query;
+
+    try {
+        const [userRows] = await db.query(
+            "SELECT id, full_name, email FROM users WHERE role IN ('admin', 'counselor')"
+        );
+        const [groupRows] = await db.query(
+            "SELECT id, group_name FROM groups WHERE FIND_IN_SET(?, user_ids)",
+            [userId]
+        );
+
+        if (userRows.length === 0 && groupRows.length === 0) {
+            return res.status(404).json({ message: 'No users or groups found' });
+        }
+
+        // Add type to each item for identification
+        const usersWithType = userRows.map(user => ({
+            type: 'user',
+            ...user
+        }));
+
+        const groupsWithType = groupRows.map(group => ({
+            type: 'group',
+            ...group
+        }));
+
+        // Merge into one array
+        const combinedData = [...usersWithType, ...groupsWithType];
+
+        res.json({ data: combinedData });
+
+    } catch (error) {
+        console.error("Error fetching user/group details:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
 
 export const getGroupMessages = async (req, res) => {
   const { groupId } = req.params;
