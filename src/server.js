@@ -15,7 +15,8 @@ const io = new Server(server, {
   cors: {
     origin: [
       "https://apply.studyfirstinfo.com",
-      "http://localhost:5173"
+      "http://localhost:5173",
+      "https://afsana-crm-project.netlify.app"
     ],
     methods: ["GET", "POST"],
     credentials: true
