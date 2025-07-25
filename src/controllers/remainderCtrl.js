@@ -167,10 +167,7 @@ export const getPendingNotifications = async (req, res) => {
     const [inquiryRows] = await db.query(
       `SELECT id, full_name, inquiry_type , created_at, notification_status FROM inquiries WHERE notification_status = 0`
     );
-    // res.status(200).json({
-    //   success: true,
-    //   count: rows.length,
-    //   data: rows
+  
       res.status(200).json({
       success: true,
       taskCount: taskRows.length,

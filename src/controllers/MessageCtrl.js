@@ -39,7 +39,7 @@ ORDER BY c.created_at ASC
 `,
                         [group_id]
                     );
-                    console.log("rowsrowsrows",rows);
+                    console.log("rowsrowsrows", rows);
                     messages = rows;
                 } else if (sender_id && receiver_id) {
                     const [rows] = await db.query(

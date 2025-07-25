@@ -5,9 +5,9 @@ import cloudinary from "cloudinary";
 import fs from 'fs';
 
 cloudinary.config({
-    cloud_name: 'dkqcqrrbp',
-    api_key: '418838712271323',
-    api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
+  cloud_name: 'dkqcqrrbp',
+  api_key: '418838712271323',
+  api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
 });
 
 
@@ -184,12 +184,12 @@ export const uploadDocuments = async (req, res) => {
 
 
 export const createInquiry = async (req, res) => {
-  const { 
-    counselor_id, inquiry_type, source, branch, full_name, phone_number, email, 
-    course_name, country, city,  date_of_birth, gender , medium,  study_level, study_field,
-    intake, budget, consent, highest_level, ssc, hsc ,bachelor ,university , test_type,  overall_score, reading_score, writing_score, speaking_score, listening_score, date_of_inquiry, address, present_address, additionalNotes, 
+  const {
+    counselor_id, inquiry_type, source, branch, full_name, phone_number, email,
+    course_name, country, city, date_of_birth, gender, medium, study_level, study_field,
+    intake, budget, consent, highest_level, ssc, hsc, bachelor, university, test_type, overall_score, reading_score, writing_score, speaking_score, listening_score, date_of_inquiry, address, present_address, additionalNotes,
     study_gap, visa_refused, refusal_reason, education_background, english_proficiency, company_name, job_title,
-    job_duration, preferred_countries  
+    job_duration, preferred_countries
   } = req.body;
   console.log("req.body ", req.body);
   try {
@@ -214,21 +214,25 @@ export const createInquiry = async (req, res) => {
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0);`,
       [
         formattedCounselorId, inquiry_type, source, branch, full_name, phone_number, email,
-        course_name, country, city, date_of_birth, gender, medium , study_level, study_field,
-    intake, budget, consent,  highest_level, ssc, hsc ,bachelor ,university, test_type, overall_score, reading_score, writing_score, speaking_score, listening_score,  date_of_inquiry, address, present_address, additionalNotes, study_gap, visa_refused, refusal_reason,
+        course_name, country, city, date_of_birth, gender, medium, study_level, study_field,
+        intake, budget, consent, highest_level, ssc, hsc, bachelor, university, test_type, overall_score, reading_score, writing_score, speaking_score, listening_score, date_of_inquiry, address, present_address, additionalNotes, study_gap, visa_refused, refusal_reason,
         JSON.stringify(education_background), JSON.stringify(english_proficiency),
-        company_name, job_title, job_duration,  JSON.stringify(preferred_countries)
+        company_name, job_title, job_duration, JSON.stringify(preferred_countries)
       ]
     );
 
+ const [counselors] = await db.query(`SELECT id FROM users WHERE role = 'counselor'`);
 
-  await db.query(`
-      INSERT INTO notifications (senderss_id, receiverss_id, type, related_id, message)
-      VALUES (?, ?, ?, ?, ?)`,
-      [null, 1, 'new_inquiry', result.insertId, 'A new inquiry has been created.']
-    );
+const counselorIds = counselors.map(c => c.id).join(','); // "1,2,3,4"
 
-  
+const [notify] = await db.query(`
+  INSERT INTO notifications (type, related_id, message, counselor_id, student_id)
+  VALUES (?, ?, ?, ?, ?)`,
+  ['new_inquiry', result?.insertId, 'A new inquiry has been created.', counselorIds, null]
+);
+
+console.log("notify", notify);
+
     res.status(201).json({ message: 'Inquiry created successfully', inquiryId: result.insertId });
   } catch (err) {
     console.error('Create Inquiry error:', err);
@@ -237,52 +241,52 @@ export const createInquiry = async (req, res) => {
 };
 
 export const getInquiryById = async (req, res) => {
-    const { id } = req.params;
-  
-    try {
-      const [results] = await db.query('SELECT * FROM inquiries WHERE id = ?', [id]);
-  
-      if (results.length === 0) {
-        return res.status(404).json({ message: 'Inquiry not found' });
-      }
-  
-      // Parse JSON fields
-      const inquiry = {
-        ...results[0],
-        education_background: JSON.parse(results[0].education_background),
-        english_proficiency: JSON.parse(results[0].english_proficiency),
-        preferred_countries: JSON.parse(results[0].preferred_countries),
-      };
-  
-      res.json(inquiry);
-    } catch (err) {
-      console.error('Get Inquiry error:', err);
-      res.status(500).json({ message: 'Internal server error' });
+  const { id } = req.params;
+
+  try {
+    const [results] = await db.query('SELECT * FROM inquiries WHERE id = ?', [id]);
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Inquiry not found' });
     }
+
+    // Parse JSON fields
+    const inquiry = {
+      ...results[0],
+      education_background: JSON.parse(results[0].education_background),
+      english_proficiency: JSON.parse(results[0].english_proficiency),
+      preferred_countries: JSON.parse(results[0].preferred_countries),
+    };
+
+    res.json(inquiry);
+  } catch (err) {
+    console.error('Get Inquiry error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
 export const getCheckEligiblity = async (req, res) => {
-    const { id } = req.params;
-    try {
-      const [results] = await db.query('SELECT * FROM inquiries WHERE id = ?', [id]);
-  
-      if (results.length === 0) {
-        return res.status(404).json({ message: 'Inquiry not found' });
-      }
-  
-      // Parse JSON fields
-      const inquiry = {
-        ...results[0],
-        education_background: JSON.parse(results[0].education_background),
-        english_proficiency: JSON.parse(results[0].english_proficiency),
-        preferred_countries: JSON.parse(results[0].preferred_countries),
-      };
-  
-      res.json(inquiry);
-    } catch (err) {
-      console.error('Get Inquiry error:', err);
-      res.status(500).json({ message: 'Internal server error' });
+  const { id } = req.params;
+  try {
+    const [results] = await db.query('SELECT * FROM inquiries WHERE id = ?', [id]);
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Inquiry not found' });
     }
+
+    // Parse JSON fields
+    const inquiry = {
+      ...results[0],
+      education_background: JSON.parse(results[0].education_background),
+      english_proficiency: JSON.parse(results[0].english_proficiency),
+      preferred_countries: JSON.parse(results[0].preferred_countries),
+    };
+
+    res.json(inquiry);
+  } catch (err) {
+    console.error('Get Inquiry error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
 export const updateEligibilityStatus = async (req, res) => {
@@ -290,7 +294,7 @@ export const updateEligibilityStatus = async (req, res) => {
   const { eligibility_status } = req.body;
 
   // Validate input: allow only 0 or 1
-  if (![0,1,2,3].includes(Number(eligibility_status))) {
+  if (![0, 1, 2, 3].includes(Number(eligibility_status))) {
     return res.status(400).json({ message: "eligibility_status must be 0 1, 2 or 3" });
   }
 
@@ -311,17 +315,17 @@ export const updateEligibilityStatus = async (req, res) => {
 
 
 export const updateInquiry = async (req, res) => {
-    const { id } = req.params;
-    const { 
-      counselor_id, inquiry_type, source, branch, full_name, phone_number, email, 
-      course_name, country, city, date_of_inquiry, address, present_address, 
-      education_background, english_proficiency, company_name, job_title, 
-      job_duration, preferred_countries 
-    } = req.body;
-  
-    try {
-      const [result] = await db.query(
-        `UPDATE inquiries 
+  const { id } = req.params;
+  const {
+    counselor_id, inquiry_type, source, branch, full_name, phone_number, email,
+    course_name, country, city, date_of_inquiry, address, present_address,
+    education_background, english_proficiency, company_name, job_title,
+    job_duration, preferred_countries
+  } = req.body;
+
+  try {
+    const [result] = await db.query(
+      `UPDATE inquiries 
         SET counselor_id = ?, inquiry_type = ?, source = ?, branch = ?, full_name = ?, 
             phone_number = ?, email = ?, course_name = ?, country = ?, city = ?, 
             date_of_inquiry = ?, address = ?, present_address = ?, 
@@ -329,45 +333,45 @@ export const updateInquiry = async (req, res) => {
             company_name = ?, job_title = ?, job_duration = ?, 
             preferred_countries = ?, updated_at = CURRENT_TIMESTAMP 
         WHERE id = ?`,
-        [
-          counselor_id, inquiry_type, source, branch, full_name, phone_number, email, 
-          course_name, country, city, date_of_inquiry, address, present_address, 
-          JSON.stringify(education_background), JSON.stringify(english_proficiency), 
-          company_name, job_title, job_duration, JSON.stringify(preferred_countries), 
-          id
-        ]
-      );
-  
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'Inquiry not found' });
-      }
-  
-      res.json({ message: 'Inquiry updated successfully' });
-    } catch (err) {
-      console.error('Update Inquiry error:', err);
-      res.status(500).json({ message: 'Internal server error' });
+      [
+        counselor_id, inquiry_type, source, branch, full_name, phone_number, email,
+        course_name, country, city, date_of_inquiry, address, present_address,
+        JSON.stringify(education_background), JSON.stringify(english_proficiency),
+        company_name, job_title, job_duration, JSON.stringify(preferred_countries),
+        id
+      ]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Inquiry not found' });
     }
+
+    res.json({ message: 'Inquiry updated successfully' });
+  } catch (err) {
+    console.error('Update Inquiry error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
 export const deleteInquiry = async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-      const [result] = await db.query('DELETE FROM inquiries WHERE id = ?', [id]);
+  try {
+    const [result] = await db.query('DELETE FROM inquiries WHERE id = ?', [id]);
 
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'Inquiry not found' });
-      }
-
-      res.json({ message: 'Inquiry deleted successfully' });
-    } catch (err) {
-      console.error('Delete Inquiry error:', err);
-      res.status(500).json({ message: 'Internal server error' });
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Inquiry not found' });
     }
-  };
+
+    res.json({ message: 'Inquiry deleted successfully' });
+  } catch (err) {
+    console.error('Delete Inquiry error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 
-  export const getAllInquiries = async (req, res) => {
+export const getAllInquiries = async (req, res) => {
   try {
     const [results] = await db.query(`
       SELECT 
@@ -459,7 +463,7 @@ export const getAllConvertedLeads = async (req, res) => {
     //   OR new_leads IN (${placeholders})
     // `;
 
-      const query =`SELECT 
+    const query = `SELECT 
         i.*, 
         u.full_name AS counselor_name
       FROM 
@@ -475,7 +479,7 @@ export const getAllConvertedLeads = async (req, res) => {
       return res.status(404).json({ message: 'No converted or new leads found' });
     }
     res.status(200).json(result);
-    
+
   } catch (error) {
     console.error("Error fetching leads:", error);
     res.status(500).json({ message: 'Server error', error });
@@ -540,7 +544,7 @@ export const getConvertedLeadsByCounselorId = async (req, res) => {
 //       FROM inquiries
 //       WHERE lead_status = 'Converted to Lead'
 //     `;
-    
+
 //     const [result] = await db.query(query);
 
 //     if (result.length === 0) {
@@ -617,7 +621,7 @@ export const getAllleadsstatus = async (req, res) => {
     res.status(500).json({ message: 'Server error', error });
   }
 };
-  
+
 // export const getCounselorWisePerformance = async (req, res) => {
 //   try {
 //     const [data] = await db.query(`
@@ -649,7 +653,7 @@ export const getAllleadsstatus = async (req, res) => {
 
 export const getCounselorWisePerformance = async (req, res) => {
   try {
-const [data] = await db.query(`
+    const [data] = await db.query(`
   SELECT 
     counselor_id,
     COUNT(*) AS total_leads,
@@ -718,4 +722,4 @@ export const StudentAssignToProcessor = async (req, res) => {
 
 
 
-  
+
