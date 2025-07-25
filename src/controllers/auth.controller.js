@@ -1182,6 +1182,71 @@ export const getAllByRoles = async (req, res) => {
 
 
 
+// export const editStudent = async (req, res) => {
+//   const { id } = req.params;
+
+//   try {
+//     const updatedData = req.body;
+//     console.log("Updated Data:", updatedData);
+
+//     // Stringify JSON/Array fields
+//     if (updatedData.academic_info) {
+//       updatedData.academic_info = JSON.stringify(updatedData.academic_info);
+//     }
+//     if (updatedData.english_proficiency) {
+//       updatedData.english_proficiency = JSON.stringify(updatedData.english_proficiency);
+//     }
+//     if (updatedData.job_professional) {
+//       updatedData.job_professional = JSON.stringify(updatedData.job_professional);
+//     }
+//     if (updatedData.refused_countries) {
+//       updatedData.refused_countries = JSON.stringify(updatedData.refused_countries);
+//     }
+//     if (updatedData.travel_history) {
+//       updatedData.travel_history = JSON.stringify(updatedData.travel_history);
+//     }
+
+//     // Generate fields and values
+//     const fields = Object.keys(updatedData).map(field => `${field} = ?`).join(', ');
+//     const values = Object.values(updatedData);
+
+//     const query = `UPDATE students SET ${fields}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
+//     values.push(id);
+
+//     const [updateResult] = await db.query(query, values);
+
+//     // Fetch the updated student record
+//     const [rows] = await db.query('SELECT * FROM students WHERE id = ?', [id]);
+
+//     if (rows.length === 0) {
+//       return res.status(404).json({ message: 'Student not found after update' });
+//     }
+
+//     // Parse JSON fields before sending response
+//     const student = rows[0];
+//     try {
+//       student.academic_info = JSON.parse(student.academic_info || '[]');
+//       student.english_proficiency = JSON.parse(student.english_proficiency || '[]');
+//       student.job_professional = JSON.parse(student.job_professional || '[]');
+//       student.refused_countries = JSON.parse(student.refused_countries || '[]');
+//       student.travel_history = JSON.parse(student.travel_history || '[]');
+//     } catch (jsonErr) {
+//       console.warn('Error parsing JSON fields:', jsonErr);
+//     }
+
+//     res.status(200).json({
+//       message: 'Student updated successfully',
+//       student: student
+//     });
+
+//   } catch (error) {
+//     console.error('Edit Student Error:', error);
+//     res.status(500).json({ message: 'Server error while editing student' });
+//   }
+// };
+
+
+
 export const editStudent = async (req, res) => {
   const { id } = req.params;
 
@@ -1189,7 +1254,14 @@ export const editStudent = async (req, res) => {
     const updatedData = req.body;
     console.log("Updated Data:", updatedData);
 
-    // Stringify JSON/Array fields
+    // ✅ Format date to MySQL format
+    function formatDateForMySQL(date) {
+      if (!date) return null;
+      const d = new Date(date);
+      return d.toISOString().slice(0, 19).replace('T', ' ');
+    }
+
+    // ✅ Stringify JSON/Array fields
     if (updatedData.academic_info) {
       updatedData.academic_info = JSON.stringify(updatedData.academic_info);
     }
@@ -1206,23 +1278,29 @@ export const editStudent = async (req, res) => {
       updatedData.travel_history = JSON.stringify(updatedData.travel_history);
     }
 
-    // Generate fields and values
+    // ✅ Format datetime fields
+    if (updatedData.created_at) {
+      updatedData.created_at = formatDateForMySQL(updatedData.created_at);
+    }
+    updatedData.updated_at = formatDateForMySQL(new Date()); // always update this to current time
+
+    // ✅ Build query
     const fields = Object.keys(updatedData).map(field => `${field} = ?`).join(', ');
     const values = Object.values(updatedData);
 
-    const query = `UPDATE students SET ${fields}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
+    const query = `UPDATE students SET ${fields} WHERE id = ?`;
     values.push(id);
 
     const [updateResult] = await db.query(query, values);
 
-    // Fetch the updated student record
+    // ✅ Fetch updated student
     const [rows] = await db.query('SELECT * FROM students WHERE id = ?', [id]);
 
     if (rows.length === 0) {
       return res.status(404).json({ message: 'Student not found after update' });
     }
 
-    // Parse JSON fields before sending response
+    // ✅ Parse JSON fields
     const student = rows[0];
     try {
       student.academic_info = JSON.parse(student.academic_info || '[]');
