@@ -1108,110 +1108,50 @@ export const getAllByRoles = async (req, res) => {
 }
 
 
+// Format date to YYYY-MM-DD
+const formatDate = (dateStr) => {
+  if (!dateStr) return null;
+  const date = new Date(dateStr);
+  return date.toISOString().split('T')[0]; // returns 'YYYY-MM-DD'
+};
 
-
-
-
-
-// export const editStudent = async (req, res) => {
-//   const { id } = req.params;
-
-//   try {
-//     const updatedData = req.body;
-//     console.log("Updated Data:", updatedData);
-
-//     // ✅ Format date to MySQL format
-//     function formatDateForMySQL(date) {
-//       if (!date) return null;
-//       const d = new Date(date);
-//       return d.toISOString().slice(0, 19).replace('T', ' ');
-//     }
-
-//     // ✅ Stringify JSON/Array fields
-//     if (updatedData.academic_info) {
-//       updatedData.academic_info = JSON.stringify(updatedData.academic_info);
-//     }
-//     if (updatedData.english_proficiency) {
-//       updatedData.english_proficiency = JSON.stringify(updatedData.english_proficiency);
-//     }
-//     if (updatedData.job_professional) {
-//       updatedData.job_professional = JSON.stringify(updatedData.job_professional);
-//     }
-//     if (updatedData.refused_countries) {
-//       updatedData.refused_countries = JSON.stringify(updatedData.refused_countries);
-//     }
-//     if (updatedData.travel_history) {
-//       updatedData.travel_history = JSON.stringify(updatedData.travel_history);
-//     }
-
-//     // ✅ Format datetime fields
-//     if (updatedData.created_at) {
-//       updatedData.created_at = formatDateForMySQL(updatedData.created_at);
-//     }
-//     updatedData.updated_at = formatDateForMySQL(new Date()); // always update this to current time
-
-//     // ✅ Build query
-//     const fields = Object.keys(updatedData).map(field => `${field} = ?`).join(', ');
-//     const values = Object.values(updatedData);
-
-//     const query = `UPDATE students SET ${fields} WHERE id = ?`;
-//     values.push(id);
-
-//     const [updateResult] = await db.query(query, values);
-
-//     // ✅ Fetch updated student
-//     const [rows] = await db.query('SELECT * FROM students WHERE id = ?', [id]);
-
-//     if (rows.length === 0) {
-//       return res.status(404).json({ message: 'Student not found after update' });
-//     }
-
-//     // ✅ Parse JSON fields
-//     const student = rows[0];
-//     try {
-//       student.academic_info = JSON.parse(student.academic_info || '[]');
-//       student.english_proficiency = JSON.parse(student.english_proficiency || '[]');
-//       student.job_professional = JSON.parse(student.job_professional || '[]');
-//       student.refused_countries = JSON.parse(student.refused_countries || '[]');
-//       student.travel_history = JSON.parse(student.travel_history || '[]');
-//     } catch (jsonErr) {
-//       console.warn('Error parsing JSON fields:', jsonErr);
-//     }
-
-//     res.status(200).json({
-//       message: 'Student updated successfully',
-//       student: student
-//     });
-
-//   } catch (error) {
-//     console.error('Edit Student Error:', error);
-//     res.status(500).json({ message: 'Server error while editing student' });
-//   }
-// };
-
-
+// Format full timestamp to YYYY-MM-DD HH:mm:ss
+const formatDateTimeForMySQL = (dateStr) => {
+  if (!dateStr) return null;
+  const date = new Date(dateStr);
+  const iso = date.toISOString().split('.')[0].replace('T', ' ');
+  return iso;
+};
 
 export const editStudent = async (req, res) => {
   const { id } = req.params;
+  const updatedData = req.body;
 
   try {
-    const updatedData = req.body;
-    console.log("Updated Data:", updatedData);
-
-    // ✅ Format MySQL date and datetime
-    function formatDateTimeForMySQL(date) {
-      if (!date) return null;
-      const d = new Date(date);
-      return d.toISOString().slice(0, 19).replace('T', ' ');
+    // Format date-only fields
+    if (updatedData.date_of_birth) {
+      updatedData.date_of_birth = formatDate(updatedData.date_of_birth);
+    }
+    if (updatedData.passport_1_expiry) {
+      updatedData.passport_1_expiry = formatDate(updatedData.passport_1_expiry);
+    }
+    if (updatedData.passport_2_expiry) {
+      updatedData.passport_2_expiry = formatDate(updatedData.passport_2_expiry);
+    }
+    if (updatedData.passport_3_expiry) {
+      updatedData.passport_3_expiry = formatDate(updatedData.passport_3_expiry);
+    }
+    if (updatedData.follow_up) {
+      updatedData.follow_up = formatDateTimeForMySQL(updatedData.follow_up);
+    }
+    if (updatedData.created_at) {
+      updatedData.created_at = formatDateTimeForMySQL(updatedData.created_at);
     }
 
-    function formatDateForMySQL(date) {
-      if (!date) return null;
-      const d = new Date(date);
-      return d.toISOString().slice(0, 10);
-    }
+    // Convert boolean to MySQL friendly (0/1)
+    updatedData.sponsor_tax_docs = updatedData.sponsor_tax_docs ? 1 : 0;
 
-    // ✅ Stringify JSON/Array fields
+    // Stringify JSON/array fields
     if (updatedData.academic_info) {
       updatedData.academic_info = JSON.stringify(updatedData.academic_info);
     }
@@ -1221,64 +1161,17 @@ export const editStudent = async (req, res) => {
     if (updatedData.job_professional) {
       updatedData.job_professional = JSON.stringify(updatedData.job_professional);
     }
-    if (updatedData.refused_countries) {
-      updatedData.refused_countries = JSON.stringify(updatedData.refused_countries);
-    }
-    if (updatedData.travel_history) {
-      updatedData.travel_history = JSON.stringify(updatedData.travel_history);
-    }
 
-    // ✅ Format individual date fields
-    if (updatedData.created_at) {
-      updatedData.created_at = formatDateTimeForMySQL(updatedData.created_at);
-    }
-    if (updatedData.date_of_birth) {
-      updatedData.date_of_birth = formatDateForMySQL(updatedData.date_of_birth);
-    }
-    if (updatedData.follow_up) {
-      updatedData.follow_up = formatDateForMySQL(updatedData.follow_up);
-    }
+    // Run update query
+    const [result] = await pool.query(
+      'UPDATE student SET ? WHERE id = ?',
+      [updatedData, id]
+    );
 
-    // ✅ Always update updated_at
-    updatedData.updated_at = formatDateTimeForMySQL(new Date());
-
-    // ✅ Build SQL query
-    const fields = Object.keys(updatedData).map(field => `${field} = ?`).join(', ');
-    const values = Object.values(updatedData);
-
-    const query = `UPDATE students SET ${fields} WHERE id = ?`;
-    values.push(id);
-
-    const [updateResult] = await db.query(query, values);
-
-    const [rows] = await db.query('SELECT * FROM students WHERE id = ?', [id]);
-
-    if (rows.length === 0) {
-      return res.status(404).json({ message: 'Student not found after update' });
-    }
-
-    const student = rows[0];
-    try {
-      student.academic_info = JSON.parse(student.academic_info || '[]');
-      student.english_proficiency = JSON.parse(student.english_proficiency || '[]');
-      student.job_professional = JSON.parse(student.job_professional || '[]');
-      student.refused_countries = JSON.parse(student.refused_countries || '[]');
-      student.travel_history = JSON.parse(student.travel_history || '[]');
-    } catch (jsonErr) {
-      console.warn('Error parsing JSON fields:', jsonErr);
-    }
-
-    res.status(200).json({
-      message: 'Student updated successfully',
-      student: student
-    });
+    res.status(200).json({ message: 'Student updated successfully', result });
 
   } catch (error) {
-    console.error('Edit Student Error:', error);
-    res.status(500).json({ message: 'Server error while editing student' });
+    console.error('Error editing student:', error);
+    res.status(500).json({ message: 'Server error', error });
   }
 };
-
-
-
-
