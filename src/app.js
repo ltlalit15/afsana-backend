@@ -97,8 +97,8 @@ app.use('/api', staff);
 app.use('/api', visaRouters);
 app.use('/api', folowupnew);
 app.use('/api', groupRoutes);
-app.use('/api', processorRoute); // Add processor routes
-app.use('/api', notificationRoutes); // Add processor routes
+app.use('/api', processorRoute); 
+app.use('/api', notificationRoutes);
 
 
 // ✅ Log every incoming request

@@ -29,20 +29,36 @@ export const handleSocketConnection = (io) => {
 
                 if (group_id) {
                     const [rows] = await db.query(
-                        `SELECT * FROM chats WHERE group_id = ? ORDER BY created_at ASC`,
+                        `SELECT 
+  c.*, 
+  u.full_name AS sender_name
+FROM chats c
+LEFT JOIN users u ON c.sender_id = u.id
+WHERE c.group_id = ?
+ORDER BY c.created_at ASC
+`,
                         [group_id]
                     );
+                    console.log("rowsrowsrows",rows);
                     messages = rows;
                 } else if (sender_id && receiver_id) {
                     const [rows] = await db.query(
-                        `SELECT * FROM chats 
-         WHERE ((sender_id = ? AND receiver_id = ?) 
-             OR (sender_id = ? AND receiver_id = ?)) 
-           AND group_id IS NULL 
-         ORDER BY created_at ASC`,
+                        `SELECT 
+  c.*, 
+  s.full_name AS sender_name, 
+  r.full_name AS receiver_name
+FROM chats c
+LEFT JOIN users s ON c.sender_id = s.id
+LEFT JOIN users r ON c.receiver_id = r.id
+WHERE ((c.sender_id = ? AND c.receiver_id = ?) 
+    OR (c.sender_id = ? AND c.receiver_id = ?))
+  AND c.group_id IS NULL
+ORDER BY c.created_at ASC
+`,
                         [sender_id, receiver_id, receiver_id, sender_id]
                     );
                     messages = rows;
+                    console.log("rows", rows);
                 } else {
                     return socket.emit('message_error', { error: "Invalid query parameters" });
                 }
