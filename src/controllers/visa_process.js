@@ -25,6 +25,16 @@ export const createVisaProcess = async (req, res) => {
             return res.status(400).json({ message: `${field} is required.` });
         }
     }
+    // ✅ Convert ISO string → MySQL DATE (YYYY-MM-DD)
+    const formatDate = (isoDate) => {
+        if (!isoDate) return null;
+        const d = new Date(isoDate);
+        return d.toISOString().slice(0, 10); // "YYYY-MM-DD"
+    };
+
+    // ✅ Format date fields
+    data.date_of_birth = formatDate(data.date_of_birth);
+    data.registration_date = formatDate(data.registration_date);
     try {
         const [result] = await db.query('INSERT INTO visa_process SET ?', data);
         res.status(201).json({ message: 'Visa process started', id: result.insertId , 
