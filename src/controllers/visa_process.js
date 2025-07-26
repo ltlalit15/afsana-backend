@@ -15,6 +15,10 @@ cloudinary.config({
 
 export const createVisaProcess = async (req, res) => {
     const data = req.body;
+     // Remove `created_at` if present, so MySQL uses default
+    if ('created_at' in data) {
+        delete data.created_at;
+    }
     const requiredFields = [
         'student_id','full_name', 'email', 'phone', 'date_of_birth',
         'passport_no', 'applied_program', 'intake',
