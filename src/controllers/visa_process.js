@@ -79,6 +79,9 @@ export const updateVisaProcess = async (req, res) => {
   const id = req.params.id;
   const updates = { ...req.body };
   const files = req.files;
+    console.log("Received ID:", id);
+  console.log("Initial updates from body:", updates);
+  console.log("Received files:", files);
 
   // ✅ Upload files to Cloudinary and set public URLs
   for (const key in files) {
@@ -102,6 +105,7 @@ export const updateVisaProcess = async (req, res) => {
       updates[key] = null;
     }
   });
+    console.log("Final updates to apply:", updates);
 
   try {
     const [result] = await db.query('UPDATE visa_process SET ? WHERE id = ?', [updates, id]);
