@@ -61,7 +61,7 @@ export const login = async (req, res) => {
 
     const user = results[0];
     const match = await bcrypt.compare(password, user.password);
-    const token = jwt.sign({ id: user.id, role: user.role }, "dfsdfdsfdsg34345464543sdffdg#%$", { expiresIn: '12h' });
+    const token = jwt.sign({ id: user.id, role: user.role }, "dfsdfdsfdsg34345464543sdffdg#%$", { expiresIn: '7d' });
     // const token = jwt.sign({ id: user.id, role: user.role },process.env.JWT_SECRET, { expiresIn: '12h' }
     // );
 
