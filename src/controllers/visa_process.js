@@ -16,6 +16,7 @@ cloudinary.config({
 export const createVisaProcess = async (req, res) => {
     const data = req.body;
      // Remove `created_at` if present, so MySQL uses default
+    if ('id' in data) delete data.id;
     if ('created_at' in data) {
         delete data.created_at;
     }
