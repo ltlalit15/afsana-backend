@@ -458,4 +458,37 @@ export const studentsdashboard = async (req, res) => {
 
 
 
+export const processordashboard = async (req, res) => {
+  try {
+    const { processor_id } = req.params;
+
+    const [applicationCount] = await db.query(
+      `SELECT COUNT(*) AS totalapplication FROM studentapplicationprocess WHERE processor_id = ?`,
+      [processor_id] // ✅ fixed: added comma before this line
+    );
+      const [documentCount] = await db.query(
+      `SELECT COUNT(*) AS totaldocumentCount FROM studentapplicationprocess WHERE processor_id = ?`,
+      [processor_id] // ✅ fixed: added comma before this line
+    );
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalapplication: applicationCount[0].totalapplication,
+        totaldocumentCount: documentCount[0].totaldocumentCount,
+         chart_data: [
+          { label: 'Application', value: applicationCount[0].totalapplication },
+            { label: 'Document', value: documentCount[0].totaldocumentCount },
+        ]
+      }
+    });
+  } catch (error) {
+    console.error("❌ Dashboard summary error:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+
+
+
 
