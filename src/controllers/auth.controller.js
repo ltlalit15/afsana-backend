@@ -179,13 +179,6 @@ export const validateToken = (req, res) => {
   }
 };
 
-
-
-
-
-
-
-
 export const checkPermission = (permissionName, action) => {
   return async (req, res, next) => {
     try {
@@ -221,7 +214,6 @@ export const checkPermission = (permissionName, action) => {
     }
   };
 };
-
 
 export const getuserById = async (req, res) => {
   const { id } = req.params;
@@ -319,8 +311,6 @@ export const getuserById = async (req, res) => {
 };
 
 
-
-
 export const createStudent = async (req, res) => {
   console.log("req.body:", req.body);
   console.log("req.files:", req.files);
@@ -402,18 +392,6 @@ export const createStudent = async (req, res) => {
     res.status(500).json({ message: 'Internal server error', error });
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

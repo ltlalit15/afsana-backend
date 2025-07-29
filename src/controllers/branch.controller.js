@@ -101,7 +101,7 @@ export const createBranch = async (req, res) => {
       `;
   
       const values = [branch_name, branch_address, branch_phone, branch_email, id];
-      const [result] = await db.query(query, values);
+      const [result] = await db.query(query, values);    
   
       if (result.affectedRows === 0) {
         return res.status(404).json({ message: "Branch not found or not updated" });

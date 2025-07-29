@@ -19,7 +19,7 @@ pool.getConnection((err, connection) => {
     console.error('❌ MySQL connection failed:', err.message);
   } else {
     console.log('✅ MySQL connected successfully!');
-    connection.release(); 
+    connection.release();  
   }
 });
 
@@ -39,7 +39,7 @@ export default db;
 //   host: "localhost",                // ✅ Updated Hostcls
 //   user: "root",                                  // ✅ Username
 //   password: "",  // ✅ Updated Password
-//   database: "finaltestiingafsana",                           // ✅ DB Name
+//   database: "afsana28july2025",                           // ✅ DB Name
 //   port: 3306,                                   // ✅ Updated Port
 //   waitForConnections: true,
 //   connectionLimit: 10,
@@ -63,12 +63,4 @@ export default db;
 // // Export the pool for use elsewhere
 // export default db;
 
-
-
-
-
-
-
-
- 
   

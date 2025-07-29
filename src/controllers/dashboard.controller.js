@@ -88,8 +88,22 @@ export const getDashboardDataAdmin = async (req, res) => {
 
       inquiryFilters.push(`intake = '${intake}'`);
     }
-    const buildWhereClause = (filters) => filters.length ? `WHERE ${filters.join(' AND ')}` : '';
-    const [totalLeads] = await db.query(`SELECT COUNT(*) AS totalleads FROM inquiries WHERE lead_status = 'Converted to Lead' ${buildWhereClause(leadFilters)}`);
+    // rehna code // const buildWhereClause = (filters) => filters.length ? `WHERE ${filters.join(' AND ')}` : ''; rehna code 
+
+const buildWhereClause = (filters, hasExistingWhere = false) => {
+  if (!filters.length) return '';
+  return `${hasExistingWhere ? ' AND ' : 'WHERE'} ${filters.join(' AND ')}`;
+};
+
+// rehan code   // const [totalLeads] = await db.query(`SELECT COUNT(*) AS totalleads FROM inquiries WHERE lead_status = 'Converted to Lead' ${buildWhereClause(leadFilters)}`);
+
+const [totalLeads] = await db.query(`
+  SELECT COUNT(*) AS totalleads 
+  FROM inquiries 
+  WHERE lead_status = 'Converted to Lead'
+  ${buildWhereClause(leadFilters, true)}
+`);
+
     const [totalStudents] = await db.query(`SELECT COUNT(*) AS totalstudents FROM students ${buildWhereClause(commonFilters)}`);
     // const [totalCounselors] = await db.query(`SELECT COUNT(*) AS totalcounselors FROM counselors ${buildWhereClause(counselorsFilter)}`);
 

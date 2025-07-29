@@ -66,6 +66,10 @@ import folowupnew from './routers/followupnew.router.js';
 import groupRoutes from './routers/groupRoutes.js'; // Import group routes
 import processorRoute from './routers/processorroute.js'; // Import processor routes
 import notificationRoutes from './routers/notificationRoutes.js'; // Import notification routes
+import studentdocuments from './routers/studentDocuments.js'; // Import notification routes
+
+
+
 
 
 
@@ -99,7 +103,7 @@ app.use('/api', folowupnew);
 app.use('/api', groupRoutes);
 app.use('/api', processorRoute); 
 app.use('/api', notificationRoutes);
-
+app.use('/api', studentdocuments);
 
 // ✅ Log every incoming request
 app.use((req, res, next) => {

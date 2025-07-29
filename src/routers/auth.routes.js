@@ -18,10 +18,12 @@ router.get('/students/by-counselor/:counselorId', getStudentsByCounselorId);
 router.get('/getStudentById/:id', getStudentById);
 router.get('/getAllStudents',getAllStudents);
 router.put('/updateStudent/:id', updateStudent);
-router.put('/updateUser/:id', upload.fields([
-  { name: 'photo', maxCount: 1 },
-  { name: 'documents', maxCount: 1 }
-]), updateUser);
+// router.put('/updateUser/:id', upload.fields([
+//   { name: 'photo', maxCount: 1 },
+//   { name: 'documents', maxCount: 1 }
+// ]), updateUser);
+router.put('/updateUser/:id', updateUser);
+
 router.delete('/deleteStudent/:id', deleteStudent);
 router.get("/getusersByRole/:role",getAllByRoles)
 router.post('/student/google-signup', createStudentWithGoogle);

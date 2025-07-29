@@ -203,6 +203,7 @@ export const getLeadByCounselorIdnew = async (req, res) => {
         const counselorID = inquiry.counselor_id;
         const counselorInfo = await getCounselorById(counselorID); // Should return [{ full_name: '...' }]
 
+
         return {
           id: inquiry.id,
           name: inquiry.full_name,
@@ -218,6 +219,10 @@ export const getLeadByCounselorIdnew = async (req, res) => {
           payment_status: inquiry.payment_status,
           preferred_countries: inquiry.preferred_countries || '',
           notes: inquiry.assignment_description || '',
+gender:inquiry.gender,
+          date_of_birth:inquiry.date_of_birth,
+          address:inquiry.address,
+          present_address:inquiry.present_address,
           user_id: inquiry.user_id || null,
           created_at: inquiry.created_at,
           updated_at: inquiry.updated_at,
