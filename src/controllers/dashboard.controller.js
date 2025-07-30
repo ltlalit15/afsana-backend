@@ -504,5 +504,29 @@ export const processordashboard = async (req, res) => {
 
 
 
+export const masteradmindashboard = async (req, res) => {
+  try {
+    const [totaladminCount] = await db.query(
+      `SELECT COUNT(*) AS totaladmin FROM users WHERE role = 'admin'` // ✅ fixed: added comma before this line
+    );
+    
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totaladmin: totaladminCount[0].totaladmin,
+         chart_data: [
+          { label: 'Application', value: totaladminCount[0].totaladmin },
+        ]
+      }
+    });
+  } catch (error) {
+    console.error("❌ Dashboard summary error:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+
+
 
 

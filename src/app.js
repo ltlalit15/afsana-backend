@@ -67,11 +67,8 @@ import groupRoutes from './routers/groupRoutes.js'; // Import group routes
 import processorRoute from './routers/processorroute.js'; // Import processor routes
 import notificationRoutes from './routers/notificationRoutes.js'; // Import notification routes
 import studentdocuments from './routers/studentDocuments.js'; // Import notification routes
-
-
-
-
-
+import aiChatRoutes from './routers/aiChatRoutes.js'; // Import AI chat routes
+import masteradminRoutes from './routers/masteradminRoutes.js'; // Import AI chat routes
 
 
 // ✅ Route handling
@@ -104,6 +101,9 @@ app.use('/api', groupRoutes);
 app.use('/api', processorRoute); 
 app.use('/api', notificationRoutes);
 app.use('/api', studentdocuments);
+app.use('/api', aiChatRoutes);
+
+app.use('/api', masteradminRoutes);
 
 // ✅ Log every incoming request
 app.use((req, res, next) => {
