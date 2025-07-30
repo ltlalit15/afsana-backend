@@ -5,11 +5,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const pool = mysql.createPool({
-  host: "yamabiko.proxy.rlwy.net",             // ✅ Updated host
-  user: "root",                                 // ✅ Username
-  password: "qjYEpmptLJgsBJaEQbQfxWOLxHFoBpFo", // ✅ Updated password
-  database: "railway",                          // ✅ Same DB
-  port: 19529,                                  // ✅ Updated port
+  host: "maglev.proxy.rlwy.net",               // ✅ Matches CLI host
+  user: "root",                                 // ✅ Matches CLI username
+  password: "BoWEANRbxQdTHIrKJUXLTcLyPojOskPq", // ✅ Matches CLI password
+  database: "railway",                          // ✅ Matches CLI database
+  port: 22242,                                  // ✅ Matches CLI port
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
