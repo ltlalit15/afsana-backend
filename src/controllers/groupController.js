@@ -29,11 +29,11 @@ export const userDetails = async (req, res) => {
 
     try {
         const [userRows] = await db.query(
-            "SELECT id, full_name, role , email FROM users WHERE role IN ('admin', 'counselor' , 'student' , 'processors')",
+            "SELECT * FROM users WHERE role IN ('admin', 'counselor' , 'student' , 'processors')",
         );
 
         const [groupRows] = await db.query(
-            "SELECT id, group_name FROM `groups` WHERE FIND_IN_SET(?, user_ids)",
+            "SELECT * FROM `groups` WHERE FIND_IN_SET(?, user_ids)",
             [userId]
         );
 
@@ -52,23 +52,16 @@ export const getAssignedStudents = async (req, res) => {
 
     try {
         const [students] = await db.query(
-            `SELECT 
-         u.full_name,
-         u.role,
-         s.id AS student_id,
-         u.id
-       FROM students s
-       JOIN users u ON s.id = u.student_id
-       WHERE s.counselor_id = ?`,
+            `SELECT *  FROM students WHERE counselor_id = ?`,
             [counselor_id]
         );
 
         const [groupRows] = await db.query(
-            "SELECT id, group_name FROM `groups` WHERE FIND_IN_SET(?, user_ids)",
+            "SELECT *  FROM `groups` WHERE FIND_IN_SET(?, user_ids)",
             [counselor_id]
         );
         const [counselorData] = await db.query(
-            "SELECT id, full_name, role , email FROM users WHERE role IN ('admin', 'counselor' , 'processors')",
+            "SELECT *  FROM users WHERE role IN ('admin', 'counselor' , 'processors')",
         );
         res.json({
             users: [...students, ...counselorData],
@@ -84,19 +77,17 @@ export const getAssignedcounselor = async (req, res) => {
 
     try {
         const [students] = await db.query(
-            `SELECT  full_name, role, id , counselor_id FROM students WHERE id = ?`,
+            `SELECT  * FROM students WHERE id = ?`,
             [student_id]
         );
-        console.log("studentsstudents", students);
         const counselor_id = students[0]?.counselor_id;
         const [counselorData] = await db.query(
-            "SELECT id, full_name, role , email FROM users WHERE id = ?",
+            "SELECT *  FROM users WHERE counselor_id = ?",
             [counselor_id]
         );
-        console.log("counselorData", counselorData);
 
         const [groupRows] = await db.query(
-            "SELECT id, group_name FROM `groups` WHERE FIND_IN_SET(?, user_ids)",
+            "SELECT * FROM `groups` WHERE FIND_IN_SET(?, user_ids)",
             [counselor_id]
         );
 
