@@ -764,7 +764,6 @@ export const updateStudent = async (req, res) => {
   try {
     const {
       father_name,
-
       mother_name,
       identifying_name,
       mobile_number,

@@ -10,11 +10,6 @@ router.get ('/getCounselorDashboardData', getCounselorDashboardData);
 router.get ('/sataffdashboard', sataffdashboard);
 router.get('/studentsdashboard/:student_id', studentsdashboard);
 router.get('/processordashboard/:processor_id', processordashboard);
-
 router.get('/masteradmindashboard', masteradmindashboard);
-
-
-
-
 
 export default router;
