@@ -516,7 +516,7 @@ export const masteradmindashboard = async (req, res) => {
       data: {
         totaladmin: totaladminCount[0].totaladmin,
          chart_data: [
-          { label: 'Application', value: totaladminCount[0].totaladmin },
+          { label: 'Admin', value: totaladminCount[0].totaladmin },
         ]
       }
     });
