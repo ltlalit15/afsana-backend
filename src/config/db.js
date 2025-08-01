@@ -25,7 +25,7 @@ pool.getConnection((err, connection) => {
 
 const db = pool.promise();
 
-// export default db;
+export default db;
 
 
 // import mysql from 'mysql2';
