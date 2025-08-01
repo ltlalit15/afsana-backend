@@ -126,3 +126,29 @@ export const getMyGroups = async (req, res) => {
     const [groups] = await db.query(query, [userId]);
     res.json({ groups });
 };
+
+export const allGroups = async (req, res) => {
+    try {
+        const [rows] = await db.query("SELECT * FROM `groups`");
+        res.json({ groups: rows });
+    } catch (error) {
+        console.error("Error fetching all groups:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+export const deleteGroup = async (req, res) => {
+    const { groupId } = req.params;
+
+    try {
+
+        await db.query("DELETE FROM messages WHERE group_id = ?", [groupId]);
+
+        await db.query("DELETE FROM `groups` WHERE id = ?", [groupId]);
+
+        res.json({ success: true, message: "Group deleted successfully" });
+
+    } catch (error) {
+        console.error("Error deleting group:", error);
+        res.status(500).json({ success: false, message: "Failed to delete group", error: error.message });
+    }
+}
